@@ -6,3 +6,6 @@ enum class Platform {
 }
 
 expect fun getPlatformName(): Platform
+
+
+fun isAndroid(): Boolean = getPlatformName() == Platform.ANDROID

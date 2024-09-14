@@ -20,6 +20,7 @@ koinCompose = "3.6.0-alpha3"
 koinComposeMultiplatform = "1.2.0-alpha3"
 materialNavigation = "1.7.0-beta02"
 navigationCompose = "2.8.0-alpha10"
+uiDesktop = "1.7.0"
 
 
 [libraries]
