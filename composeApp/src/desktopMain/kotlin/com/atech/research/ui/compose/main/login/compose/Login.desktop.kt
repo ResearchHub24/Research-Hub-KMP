@@ -8,13 +8,13 @@ import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.lifecycle.ViewModel
 import com.atech.research.common.EditText
 import com.atech.research.common.GoogleButton
 import com.atech.research.common.PasswordEditTextCompose
@@ -23,9 +23,10 @@ import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.koinViewModel
 
 @Composable
-actual fun <T : ViewModel> LoginScreenType(
-    viewModel: T,
-    onEvent: (LogInEvents) -> Unit
+actual fun LoginScreenType(
+    viewModel: LogInViewModel,
+    onEvent: (LogInEvents) -> Unit,
+    onLogInDone : () -> Unit
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -57,13 +58,14 @@ actual fun <T : ViewModel> LoginScreenType(
 }
 
 
-
 internal class LogInViewModelImp : LogInViewModel() {
+    override var logInState: State<LogInState> = mutableStateOf(LogInState())
     override fun onLoginEvent(event: LogInEvents) {
-        when(event){
+        when (event) {
             is LogInEvents.OnSignInResult -> println()
             LogInEvents.OnSkipClick -> println()
             is LogInEvents.TriggerAuth -> println()
+            LogInEvents.PreformLogOutOnError -> println()
         }
     }
 }

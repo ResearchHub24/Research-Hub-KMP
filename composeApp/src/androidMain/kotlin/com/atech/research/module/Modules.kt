@@ -2,9 +2,14 @@ package com.atech.research.module
 
 import com.atech.research.ui.compose.main.login.compose.LogInViewModel
 import com.atech.research.ui.compose.main.login.compose.LogInViewModelImp
+import com.atech.research.ui.compose.main.login.compose.util.HasUserUseCase
+import com.atech.research.ui.compose.main.login.compose.util.LogInUseCase
+import com.atech.research.ui.compose.main.login.compose.util.LogInWithGoogleStudent
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -14,6 +19,12 @@ val appModule = module {
     single<FirebaseAuth> {
         Firebase.auth
     }
+    single<FirebaseFirestore> {
+        Firebase.firestore
+    }
+    single { HasUserUseCase(get()) }
+    single { LogInUseCase(get(), get()) }
+    single { LogInWithGoogleStudent(get(), get()) }
 }
 
 val viewModelModule = module {

@@ -63,7 +63,7 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
-
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
 
 play-service-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-service-auth" }
 
@@ -88,4 +88,5 @@ firebase = [
     "firebase-analytics",
     "firebase-crashlytics",
     "firebase-auth",
+    "firebase-firestore",
 ]

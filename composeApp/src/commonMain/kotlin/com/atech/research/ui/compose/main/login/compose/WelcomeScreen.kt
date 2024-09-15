@@ -60,7 +60,8 @@ fun WelcomeScreen(
                 val viewModel = getViewModel()
                 LoginScreenType(
                     viewModel = viewModel,
-                    onEvent = viewModel::onLoginEvent
+                    onEvent = viewModel::onLoginEvent,
+                    onLogInDone = { }
                 )
             }
         }
