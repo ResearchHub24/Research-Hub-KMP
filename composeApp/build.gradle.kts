@@ -18,7 +18,12 @@ kotlin {
         }
     }
 
-    jvm("desktop")
+    jvm("desktop"){
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
+        compilerOptions {
+            freeCompilerArgs.add("-Xcontext-receivers")
+        }
+    }
 
     sourceSets {
         val desktopMain by getting
@@ -114,9 +119,6 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    dependencies {
-        debugImplementation(compose.uiTooling)
     }
 }
 
