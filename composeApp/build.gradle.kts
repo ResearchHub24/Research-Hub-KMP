@@ -8,6 +8,9 @@ plugins {
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+    id("com.google.firebase.crashlytics")
+    alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.googleAndroidLibrariesMapsplatformSecretsGradlePlugin)
 }
 
 kotlin {
@@ -18,7 +21,7 @@ kotlin {
         }
     }
 
-    jvm("desktop"){
+    jvm("desktop") {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             freeCompilerArgs.add("-Xcontext-receivers")
@@ -42,7 +45,9 @@ kotlin {
 //            System UI Controller
             implementation(libs.accompanist.systemuicontroller)
 
-//            implementation("androidx.window:window-core:1.3.0")
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.bundles.firebase)
+            implementation(libs.play.service.auth)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -63,7 +68,6 @@ kotlin {
             implementation(libs.navigation.compose)
             implementation(libs.material.navigation)
 
-//            implementation("dev.chrisbanes.material3:material3-window-size-class-multiplatform:0.5.0")
 
             implementation(libs.adaptive)
             implementation(libs.adaptive.layout)
