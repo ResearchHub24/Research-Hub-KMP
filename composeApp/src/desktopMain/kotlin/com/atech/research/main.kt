@@ -9,14 +9,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.atech.research.module.KoinInitializer
 import com.atech.research.ui.theme.ResearchHubTheme
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 import org.koin.core.context.stopKoin
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.app_logo
 import java.awt.Dimension
 import java.awt.Toolkit
+import java.nio.file.Paths
 
 fun main() = application {
     var isKoinInitialized by remember { mutableStateOf(false) }
@@ -46,8 +50,24 @@ fun main() = application {
             title = "Research Hub",
             icon = painterResource(Res.drawable.app_logo),
         ) {
-            App()
+            App(
+                pref = koinInject<DataStore<Preferences>>()
+            )
         }
+    }
+}
+
+internal fun getAppDataPath(): String {
+    val userHome = System.getProperty("user.home")
+    return when {
+        System.getProperty("os.name").contains("Windows", ignoreCase = true) ->
+            Paths.get(System.getenv("APPDATA"), "ResearchHub").toString()
+
+        System.getProperty("os.name").contains("Mac", ignoreCase = true) ->
+            Paths.get(userHome, "Library", "Application Support", "ResearchHub").toString()
+
+        else -> // Linux and other Unix-like systems
+            Paths.get(userHome, ".config", "ResearchHub").toString()
     }
 }
 

@@ -1,4 +1,4 @@
-package com.atech.research.ui.compose.main.login.compose
+package com.atech.research.ui.compose.main.login.compose.login
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -32,7 +32,7 @@ abstract class LogInViewModel : ViewModel() {
 expect fun LoginScreenType(
     viewModel: LogInViewModel,
     onEvent: (LogInEvents) -> Unit,
-    onLogInDone : () -> Unit
+    onLogInDone : (String) -> Unit
 )
 
 @Composable

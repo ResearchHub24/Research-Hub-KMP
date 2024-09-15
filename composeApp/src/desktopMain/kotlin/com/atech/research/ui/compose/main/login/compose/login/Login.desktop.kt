@@ -1,4 +1,4 @@
-package com.atech.research.ui.compose.main.login.compose
+package com.atech.research.ui.compose.main.login.compose.login
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +26,7 @@ import com.atech.research.utils.koinViewModel
 actual fun LoginScreenType(
     viewModel: LogInViewModel,
     onEvent: (LogInEvents) -> Unit,
-    onLogInDone : () -> Unit
+    onLogInDone : (String) -> Unit
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }

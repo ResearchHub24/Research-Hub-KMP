@@ -7,8 +7,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navigation
-import com.atech.research.ui.compose.main.login.compose.WelcomeScreen
+import androidx.navigation.toRoute
+import com.atech.research.ui.compose.main.login.compose.login.WelcomeScreen
+import com.atech.research.ui.compose.main.login.compose.setup.SetUpScreen
 import com.atech.research.utils.fadeThroughComposable
+import com.atech.research.utils.fadeThroughComposableEnh
+import kotlinx.serialization.Serializable
 
 enum class ResearchHubRoutes(
     val route: String
@@ -47,6 +51,12 @@ sealed class LogInScreenRoutes(
     data object LogInScreen : LogInScreenRoutes("log_in_screen")
 }
 
+
+@Serializable
+data class SetUpScreenArgs(
+    val uid: String
+)
+
 fun NavGraphBuilder.logInScreenGraph(
     navController: NavController
 ) {
@@ -57,7 +67,13 @@ fun NavGraphBuilder.logInScreenGraph(
         fadeThroughComposable(
             route = LogInScreenRoutes.LogInScreen.route
         ) {
-            WelcomeScreen()
+            WelcomeScreen(
+                navController = navController
+            )
+        }
+        fadeThroughComposableEnh<SetUpScreenArgs> { route ->
+            val uid = route.toRoute<SetUpScreenArgs>()
+            SetUpScreen()
         }
     }
 }

@@ -1,10 +1,11 @@
 package com.atech.research.module
 
-import com.atech.research.ui.compose.main.login.compose.LogInViewModel
-import com.atech.research.ui.compose.main.login.compose.LogInViewModelImp
+import com.atech.research.ui.compose.main.login.compose.login.LogInViewModel
+import com.atech.research.ui.compose.main.login.compose.login.LogInViewModelImp
 import com.atech.research.ui.compose.main.login.compose.util.HasUserUseCase
 import com.atech.research.ui.compose.main.login.compose.util.LogInUseCase
 import com.atech.research.ui.compose.main.login.compose.util.LogInWithGoogleStudent
+import com.atech.research.utils.createDataStore
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -25,6 +26,7 @@ val appModule = module {
     single { HasUserUseCase(get()) }
     single { LogInUseCase(get(), get()) }
     single { LogInWithGoogleStudent(get(), get()) }
+    single { createDataStore(context = get()) }
 }
 
 val viewModelModule = module {

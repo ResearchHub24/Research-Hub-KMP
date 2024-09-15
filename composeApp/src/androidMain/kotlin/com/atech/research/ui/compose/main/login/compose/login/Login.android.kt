@@ -1,4 +1,4 @@
-package com.atech.research.ui.compose.main.login.compose
+package com.atech.research.ui.compose.main.login.compose.login
 
 import android.app.Activity.RESULT_OK
 import android.widget.Toast
@@ -27,7 +27,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 actual fun LoginScreenType(
-    viewModel: LogInViewModel, onEvent: (LogInEvents) -> Unit, onLogInDone: () -> Unit
+    viewModel: LogInViewModel,
+    onEvent: (LogInEvents) -> Unit,
+    onLogInDone: (String) -> Unit
 ) {
     val logInState by viewModel.logInState
     val context = LocalContext.current
@@ -75,7 +77,7 @@ actual fun LoginScreenType(
         }
         logInState.uId?.let {
             logInMessage = "Sign Done"
-            onLogInDone()
+            onLogInDone(it)
         }
     }
     GoogleButton(loadingText = logInMessage, hasClick = hasClick, hasClickChange = { value ->

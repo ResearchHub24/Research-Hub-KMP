@@ -75,6 +75,9 @@ kotlin {
             implementation(libs.material3.adaptive.navigation.suite)
             implementation(libs.material3.window.size)
 
+            api(libs.datastore)
+            api(libs.datastore.preferences)
+
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
