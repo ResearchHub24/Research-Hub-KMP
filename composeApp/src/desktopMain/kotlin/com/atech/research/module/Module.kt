@@ -12,7 +12,7 @@ import org.koin.dsl.module
 import java.nio.file.Paths
 
 val viewModelModule = module {
-    single { LogInViewModelImp() }
+    single { LogInViewModelImp(get()) }
         .bind(LogInViewModel::class)
 
     single { SetUpViewModel(get()) }

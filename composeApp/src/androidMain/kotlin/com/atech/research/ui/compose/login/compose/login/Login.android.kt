@@ -16,9 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewModelScope
 import com.atech.research.common.GoogleButton
-import com.atech.research.ui.compose.login.compose.login.LogInEvents
-import com.atech.research.ui.compose.login.compose.login.LogInState
-import com.atech.research.ui.compose.login.compose.login.LogInViewModel
 import com.atech.research.ui.compose.login.compose.util.GoogleAuthUiClient
 import com.atech.research.ui.compose.login.compose.util.LogInWithGoogleStudent
 import com.atech.research.utils.DataState
@@ -126,6 +123,7 @@ class LogInViewModelImp(
             LogInEvents.OnSkipClick -> researchHubLog(ResearchLogLevel.DEBUG, "Skip Click")
             is LogInEvents.TriggerAuth -> logIn(event.token)
             LogInEvents.PreformLogOutOnError -> println()
+            else -> {}
         }
     }
 }

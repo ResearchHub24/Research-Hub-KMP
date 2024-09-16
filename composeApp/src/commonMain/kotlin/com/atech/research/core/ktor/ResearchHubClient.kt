@@ -16,9 +16,16 @@ interface ResearchHubClient {
         vararg varargs: UserUpdateQueryHelper<Any>
     ): DataState<SuccessResponse>
 
+    suspend fun logInUser(
+        email: String,
+        password: String
+    ): DataState<String>
+
     companion object {
         private const val BASE_URL = "http://192.168.29.205:9090/api/v1"
-//        private const val BASE_URL = "http://192.168.17.1:9090/api/v1"
+
+        //        private const val BASE_URL = "http://192.168.17.1:9090/api/v1"
         const val USER = "$BASE_URL/users"
+        const val LOGIN = "$BASE_URL/login"
     }
 }

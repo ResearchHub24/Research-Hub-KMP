@@ -18,14 +18,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavController
 import com.atech.research.LocalDataStore
 import com.atech.research.common.MainContainer
+import com.atech.research.ui.navigation.MainScreenScreenRoutes
 import com.atech.research.ui.navigation.SetUpScreenArgs
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.Prefs
+import com.atech.research.utils.isAndroid
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -42,7 +45,7 @@ fun WelcomeScreen(
         it[stringPreferencesKey(Prefs.USER_ID.key)] ?: ""
     }.collectAsState(initial = "")
     LaunchedEffect(uid) {
-        if (uid.isNotEmpty()) {
+        if (uid.isNotEmpty() && isAndroid()) {
             navigateToSetupScreen(navController, uid)
         }
     }
@@ -76,6 +79,11 @@ fun WelcomeScreen(
                         scope.launch {
                             dataStore.edit { pref ->
                                 pref[stringPreferencesKey(Prefs.USER_ID.key)] = it
+                                if (!isAndroid()) {
+                                    pref[booleanPreferencesKey(Prefs.SET_PASSWORD_DONE.key)] = true
+                                    navigateToHome(navController)
+                                    return@edit
+                                }
                                 navigateToSetupScreen(navController, it)
                             }
                         }
@@ -88,5 +96,13 @@ fun WelcomeScreen(
 private fun navigateToSetupScreen(navController: NavController, uid: String) {
     navController.navigate(SetUpScreenArgs(uid)) {
         popUpTo(navController.graph.startDestinationId)
+    }
+}
+
+fun navigateToHome(navController: NavController) {
+    navController.navigate(MainScreenScreenRoutes.HomeScreen.route) {
+        popUpTo(MainScreenScreenRoutes.HomeScreen.route) {
+            inclusive = false
+        }
     }
 }

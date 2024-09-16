@@ -8,9 +8,11 @@ import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.researchHubLog
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.ResponseException
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.url
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
@@ -44,6 +46,26 @@ class ResearchHubClientImp(
             e: Exception
         ) {
             researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
+            DataState.Error(e)
+        }
+
+    override suspend fun logInUser(email: String, password: String): DataState<String> =
+        try {
+
+            val response = client.post {
+                url("${ResearchHubClient.LOGIN}?email=$email&password=$password")
+            }
+            if (response.bodyAsText().contains("error")) {
+                DataState.Error(Exception("Invalid email or password"))
+            } else
+                DataState.Success(response.bodyAsText())
+        } catch (e: ResponseException) {
+            when (e.response.status.value) {
+                400 -> DataState.Error(Exception("Bad request"))
+                else -> DataState.Error(e)
+            }
+        } catch (e: Exception) {
+            println(e)
             DataState.Error(e)
         }
 

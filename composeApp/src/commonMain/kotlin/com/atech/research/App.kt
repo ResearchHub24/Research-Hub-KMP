@@ -32,6 +32,7 @@ fun App(
                 it[booleanPreferencesKey(Prefs.SET_PASSWORD_DONE.key)] ?: false
             }.collectAsState(initial = false)
             val navController = rememberNavController()
+            println("setUpDone: ${navController.currentDestination?.route}")
             ResearchNavigationGraph(
                 modifier = Modifier,
                 navHostController = navController,
