@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 private const val DB = "ResearchHub"
 private const val PATH = "v1"
-private const val SUBDB = "Users"
+private const val SUB_DB = "Users"
 
 
 data class HasUserUseCase(
@@ -22,7 +22,7 @@ data class HasUserUseCase(
         uid: String, state: (DataState<Boolean>) -> Unit = { _ -> }
     ) {
         try {
-            val doc = db.collection(DB).document(PATH).collection(SUBDB).document(uid).get().await()
+            val doc = db.collection(DB).document(PATH).collection(SUB_DB).document(uid).get().await()
             state(DataState.Success(doc.exists()))
         } catch (e: Exception) {
             state(DataState.Error(e))
@@ -50,7 +50,7 @@ data class LogInUseCase(
                     is DataState.Success -> {
                         if (!state1.data) {
                             runBlocking {
-                                db.collection(DB).document(PATH).collection(SUBDB).document(uid)
+                                db.collection(DB).document(PATH).collection(SUB_DB).document(uid)
                                     .set(model).await()
                                 state(DataState.Success(uid))
                             }
