@@ -1,6 +1,8 @@
 package com.atech.research.ui.compose.main.login.compose.setup.compose
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -43,9 +45,11 @@ import com.atech.research.common.MainContainer
 import com.atech.research.common.PasswordEditTextCompose
 import com.atech.research.common.ProgressBar
 import com.atech.research.common.TitleComposable
+import com.atech.research.core.model.UserModel
 import com.atech.research.core.model.UserType
 import com.atech.research.ui.compose.main.login.compose.setup.SetUpScreenEvents
 import com.atech.research.ui.theme.spacing
+import com.atech.research.utils.DataState
 import org.jetbrains.compose.resources.painterResource
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.app_logo
@@ -55,21 +59,24 @@ import researchhub.composeapp.generated.resources.app_logo
 fun SetUpScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
+    user: DataState<UserModel>,
     passWord: String,
     userType: UserType,
     isPasswordValid: Boolean = false,
     onEvent: (SetUpScreenEvents) -> Unit = {}
 ) {
-    var isLoading by remember { mutableStateOf(false) }
     MainContainer(
         modifier = modifier,
         appBarColor = MaterialTheme.colorScheme.primary
     ) { contentPadding ->
-        AnimatedVisibility(isLoading) {
+        AnimatedVisibility(user is DataState.Loading) {
             ProgressBar(paddingValues = contentPadding)
         }
-        AnimatedVisibility(!isLoading) {
-
+        AnimatedVisibility(
+            visible = user !is DataState.Loading,
+            enter = slideInVertically(),
+            exit = slideOutVertically()
+        ) {
             var isDialogVisible by remember { mutableStateOf(false) }
 
             AnimatedVisibility(isDialogVisible) {

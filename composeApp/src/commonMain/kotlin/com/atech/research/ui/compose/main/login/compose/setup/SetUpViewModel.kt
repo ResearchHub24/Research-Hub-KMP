@@ -3,11 +3,16 @@ package com.atech.research.ui.compose.main.login.compose.setup
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.atech.research.core.ktor.ResearchHubClient
+import com.atech.research.core.model.UserModel
 import com.atech.research.core.model.UserType
-import com.atech.research.utils.ResearchLogLevel
-import com.atech.research.utils.researchHubLog
+import com.atech.research.utils.DataState
+import kotlinx.coroutines.launch
 
-class SetUpViewModel : ViewModel() {
+class SetUpViewModel(
+    private val client: ResearchHubClient
+) : ViewModel() {
     private var uid: String = ""
     private val _password = mutableStateOf("")
     val password: State<String> get() = _password
@@ -17,6 +22,9 @@ class SetUpViewModel : ViewModel() {
 
     private val _isPasswordValid = mutableStateOf(false)
     val isPasswordValid: State<Boolean> get() = _isPasswordValid
+
+    private val _user = mutableStateOf<DataState<UserModel>>(DataState.Loading)
+    val user: State<DataState<UserModel>> get() = _user
 
     fun onEvent(event: SetUpScreenEvents) {
         when (event) {
@@ -30,7 +38,20 @@ class SetUpViewModel : ViewModel() {
 
 
             SetUpScreenEvents.SetPassword -> {}
-            is SetUpScreenEvents.SetUid -> uid = event.uid
+            is SetUpScreenEvents.SetUid -> {
+                uid = event.uid
+                getUser()
+            }
+        }
+    }
+
+    private fun getUser() = viewModelScope.launch {
+        _user.value = DataState.Loading
+        try {
+            val response = client.getUser(uid)
+            _user.value = response
+        } catch (e: Exception) {
+            _user.value = DataState.Error(e)
         }
     }
 

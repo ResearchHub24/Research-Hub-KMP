@@ -92,7 +92,7 @@ ktor = [
 ]
 firebase = [
     "firebase-analytics",
-    "firebase-crashlytics",
+#    "firebase-crashlytics",
     "firebase-auth",
     "firebase-firestore",
 ]

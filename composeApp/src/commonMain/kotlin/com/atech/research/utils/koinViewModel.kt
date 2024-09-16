@@ -2,6 +2,7 @@ package com.atech.research.utils
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.koin.compose.currentKoinScope
 

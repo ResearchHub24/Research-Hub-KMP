@@ -1,13 +1,17 @@
 package com.atech.research.core.model
 
 import androidx.annotation.Keep
+import kotlinx.serialization.Serializable
 
 
+@Keep
+@Serializable
 enum class UserType {
     STUDENT, TEACHER
 }
 
 @Keep
+@Serializable
 data class UserModel(
     val uid: String?,
     val email: String?,
@@ -16,7 +20,7 @@ data class UserModel(
     val photoUrl: String? = null,
     val created: Long = System.currentTimeMillis(),
     val phone: String? = null,
-    val userType: String = UserType.STUDENT.name,
+    val userType: String? = UserType.STUDENT.name,
 //    Student
     val educationDetails: String? = null,
     val skillList: String? = null,

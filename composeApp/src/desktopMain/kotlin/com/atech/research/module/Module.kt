@@ -15,7 +15,7 @@ val viewModelModule = module {
     single { LogInViewModelImp() }
         .bind(LogInViewModel::class)
 
-    single { SetUpViewModel() }
+    single { SetUpViewModel(get()) }
     single {
         createDataStore {
             val appDataPath = getAppDataPath()
