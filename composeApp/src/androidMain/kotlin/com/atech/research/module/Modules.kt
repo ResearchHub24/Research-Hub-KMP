@@ -1,7 +1,9 @@
 package com.atech.research.module
 
+import androidx.lifecycle.SavedStateHandle
 import com.atech.research.ui.compose.main.login.compose.login.LogInViewModel
 import com.atech.research.ui.compose.main.login.compose.login.LogInViewModelImp
+import com.atech.research.ui.compose.main.login.compose.setup.SetUpViewModel
 import com.atech.research.ui.compose.main.login.compose.util.HasUserUseCase
 import com.atech.research.ui.compose.main.login.compose.util.LogInUseCase
 import com.atech.research.ui.compose.main.login.compose.util.LogInWithGoogleStudent
@@ -32,4 +34,7 @@ val appModule = module {
 val viewModelModule = module {
     viewModel { LogInViewModelImp(get()) }
         .bind(LogInViewModel::class)
+    viewModel {
+        SetUpViewModel()
+    }
 }

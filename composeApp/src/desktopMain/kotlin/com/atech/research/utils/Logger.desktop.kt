@@ -1,10 +1,10 @@
 package com.atech.research.utils
 
-actual fun researchHubLog(level: LogLevel, message: String) {
+actual fun researchHubLog(level: ResearchLogLevel, message: String) {
     when (level) {
-        LogLevel.DEBUG -> println("researchHubLog: $message")
-        LogLevel.INFO -> println("researchHubLog: $message")
-        LogLevel.WARN -> println("researchHubLog: $message")
-        LogLevel.ERROR -> System.err.println("researchHubLog: $message")
+        ResearchLogLevel.DEBUG -> println("researchHubLog: $message")
+        ResearchLogLevel.INFO -> println("researchHubLog: $message")
+        ResearchLogLevel.WARN -> println("researchHubLog: $message")
+        ResearchLogLevel.ERROR -> System.err.println("researchHubLog: $message")
     }
 }

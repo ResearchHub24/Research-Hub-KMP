@@ -19,7 +19,7 @@ import com.atech.research.common.GoogleButton
 import com.atech.research.ui.compose.main.login.compose.util.GoogleAuthUiClient
 import com.atech.research.ui.compose.main.login.compose.util.LogInWithGoogleStudent
 import com.atech.research.utils.DataState
-import com.atech.research.utils.LogLevel
+import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.koinViewModel
 import com.atech.research.utils.researchHubLog
 import com.google.android.gms.auth.api.identity.Identity
@@ -120,7 +120,7 @@ class LogInViewModelImp(
     override fun onLoginEvent(event: LogInEvents) {
         when (event) {
             is LogInEvents.OnSignInResult -> _logInState.value = event.state
-            LogInEvents.OnSkipClick -> researchHubLog(LogLevel.DEBUG, "Skip Click")
+            LogInEvents.OnSkipClick -> researchHubLog(ResearchLogLevel.DEBUG, "Skip Click")
             is LogInEvents.TriggerAuth -> logIn(event.token)
             LogInEvents.PreformLogOutOnError -> println()
         }

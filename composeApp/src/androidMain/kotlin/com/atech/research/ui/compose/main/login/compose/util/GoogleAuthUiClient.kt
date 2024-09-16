@@ -3,7 +3,7 @@ package com.atech.research.ui.compose.main.login.compose.util
 import android.content.Intent
 import android.content.IntentSender
 import com.atech.research.BuildConfig
-import com.atech.research.utils.LogLevel
+import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.researchHubLog
 import com.google.android.gms.auth.api.identity.SignInClient
 import kotlinx.coroutines.CancellationException
@@ -44,7 +44,7 @@ class GoogleAuthUiClient(
             oneTapClient.signOut().await()
             action()
         } catch (e: Exception) {
-            researchHubLog(LogLevel.ERROR, "signOut: $e")
+            researchHubLog(ResearchLogLevel.ERROR, "signOut: $e")
         }
     }
 

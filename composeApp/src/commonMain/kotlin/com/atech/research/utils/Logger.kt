@@ -1,7 +1,7 @@
 package com.atech.research.utils
 
-enum class LogLevel {
+enum class ResearchLogLevel {
     DEBUG, INFO, WARN, ERROR
 }
 
-expect fun researchHubLog(level: LogLevel, message: String)
+expect fun researchHubLog(level: ResearchLogLevel, message: String)

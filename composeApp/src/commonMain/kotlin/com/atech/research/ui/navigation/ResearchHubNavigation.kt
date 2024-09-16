@@ -1,17 +1,19 @@
 package com.atech.research.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navigation
-import androidx.navigation.toRoute
 import com.atech.research.ui.compose.main.login.compose.login.WelcomeScreen
-import com.atech.research.ui.compose.main.login.compose.setup.SetUpScreen
+import com.atech.research.ui.compose.main.login.compose.setup.SetUpViewModel
+import com.atech.research.ui.compose.main.login.compose.setup.compose.SetUpScreen
 import com.atech.research.utils.fadeThroughComposable
 import com.atech.research.utils.fadeThroughComposableEnh
+import com.atech.research.utils.sharedViewModel
 import kotlinx.serialization.Serializable
 
 enum class ResearchHubRoutes(
@@ -72,8 +74,17 @@ fun NavGraphBuilder.logInScreenGraph(
             )
         }
         fadeThroughComposableEnh<SetUpScreenArgs> { route ->
-            val uid = route.toRoute<SetUpScreenArgs>()
-            SetUpScreen()
+            val viewModel = route.sharedViewModel<SetUpViewModel>(navController)
+            val passWord by viewModel.password
+            val userType by viewModel.userType
+            val isPasswordValid by viewModel.isPasswordValid
+            SetUpScreen(
+                navController = navController,
+                passWord = passWord,
+                userType = userType,
+                isPasswordValid = isPasswordValid,
+                onEvent = viewModel::onEvent
+            )
         }
     }
 }

@@ -2,11 +2,11 @@ package com.atech.research.utils
 
 import android.util.Log
 
-actual fun researchHubLog(level: LogLevel, message: String) {
+actual fun researchHubLog(level: ResearchLogLevel, message: String) {
     when (level) {
-        LogLevel.DEBUG -> Log.d(level.name.lowercase(), "researchHubLog: $message")
-        LogLevel.INFO -> Log.i(level.name.lowercase(), "researchHubLog: $message")
-        LogLevel.WARN -> Log.w(level.name.lowercase(), "researchHubLog: $message")
-        LogLevel.ERROR -> Log.e(level.name.lowercase(), "researchHubLog: $message")
+        ResearchLogLevel.DEBUG -> Log.d(level.name.lowercase(), "researchHubLog: $message")
+        ResearchLogLevel.INFO -> Log.i(level.name.lowercase(), "researchHubLog: $message")
+        ResearchLogLevel.WARN -> Log.w(level.name.lowercase(), "researchHubLog: $message")
+        ResearchLogLevel.ERROR -> Log.e(level.name.lowercase(), "researchHubLog: $message")
     }
 }
