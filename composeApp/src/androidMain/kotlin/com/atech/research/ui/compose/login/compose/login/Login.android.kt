@@ -1,4 +1,4 @@
-package com.atech.research.ui.compose.main.login.compose.login
+package com.atech.research.ui.compose.login.compose.login
 
 import android.app.Activity.RESULT_OK
 import android.widget.Toast
@@ -16,8 +16,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewModelScope
 import com.atech.research.common.GoogleButton
-import com.atech.research.ui.compose.main.login.compose.util.GoogleAuthUiClient
-import com.atech.research.ui.compose.main.login.compose.util.LogInWithGoogleStudent
+import com.atech.research.ui.compose.login.compose.login.LogInEvents
+import com.atech.research.ui.compose.login.compose.login.LogInState
+import com.atech.research.ui.compose.login.compose.login.LogInViewModel
+import com.atech.research.ui.compose.login.compose.util.GoogleAuthUiClient
+import com.atech.research.ui.compose.login.compose.util.LogInWithGoogleStudent
 import com.atech.research.utils.DataState
 import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.koinViewModel

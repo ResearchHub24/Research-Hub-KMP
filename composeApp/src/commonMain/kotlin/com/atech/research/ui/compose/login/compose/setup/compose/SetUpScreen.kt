@@ -1,4 +1,4 @@
-package com.atech.research.ui.compose.main.login.compose.setup.compose
+package com.atech.research.ui.compose.login.compose.setup.compose
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -31,12 +31,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import androidx.navigation.NavController
+import com.atech.research.LocalDataStore
 import com.atech.research.common.AppAlertDialog
 import com.atech.research.common.ApplyButton
 import com.atech.research.common.BodyComposable
@@ -47,9 +51,12 @@ import com.atech.research.common.ProgressBar
 import com.atech.research.common.TitleComposable
 import com.atech.research.core.model.UserModel
 import com.atech.research.core.model.UserType
-import com.atech.research.ui.compose.main.login.compose.setup.SetUpScreenEvents
+import com.atech.research.ui.compose.login.compose.setup.SetUpScreenEvents
+import com.atech.research.ui.navigation.MainScreenScreenRoutes
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.DataState
+import com.atech.research.utils.Prefs
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.app_logo
@@ -65,6 +72,8 @@ fun SetUpScreen(
     isPasswordValid: Boolean = false,
     onEvent: (SetUpScreenEvents) -> Unit = {}
 ) {
+    val pref = LocalDataStore.current
+    val scope = rememberCoroutineScope()
     MainContainer(
         modifier = modifier,
         appBarColor = MaterialTheme.colorScheme.primary
@@ -72,19 +81,42 @@ fun SetUpScreen(
         AnimatedVisibility(user is DataState.Loading) {
             ProgressBar(paddingValues = contentPadding)
         }
+        if (user is DataState.Success && user.data.password != null) {
+            scope.launch {
+                pref.edit { pref ->
+                    pref[booleanPreferencesKey(Prefs.SET_PASSWORD_DONE.key)] =
+                        true
+                }
+            }
+            navigateToHome(navController)
+        }
         AnimatedVisibility(
-            visible = user !is DataState.Loading,
+            visible = user !is DataState.Loading && user is DataState.Success && user.data.password == null,
             enter = slideInVertically(),
             exit = slideOutVertically()
         ) {
             var isDialogVisible by remember { mutableStateOf(false) }
-
             AnimatedVisibility(isDialogVisible) {
                 AppAlertDialog(
                     dialogTitle = "Confirm",
                     dialogText = "Are you sure to save the details ? Account type can't be changed later",
                     onConfirmation = {
                         isDialogVisible = false
+                        onEvent.invoke(SetUpScreenEvents.SaveChanges { dataState ->
+                            if (dataState is DataState.Error) {
+//                                TODO: Toast Message
+                                return@SaveChanges
+                            }
+                            if (dataState is DataState.Success) {
+                                scope.launch {
+                                    pref.edit { pref ->
+                                        pref[booleanPreferencesKey(Prefs.SET_PASSWORD_DONE.key)] =
+                                            true
+                                    }
+                                }
+                                navigateToHome(navController)
+                            }
+                        })
                     },
                     onDismissRequest = {
                         isDialogVisible = false
@@ -102,7 +134,7 @@ fun SetUpScreen(
                     Box(
                         modifier = Modifier.background(MaterialTheme.colorScheme.primary)
                             .fillMaxWidth()
-                            .height(300.dp)
+                            .height(250.dp)
                     ) {
                         Image(
                             painterResource(Res.drawable.app_logo),
@@ -205,6 +237,14 @@ fun SetUpScreen(
                     }
                 }
             }
+        }
+    }
+}
+
+private fun navigateToHome(navController: NavController) {
+    navController.navigate(MainScreenScreenRoutes.HomeScreen.route) {
+        popUpTo(MainScreenScreenRoutes.HomeScreen.route) {
+            inclusive = false
         }
     }
 }

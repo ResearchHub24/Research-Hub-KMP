@@ -1,12 +1,14 @@
-package com.atech.research.ui.compose.main.login.compose.setup
+package com.atech.research.ui.compose.login.compose.setup
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atech.research.core.ktor.ResearchHubClient
+import com.atech.research.core.model.SuccessResponse
 import com.atech.research.core.model.UserModel
 import com.atech.research.core.model.UserType
+import com.atech.research.core.model.UserUpdateQueryHelper
 import com.atech.research.utils.DataState
 import kotlinx.coroutines.launch
 
@@ -37,7 +39,9 @@ class SetUpViewModel(
             is SetUpScreenEvents.OnUserTypeChange -> _userType.value = event.userType
 
 
-            SetUpScreenEvents.SetPassword -> {}
+            is SetUpScreenEvents.SaveChanges -> updateData(event.action)
+
+
             is SetUpScreenEvents.SetUid -> {
                 uid = event.uid
                 getUser()
@@ -55,6 +59,16 @@ class SetUpViewModel(
         }
     }
 
+    private fun updateData(action: (DataState<SuccessResponse>) -> Unit) = viewModelScope.launch {
+        client.updateUserData(
+            uid,
+            UserUpdateQueryHelper.UpdateUserType(userType.value.name),
+            UserUpdateQueryHelper.UpdateUserPassword(password.value)
+        ).also {
+            action(it)
+        }
+    }
+
     private fun isPasswordValid(password: String): Boolean {
         val minLength = 8
         val hasUpperCase = password.any { it.isUpperCase() }
@@ -64,5 +78,4 @@ class SetUpViewModel(
 
         return hasUpperCase && hasDigit && hasSpecialChar && isLongEnough
     }
-
 }

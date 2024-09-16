@@ -1,4 +1,4 @@
-package com.atech.research.ui.compose.main.login.compose.util
+package com.atech.research.ui.compose.login.compose.util
 
 import android.util.Log
 import com.atech.research.core.model.UserModel

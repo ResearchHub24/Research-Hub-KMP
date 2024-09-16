@@ -1,4 +1,4 @@
-package com.atech.research.ui.compose.main.login.compose.util
+package com.atech.research.ui.compose.login.compose.util
 
 import android.content.Intent
 import android.content.IntentSender

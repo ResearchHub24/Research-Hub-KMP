@@ -1,4 +1,4 @@
-package com.atech.research.ui.compose.main.login.compose.login
+package com.atech.research.ui.compose.login.compose.login
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +18,9 @@ import androidx.compose.ui.text.style.TextAlign
 import com.atech.research.common.EditText
 import com.atech.research.common.GoogleButton
 import com.atech.research.common.PasswordEditTextCompose
+import com.atech.research.ui.compose.login.compose.login.LogInEvents
+import com.atech.research.ui.compose.login.compose.login.LogInState
+import com.atech.research.ui.compose.login.compose.login.LogInViewModel
 import com.atech.research.ui.theme.captionColor
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.koinViewModel

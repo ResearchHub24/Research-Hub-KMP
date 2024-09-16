@@ -1,4 +1,4 @@
-package com.atech.research.ui.compose.main.login.compose.login
+package com.atech.research.ui.compose.login.compose.login
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
