@@ -101,8 +101,8 @@ private fun navigateToSetupScreen(navController: NavController, uid: String) {
 
 fun navigateToHome(navController: NavController) {
     navController.navigate(MainScreenScreenRoutes.HomeScreen.route) {
-        popUpTo(MainScreenScreenRoutes.HomeScreen.route) {
-            inclusive = false
+        popUpTo(navController.graph.startDestinationId) {
+            inclusive = true
         }
     }
 }
