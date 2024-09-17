@@ -137,11 +137,27 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.atech.research"
+            packageName = "ResearchHub"
             packageVersion = "1.0.0"
             jvmArgs(
-                "-Dapple.awt.application.appearance=system"
+                "--add-opens=java.base/sun.misc=ALL-UNNAMED",
+                "--add-opens=java.base/jdk.internal.ref=ALL-UNNAMED",
+                "--add-opens=java.base/java.lang=ALL-UNNAMED",
+                "--add-opens=java.base/java.nio=ALL-UNNAMED",
+                "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
             )
+            javaHome = "C:\\Users\\ROOT\\.jdks\\jbr-17.0.11"
+            nativeDistributions {
+                windows {
+                    menuGroup = "Research Hub"
+                    shortcut = true
+                    iconFile.set(file("icon/icon.ico"))
+                }
+
+                // Enable bundling the JRE with the application for portability
+                includeAllModules = true
+                modules("java.desktop")
+            }
         }
     }
 }
