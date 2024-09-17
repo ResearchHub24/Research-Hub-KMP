@@ -28,6 +28,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,6 +57,8 @@ import com.atech.research.ui.navigation.MainScreenScreenRoutes
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.DataState
 import com.atech.research.utils.Prefs
+import com.atech.research.utils.ResearchLogLevel
+import com.atech.research.utils.researchHubLog
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import researchhub.composeapp.generated.resources.Res
@@ -81,14 +84,16 @@ fun SetUpScreen(
         AnimatedVisibility(user is DataState.Loading) {
             ProgressBar(paddingValues = contentPadding)
         }
-        if (user is DataState.Success && user.data.password != null) {
-            scope.launch {
-                pref.edit { pref ->
-                    pref[booleanPreferencesKey(Prefs.SET_PASSWORD_DONE.key)] =
-                        true
+        LaunchedEffect(user) {
+            if (user is DataState.Success && user.data.password != null) {
+                scope.launch {
+                    pref.edit { pref ->
+                        pref[booleanPreferencesKey(Prefs.SET_PASSWORD_DONE.key)] =
+                            true
+                    }
                 }
+                navigateToHome(navController)
             }
-            navigateToHome(navController)
         }
         AnimatedVisibility(
             visible = user !is DataState.Loading && user is DataState.Success && user.data.password == null,
