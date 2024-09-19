@@ -19,8 +19,7 @@ interface ResearchHubClient {
     suspend fun logInUser(
         email: String,
         password: String
-    ): DataState<String>
-
+    ): DataState<SuccessResponse>
     companion object {
         private const val BASE_URL = "http://192.168.29.205:9090/api/v1"
 

@@ -49,7 +49,7 @@ class ResearchHubClientImp(
             DataState.Error(e)
         }
 
-    override suspend fun logInUser(email: String, password: String): DataState<String> =
+    override suspend fun logInUser(email: String, password: String): DataState<SuccessResponse> =
         try {
 
             val response = client.post {
@@ -58,7 +58,7 @@ class ResearchHubClientImp(
             if (response.bodyAsText().contains("error")) {
                 DataState.Error(Exception("Invalid email or password"))
             } else
-                DataState.Success(response.bodyAsText())
+                DataState.Success(response.body<SuccessResponse>())
         } catch (e: ResponseException) {
             when (e.response.status.value) {
                 400 -> DataState.Error(Exception("Bad request"))

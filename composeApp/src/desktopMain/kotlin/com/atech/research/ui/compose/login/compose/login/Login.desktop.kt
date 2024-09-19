@@ -18,6 +18,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.viewModelScope
 import com.atech.research.common.DisplayCard
 import com.atech.research.common.EditText
@@ -27,6 +30,8 @@ import com.atech.research.core.ktor.ResearchHubClient
 import com.atech.research.ui.theme.captionColor
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.DataState
+import com.atech.research.utils.PreferenceUtils
+import com.atech.research.utils.Prefs
 import com.atech.research.utils.koinViewModel
 import kotlinx.coroutines.launch
 
@@ -79,7 +84,7 @@ actual fun LoginScreenType(
 
                     is DataState.Success -> {
                         hasClick = false
-                        onLogInDone(dataState.data)
+                        onLogInDone(dataState.data.message)
                     }
                 }
             }))
@@ -115,7 +120,7 @@ actual fun LoginScreenType(
 
 
 internal class LogInViewModelImp(
-    private val client: ResearchHubClient
+    private val client: ResearchHubClient,
 ) : LogInViewModel() {
     override var logInState: State<LogInState> = mutableStateOf(LogInState())
     override fun onLoginEvent(event: LogInEvents) {
@@ -125,7 +130,6 @@ internal class LogInViewModelImp(
             is LogInEvents.TriggerAuth -> println()
             LogInEvents.PreformLogOutOnError -> println()
             is LogInEvents.LogIn -> viewModelScope.launch {
-
                 val dataState = client.logInUser(event.email, event.password)
                 event.action.invoke(dataState)
             }

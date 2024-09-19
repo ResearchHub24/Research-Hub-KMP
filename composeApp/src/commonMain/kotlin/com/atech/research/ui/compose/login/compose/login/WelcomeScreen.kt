@@ -38,7 +38,8 @@ import researchhub.composeapp.generated.resources.app_logo
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WelcomeScreen(
-    modifier: Modifier = Modifier, navController: NavController
+    modifier: Modifier = Modifier,
+    navController: NavController
 ) {
     val pref = LocalDataStore.current
     val uid by pref.data.map {
@@ -47,6 +48,9 @@ fun WelcomeScreen(
     LaunchedEffect(uid) {
         if (uid.isNotEmpty() && isAndroid()) {
             navigateToSetupScreen(navController, uid)
+        }
+        if (uid.isNotEmpty() && !isAndroid()) {
+            navigateToHome(navController)
         }
     }
     val scope = rememberCoroutineScope()
@@ -75,16 +79,19 @@ fun WelcomeScreen(
                 val viewModel = getViewModel()
                 LoginScreenType(viewModel = viewModel,
                     onEvent = viewModel::onLoginEvent,
-                    onLogInDone = {
+                    onLogInDone = { res ->
+                        val uid1 = res.split("$").first()
+                        val userTypeId = res.split("$").last()
                         scope.launch {
                             dataStore.edit { pref ->
-                                pref[stringPreferencesKey(Prefs.USER_ID.key)] = it
+                                pref[stringPreferencesKey(Prefs.USER_ID.key)] = uid1
+                                pref[stringPreferencesKey(Prefs.USER_TYPE.key)] = userTypeId
                                 if (!isAndroid()) {
                                     pref[booleanPreferencesKey(Prefs.SET_PASSWORD_DONE.key)] = true
                                     navigateToHome(navController)
                                     return@edit
                                 }
-                                navigateToSetupScreen(navController, it)
+                                navigateToSetupScreen(navController, uid1)
                             }
                         }
                     })
