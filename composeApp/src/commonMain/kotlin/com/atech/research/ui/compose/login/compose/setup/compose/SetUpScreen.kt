@@ -40,6 +40,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavController
 import com.atech.research.LocalDataStore
 import com.atech.research.common.AppAlertDialog
@@ -57,8 +58,6 @@ import com.atech.research.ui.navigation.MainScreenScreenRoutes
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.DataState
 import com.atech.research.utils.Prefs
-import com.atech.research.utils.ResearchLogLevel
-import com.atech.research.utils.researchHubLog
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import researchhub.composeapp.generated.resources.Res
@@ -90,6 +89,7 @@ fun SetUpScreen(
                     pref.edit { pref ->
                         pref[booleanPreferencesKey(Prefs.SET_PASSWORD_DONE.key)] =
                             true
+                        pref[stringPreferencesKey(Prefs.USER_TYPE.key)] = user.data.userType ?: ""
                     }
                 }
                 navigateToHome(navController)
@@ -117,6 +117,8 @@ fun SetUpScreen(
                                     pref.edit { pref ->
                                         pref[booleanPreferencesKey(Prefs.SET_PASSWORD_DONE.key)] =
                                             true
+                                        pref[stringPreferencesKey(Prefs.USER_TYPE.key)] =
+                                            userType.name
                                     }
                                 }
                                 navigateToHome(navController)

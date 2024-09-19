@@ -5,4 +5,5 @@ enum class Prefs(
 ) {
     USER_ID("USER_UID"),
     SET_PASSWORD_DONE("SET_PASSWORD_DONE"),
+    USER_TYPE("USER_TYPE"),
 }
