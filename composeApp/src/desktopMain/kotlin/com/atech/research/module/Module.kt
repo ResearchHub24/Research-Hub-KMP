@@ -3,6 +3,8 @@ package com.atech.research.module
 
 import com.atech.research.core.pref.DATA_STORE_FILE_NAME
 import com.atech.research.core.pref.createDataStore
+import com.atech.research.core.room.getDatabaseBuilder
+import com.atech.research.core.room.getRoomDatabase
 import com.atech.research.getAppDataPath
 import com.atech.research.ui.compose.login.compose.login.LogInViewModel
 import com.atech.research.ui.compose.login.compose.login.LogInViewModelImp
@@ -22,4 +24,5 @@ val viewModelModule = module {
             Paths.get(appDataPath, DATA_STORE_FILE_NAME).toString()
         }
     }
+    single { getRoomDatabase(getDatabaseBuilder()) }
 }

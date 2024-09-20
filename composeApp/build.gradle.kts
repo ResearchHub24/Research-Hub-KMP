@@ -11,6 +11,8 @@ plugins {
     id("com.google.firebase.crashlytics")
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.googleAndroidLibrariesMapsplatformSecretsGradlePlugin)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -48,6 +50,8 @@ kotlin {
             implementation(project.dependencies.platform(libs.firebase.bom))
             implementation(libs.bundles.firebase)
             implementation(libs.play.service.auth)
+
+            implementation(libs.room.runtime.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -78,6 +82,9 @@ kotlin {
             api(libs.datastore)
             api(libs.datastore.preferences)
 
+            implementation(libs.room.runtime)
+            implementation(libs.room.ktx)
+            implementation(libs.sqlite.bundled)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -129,6 +136,9 @@ android {
         compose = true
         buildConfig = true
     }
+    dependencies {
+        debugImplementation(compose.uiTooling)
+    }
 }
 
 compose.desktop {
@@ -160,4 +170,11 @@ compose.desktop {
             }
         }
     }
+}
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
+dependencies {
+    ksp(libs.room.compiler)
 }
