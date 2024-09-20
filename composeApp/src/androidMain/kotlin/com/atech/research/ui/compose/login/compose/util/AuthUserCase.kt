@@ -1,7 +1,7 @@
 package com.atech.research.ui.compose.login.compose.util
 
 import android.util.Log
-import com.atech.research.core.model.UserModel
+import com.atech.research.core.ktor.model.UserModel
 import com.atech.research.utils.DataState
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider

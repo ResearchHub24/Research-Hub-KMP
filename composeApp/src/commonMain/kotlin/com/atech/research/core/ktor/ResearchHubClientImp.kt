@@ -1,8 +1,9 @@
 package com.atech.research.core.ktor
 
-import com.atech.research.core.model.SuccessResponse
-import com.atech.research.core.model.UserModel
-import com.atech.research.core.model.UserUpdateQueryHelper
+import com.atech.research.core.ktor.model.ResearchModel
+import com.atech.research.core.ktor.model.SuccessResponse
+import com.atech.research.core.ktor.model.UserModel
+import com.atech.research.core.ktor.model.UserUpdateQueryHelper
 import com.atech.research.utils.DataState
 import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.researchHubLog
@@ -66,6 +67,22 @@ class ResearchHubClientImp(
             }
         } catch (e: Exception) {
             println(e)
+            DataState.Error(e)
+        }
+
+    override suspend fun getPostedResearch(userId: String?): DataState<List<ResearchModel>> =
+        try {
+            DataState.Success(
+                client.get {
+                    if (userId != null)
+                        url("${ResearchHubClient.RESEARCH}?userId=$userId")
+                    else
+                        url(ResearchHubClient.RESEARCH)
+                    contentType(ContentType.Application.Json)
+                }.body()
+            )
+        } catch (e: Exception) {
+            researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
             DataState.Error(e)
         }
 

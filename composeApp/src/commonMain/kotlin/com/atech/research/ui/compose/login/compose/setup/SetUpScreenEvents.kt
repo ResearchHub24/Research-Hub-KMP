@@ -1,7 +1,7 @@
 package com.atech.research.ui.compose.login.compose.setup
 
-import com.atech.research.core.model.SuccessResponse
-import com.atech.research.core.model.UserType
+import com.atech.research.core.ktor.model.SuccessResponse
+import com.atech.research.core.ktor.model.UserType
 import com.atech.research.utils.DataState
 
 sealed interface SetUpScreenEvents {

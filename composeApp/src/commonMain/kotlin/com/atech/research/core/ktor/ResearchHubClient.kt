@@ -1,8 +1,9 @@
 package com.atech.research.core.ktor
 
-import com.atech.research.core.model.SuccessResponse
-import com.atech.research.core.model.UserModel
-import com.atech.research.core.model.UserUpdateQueryHelper
+import com.atech.research.core.ktor.model.ResearchModel
+import com.atech.research.core.ktor.model.SuccessResponse
+import com.atech.research.core.ktor.model.UserModel
+import com.atech.research.core.ktor.model.UserUpdateQueryHelper
 import com.atech.research.utils.DataState
 
 
@@ -20,11 +21,17 @@ interface ResearchHubClient {
         email: String,
         password: String
     ): DataState<SuccessResponse>
+
+
+    suspend fun getPostedResearch(userId: String? = null): DataState<List<ResearchModel>>
+
     companion object {
         private const val BASE_URL = "http://192.168.29.205:9090/api/v1"
 
-        //        private const val BASE_URL = "http://192.168.17.1:9090/api/v1"
+//        private const val BASE_URL = "http://192.168.17.1:9090/api/v1"
         const val USER = "$BASE_URL/users"
         const val LOGIN = "$BASE_URL/login"
+        const val RESEARCH = "$BASE_URL/research"
+        const val RESEARCH_POST = "$RESEARCH/post"
     }
 }

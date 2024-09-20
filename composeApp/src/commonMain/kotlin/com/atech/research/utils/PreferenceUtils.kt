@@ -10,6 +10,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 
@@ -19,7 +20,7 @@ class PreferenceUtils private constructor(private val pref: DataStore<Preference
 
     @Composable
     fun getBooleanPrefAsState(key: String): State<Boolean> = pref.data.map {
-        it[booleanPreferencesKey(key)] ?: false
+        it[booleanPreferencesKey(key)] == true
     }.collectAsState(initial = false)
 
     @Composable
@@ -31,6 +32,25 @@ class PreferenceUtils private constructor(private val pref: DataStore<Preference
     fun getIntPrefAsState(key: String): State<Int> = pref.data.map {
         it[intPreferencesKey(key)] ?: 0
     }.collectAsState(initial = 0)
+
+
+    fun getIntPref(key: String): Int = runBlocking {
+        pref.data.map {
+            it[intPreferencesKey(key)] ?: 0
+        }.map { it }.first()
+    }
+
+    fun getBooleanPref(key: String): Boolean = runBlocking {
+        pref.data.map {
+            it[booleanPreferencesKey(key)] == true
+        }.map { it }.first()
+    }
+
+    fun getStringPref(key: String): String = runBlocking {
+        pref.data.map {
+            it[stringPreferencesKey(key)] ?: ""
+        }.map { it }.first()
+    }
 
     class Builder(private val pref: DataStore<Preferences>) {
         private val edits = mutableListOf<suspend (MutablePreferences) -> Unit>()

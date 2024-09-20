@@ -10,6 +10,7 @@ import com.atech.research.ui.compose.login.compose.setup.SetUpViewModel
 import com.atech.research.ui.compose.login.compose.util.HasUserUseCase
 import com.atech.research.ui.compose.login.compose.util.LogInUseCase
 import com.atech.research.ui.compose.login.compose.util.LogInWithGoogleStudent
+import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
 import com.atech.research.utils.createDataStore
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -44,5 +45,8 @@ val viewModelModule = module {
         .bind(LogInViewModel::class)
     viewModel {
         SetUpViewModel(get())
+    }
+    viewModel {
+        HomeScreenViewModel(get(), get())
     }
 }

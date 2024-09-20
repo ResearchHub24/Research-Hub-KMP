@@ -1,4 +1,4 @@
-package com.atech.research.core.model
+package com.atech.research.core.ktor.model
 
 import androidx.annotation.Keep
 import kotlinx.serialization.Serializable

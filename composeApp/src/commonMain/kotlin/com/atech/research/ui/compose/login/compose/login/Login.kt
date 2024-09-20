@@ -3,7 +3,7 @@ package com.atech.research.ui.compose.login.compose.login
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
-import com.atech.research.core.model.SuccessResponse
+import com.atech.research.core.ktor.model.SuccessResponse
 import com.atech.research.utils.DataState
 
 data class LogInState(

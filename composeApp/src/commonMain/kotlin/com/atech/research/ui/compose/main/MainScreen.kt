@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.atech.research.LocalDataStore
-import com.atech.research.core.model.UserType
+import com.atech.research.core.ktor.model.UserType
 import com.atech.research.ui.compose.teacher.home.compose.HomeScreen
 import com.atech.research.utils.PreferenceUtils
 import com.atech.research.utils.Prefs
@@ -67,6 +67,7 @@ fun MainScreen() {
     ) {
         when (currentDestination) {
             TeacherAppDestinations.Home -> HomeScreen()
+
             TeacherAppDestinations.Profile -> {
                 Column(
                     modifier = Modifier.fillMaxSize(),

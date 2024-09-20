@@ -9,6 +9,7 @@ import com.atech.research.getAppDataPath
 import com.atech.research.ui.compose.login.compose.login.LogInViewModel
 import com.atech.research.ui.compose.login.compose.login.LogInViewModelImp
 import com.atech.research.ui.compose.login.compose.setup.SetUpViewModel
+import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import java.nio.file.Paths
@@ -25,4 +26,5 @@ val viewModelModule = module {
         }
     }
     single { getRoomDatabase(getDatabaseBuilder()) }
+    single { HomeScreenViewModel(get(), get()) }
 }

@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.atech.research.core.ktor.ResearchHubClient
-import com.atech.research.core.model.SuccessResponse
-import com.atech.research.core.model.UserModel
-import com.atech.research.core.model.UserType
-import com.atech.research.core.model.UserUpdateQueryHelper
+import com.atech.research.core.ktor.model.SuccessResponse
+import com.atech.research.core.ktor.model.UserModel
+import com.atech.research.core.ktor.model.UserType
+import com.atech.research.core.ktor.model.UserUpdateQueryHelper
 import com.atech.research.utils.DataState
 import kotlinx.coroutines.launch
 

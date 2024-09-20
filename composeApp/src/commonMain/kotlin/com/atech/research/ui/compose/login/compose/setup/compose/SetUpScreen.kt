@@ -51,8 +51,8 @@ import com.atech.research.common.MainContainer
 import com.atech.research.common.PasswordEditTextCompose
 import com.atech.research.common.ProgressBar
 import com.atech.research.common.TitleComposable
-import com.atech.research.core.model.UserModel
-import com.atech.research.core.model.UserType
+import com.atech.research.core.ktor.model.UserModel
+import com.atech.research.core.ktor.model.UserType
 import com.atech.research.ui.compose.login.compose.setup.SetUpScreenEvents
 import com.atech.research.ui.navigation.MainScreenScreenRoutes
 import com.atech.research.ui.theme.spacing

@@ -25,24 +25,21 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import com.atech.research.core.ktor.model.ResearchModel
-import com.atech.research.core.ktor.model.TagModel
-import com.atech.research.ui.theme.ResearchHubTheme
 import com.atech.research.ui.theme.spacing
 
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun TestScreen(
+fun ResearchItem(
     modifier: Modifier = Modifier,
-    model: ResearchModel
+    model: ResearchModel,
+    onClick : () -> Unit ={}
 ) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-
+                onClick()
             }
     ) {
         Card(
@@ -113,35 +110,5 @@ fun TestScreen(
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun TestPreview() {
-    ResearchHubTheme(
-
-    ) {
-        TestScreen(
-            model = ResearchModel(
-                title = "Exploring the Effects of Classroom Interaction",
-                description = "An in-depth study on how student-teacher interactions impact learning outcomes in a high school setting.",
-                author = "Dr. Jane Smith",
-                authorUid = "authorUid",
-                path = "path",
-                tags = listOf(
-                    TagModel(
-                        created = 0,
-                        createdBy = "createdBy",
-                        name = "Tag 1"
-                    ),
-                    TagModel(
-                        created = 0,
-                        createdBy = "createdBy",
-                        name = "Tag 2"
-                    ),
-                )
-            )
-        )
     }
 }
