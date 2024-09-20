@@ -1,5 +1,7 @@
 package com.atech.research.module
 
+import com.atech.research.core.ktor.AndroidClientEngineFactory
+import com.atech.research.core.ktor.EngineFactory
 import com.atech.research.core.room.getDatabaseBuilder
 import com.atech.research.core.room.getRoomDatabase
 import com.atech.research.ui.compose.login.compose.login.LogInViewModel
@@ -31,6 +33,10 @@ val appModule = module {
     single { LogInWithGoogleStudent(get(), get()) }
     single { createDataStore(context = get()) }
     single { getRoomDatabase(getDatabaseBuilder(get())) }
+    single {
+        AndroidClientEngineFactory(get())
+
+    }.bind(EngineFactory::class)
 }
 
 val viewModelModule = module {
