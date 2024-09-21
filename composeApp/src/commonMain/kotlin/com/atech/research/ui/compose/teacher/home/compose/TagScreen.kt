@@ -1,23 +1,22 @@
-package com.atech.research.common
+package com.atech.research.ui.compose.teacher.home.compose
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Remove
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,39 +30,43 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
+import com.atech.research.common.DisplayCard
+import com.atech.research.common.EditTextEnhance
+import com.atech.research.common.ProgressBar
+import com.atech.research.common.TagItem
+import com.atech.research.common.TitleComposable
 import com.atech.research.core.ktor.model.TagModel
-import com.atech.research.ui.theme.ResearchHubTheme
 import com.atech.research.ui.theme.spacing
 
-
 @Composable
-fun TestScreen(
+fun TagScreen(
     modifier: Modifier = Modifier,
     uid: String = "",
     list: List<TagModel>,
     selectedList: List<TagModel> = emptyList(),
-    onAddTab: (List<TagModel>) -> Unit = {},
+    error: String = "",
+    onAddTag: (TagModel) -> Unit = {},
     onSelectOrRemoveTag: (List<TagModel>) -> Unit = {},
     onDeleteTag: (TagModel) -> Unit = {},
 ) {
+//    if (list.isEmpty()) {
+//        ProgressBar(PaddingValues())
+//        return
+//    }
     var typedTag by rememberSaveable { mutableStateOf("") }
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(MaterialTheme.spacing.medium),
+        modifier = modifier.fillMaxSize().padding(MaterialTheme.spacing.medium),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            EditTextEnhance(modifier = Modifier
-                .let {
-                    if (typedTag.isEmpty()) it.fillMaxWidth()
-                    else it.weight(3f)
-                }
-                .animateContentSize(),
+            EditTextEnhance(modifier = Modifier.let {
+                if (typedTag.isEmpty()) it.fillMaxWidth()
+                else it.weight(3f)
+            }.animateContentSize(),
                 value = typedTag,
                 placeholder = "Add Tag",
                 singleLine = true,
@@ -75,63 +78,57 @@ fun TestScreen(
                 ),
                 keyboardActions = KeyboardActions(onDone = {
                     if (typedTag.isNotEmpty()) {
-                        onAddTab(list + TagModel(name = typedTag, createdBy = uid))
+                        onAddTag(TagModel(name = typedTag, createdBy = uid))
                         typedTag = ""
                     }
-                }
-                ),
+                }),
                 clearIconClick = {
                     typedTag = ""
-                }
-            )
+                })
             AnimatedVisibility(visible = typedTag.isNotEmpty()) {
                 IconButton(modifier = Modifier, onClick = {
-                    onAddTab(list + TagModel(name = typedTag, createdBy = uid))
+                    onAddTag(TagModel(name = typedTag, createdBy = uid))
                     typedTag = ""
                 }) {
                     Icon(imageVector = Icons.Outlined.Add, contentDescription = null)
                 }
             }
         }
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+        AnimatedVisibility(error.isNotEmpty()) {
+            DisplayCard(
+                modifier = Modifier.fillMaxWidth(),
+                border = BorderStroke(
+                    width = CardDefaults.outlinedCardBorder().width,
+                    color = MaterialTheme.colorScheme.error
+                ),
+            ) {
+                Text(
+                    text = error,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
         HorizontalDivider()
         TitleComposable(title = "Tags")
         list.forEach { tag ->
-            TagItem(
-                tag = tag,
-                isDeleteEnable = tag.createdBy == uid,
-                isSelected = selectedList.contains(tag),
+            TagItem(tag = tag,
+                isDeleteEnable = if (uid.isNotEmpty()) tag.createdBy == uid else false,
+                isSelected = selectedList.any { it.name.lowercase() == tag.name.lowercase() },
                 onItemClicked = { it ->
                     if (it) {
                         onSelectOrRemoveTag(selectedList + tag)
                     } else {
-                        onSelectOrRemoveTag(selectedList.filter { it != tag })
+                        onSelectOrRemoveTag(selectedList.filter { it.name.lowercase() != tag.name.lowercase() })
                     }
                 },
                 onDeleteTag = {
                     onDeleteTag(tag)
-                }
-            )
+                })
         }
-    }
-}
-
-
-@Preview(
-    showBackground = true,
-    /*uiMode = UI_MODE_NIGHT_YES*/
-)
-@Composable
-private fun TestPreview() {
-    ResearchHubTheme() {
-        TestScreen(
-            uid = "createdBy1",
-            list = listOf(
-                TagModel(name = "tag1", createdBy = "createdBy1"),
-                TagModel(name = "tag2", createdBy = "createdBy2"),
-                TagModel(name = "tag3", createdBy = "createdBy3"),
-                TagModel(name = "tag4", createdBy = "createdBy4"),
-            )
-        )
     }
 }

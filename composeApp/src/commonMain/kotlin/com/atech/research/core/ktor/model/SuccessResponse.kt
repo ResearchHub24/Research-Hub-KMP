@@ -6,3 +6,7 @@ import kotlinx.serialization.Serializable
 @Keep
 @Serializable
 data class SuccessResponse(val message: String)
+
+@Keep
+@Serializable
+data class ErrorResponse(val error: String)

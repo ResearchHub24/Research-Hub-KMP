@@ -124,6 +124,7 @@ fun EditTextEnhance(
     readOnly: Boolean = false,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    singleLine : Boolean = false
 ) {
 
     LaunchedEffect(focusRequester) {
@@ -151,7 +152,8 @@ fun EditTextEnhance(
         enabled = enable,
         readOnly = readOnly,
         interactionSource = interactionSource,
-        keyboardActions = keyboardActions
+        keyboardActions = keyboardActions,
+        singleLine = singleLine
     )
 }
 

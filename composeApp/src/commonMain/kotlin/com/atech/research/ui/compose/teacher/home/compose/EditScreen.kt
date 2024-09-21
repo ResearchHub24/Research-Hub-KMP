@@ -40,19 +40,19 @@ import com.atech.research.common.MarkdownEditor
 import com.atech.research.common.TitleComposable
 import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.ui.theme.spacing
-import com.atech.research.utils.ResearchLogLevel
-import com.atech.research.utils.researchHubLog
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EditScreen(
     modifier: Modifier = Modifier,
     model: ResearchModel,
+    isSaveButtonVisible: Boolean = true,
     onTitleChange: (String) -> Unit = {},
     onDescriptionChange: (String) -> Unit = {},
     hasError: Pair<Boolean, Boolean> = Pair(false, false),
     onQuestionChange: (List<String>) -> Unit = {},
     onViewMarkdownClick: () -> Unit = {},
+    onAddTagClick: () -> Unit = {},
     onSaveClick: () -> Unit = {}
 ) {
     var typedQuestion by rememberSaveable { mutableStateOf("") }
@@ -103,7 +103,9 @@ fun EditScreen(
             }
         }
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
-        ApplyButton(text = "Add Tags") { }
+        ApplyButton(text = "Add Tags") {
+            onAddTagClick()
+        }
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
         HorizontalDivider()
         TitleComposable(title = "Questions")
@@ -163,7 +165,10 @@ fun EditScreen(
             }
         }
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
-        ApplyButton(text = "Save") {
+        ApplyButton(
+            text = "Save",
+            enable = isSaveButtonVisible
+        ) {
             onSaveClick()
         }
         BottomPadding()

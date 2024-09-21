@@ -1,5 +1,6 @@
 package com.atech.research.ui.compose.teacher.home.compose
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,9 +26,14 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.atech.research.LocalDataStore
 import com.atech.research.common.BottomPadding
 import com.atech.research.common.EmptyWelcomeScreen
 import com.atech.research.common.MainContainer
@@ -41,17 +47,30 @@ import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.BackHandler
 import com.atech.research.utils.DataState
+import com.atech.research.utils.PreferenceUtils
+import com.atech.research.utils.Prefs
 import com.atech.research.utils.koinViewModel
 
+enum class TerritoryScreen {
+    ViewMarkdown, EditTag
+}
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
 ) {
+    val uid by PreferenceUtils.builder(LocalDataStore.current).build()
+        .getStringPrefAsState(Prefs.USER_ID.key)
     val viewModel = koinViewModel<HomeScreenViewModel>()
+    LaunchedEffect(uid) {
+        viewModel.onEvent(HomeScreenEvents.SetUserId(uid))
+    }
     val allResearch by viewModel.allResearch
     val currentResearch by viewModel.currentResearchModel
+
+    val allTags by viewModel.allTags
+    var territoryScreen by rememberSaveable { mutableStateOf(TerritoryScreen.ViewMarkdown) }
     val navigator = rememberListDetailPaneScaffoldNavigator<ResearchModel>()
     BackHandler(navigator.canNavigateBack()) {
         navigator.navigateBack()
@@ -64,8 +83,7 @@ fun HomeScreen(
             ""
         }
     }
-    MainContainer(
-        modifier = modifier,
+    MainContainer(modifier = modifier,
         title = title,
         enableTopBar = true,
         onNavigationClick = if (navigator.canNavigateBack()) {
@@ -96,20 +114,18 @@ fun HomeScreen(
             value = navigator.scaffoldValue,
             listPane = {
                 AnimatedPane {
-                    Scaffold(
-                        floatingActionButton = {
-                            ExtendedFloatingActionButton(onClick = {}) {
-                                Icon(imageVector = Icons.Outlined.Edit, contentDescription = null)
-                                Text(text = "Compose")
-                            }
+                    Scaffold(floatingActionButton = {
+                        ExtendedFloatingActionButton(onClick = {}) {
+                            Icon(imageVector = Icons.Outlined.Edit, contentDescription = null)
+                            Text(text = "Compose")
                         }
-                    ) {
+                    }) {
                         LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            state = state
+                            modifier = Modifier.fillMaxSize(), state = state
                         ) {
                             items(researchList) { research ->
                                 ResearchItem(model = research, onClick = {
+                                    viewModel.onEvent(HomeScreenEvents.SetResearch(research))
                                     navigator.navigateTo(
                                         pane = ListDetailPaneScaffoldRole.Detail, content = research
                                     )
@@ -122,7 +138,7 @@ fun HomeScreen(
                 }
             },
             detailPane = {
-                viewModel.onEvent(HomeScreenEvents.SetResearch(navigator.currentDestination?.content))
+
                 AnimatedPane {
                     if (currentResearch == null) {
                         EmptyWelcomeScreen()
@@ -130,6 +146,7 @@ fun HomeScreen(
                     }
                     EditScreen(
                         model = currentResearch!!,
+                        isSaveButtonVisible = navigator.currentDestination?.pane == ListDetailPaneScaffoldRole.Detail,
                         onTitleChange = {
                             viewModel.onEvent(
                                 HomeScreenEvents.OnEdit(
@@ -155,36 +172,73 @@ fun HomeScreen(
                         },
                         onSaveClick = {
                             viewModel.onEvent(HomeScreenEvents.SaveChanges {
-                                navigator.navigateBack()
-                            }
-                            )
+                                while (navigator.canNavigateBack()) {
+                                    navigator.navigateBack()
+                                }
+                            })
                         },
                         onViewMarkdownClick = {
+                            territoryScreen = TerritoryScreen.ViewMarkdown
                             navigator.navigateTo(
-                                pane = ThreePaneScaffoldRole.Tertiary,
-                                content = currentResearch
+                                pane = ThreePaneScaffoldRole.Tertiary, content = currentResearch
+                            )
+                        },
+                        onAddTagClick = {
+                            territoryScreen = TerritoryScreen.EditTag
+                            navigator.navigateTo(
+                                pane = ThreePaneScaffoldRole.Tertiary, content = currentResearch
                             )
                         }
                     )
                 }
             },
             extraPane = {
+                var hasError by rememberSaveable { mutableStateOf<String?>(null) }
                 AnimatedPane {
-                    val markdown =
-                        currentResearch?.description ?: "No Description Available"
-                    Column(
-                        modifier = Modifier.fillMaxSize()
-                            .padding(MaterialTheme.spacing.medium)
-                            .verticalScroll(rememberScrollState())
-                    ) {
-                        MarkdownViewer(
-                            markdown = markdown
-                        )
-                        BottomPadding()
+                    AnimatedVisibility(territoryScreen == TerritoryScreen.EditTag) {
+                        if (allTags is DataState.Error) {
+                            Text("Error: ${(allTags as DataState.Error).exception.message}")
+                            return@AnimatedVisibility
+                        }
+                        if (allTags is DataState.Success) {
+                            val tags = (allTags as DataState.Success).data
+                            TagScreen(
+                                list = tags,
+                                selectedList = currentResearch?.tags ?: emptyList(),
+                                onSelectOrRemoveTag = {
+                                    viewModel.onEvent(
+                                        HomeScreenEvents.OnEdit(
+                                            currentResearch!!.copy(tags = it)
+                                        )
+                                    )
+                                },
+                                onAddTag = { model ->
+                                    viewModel.onEvent(
+                                        HomeScreenEvents.AddTag(model, onDone = { exception ->
+                                            exception?.message.also { hasError = it }
+                                                ?: run { hasError = null }
+                                        })
+                                    )
+                                },
+                                error = hasError ?: ""
+                            )
+                        }
+                    }
+//                    ViewMarkdownScreen
+                    AnimatedVisibility(territoryScreen == TerritoryScreen.ViewMarkdown) {
+                        val markdown = currentResearch?.description ?: "No Description Available"
+                        Column(
+                            modifier = Modifier.fillMaxSize().padding(MaterialTheme.spacing.medium)
+                                .verticalScroll(rememberScrollState())
+                        ) {
+                            MarkdownViewer(
+                                markdown = markdown
+                            )
+                            BottomPadding()
+                        }
                     }
                 }
-            }
-        )
+            })
 
     }
 }
