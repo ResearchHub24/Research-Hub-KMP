@@ -1,11 +1,7 @@
-package com.atech.research.common
+package com.atech.research.ui.compose.teacher.home.compose
 
-import android.content.res.Configuration.UI_MODE_NIGHT_NO
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -16,56 +12,48 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.UiMode
+import com.atech.research.common.ApplyButton
+import com.atech.research.common.BottomPadding
+import com.atech.research.common.EditTextEnhance
+import com.atech.research.common.MarkdownEditor
+import com.atech.research.common.TitleComposable
 import com.atech.research.core.ktor.model.ResearchModel
-import com.atech.research.ui.compose.teacher.home.compose.QuestionComposable
-import com.atech.research.ui.theme.ResearchHubTheme
 import com.atech.research.ui.theme.spacing
-import com.mikepenz.markdown.compose.components.markdownComponents
-import com.mikepenz.markdown.compose.elements.MarkdownHighlightedCodeBlock
-import com.mikepenz.markdown.compose.elements.MarkdownHighlightedCodeFence
-import com.mikepenz.markdown.compose.extendedspans.ExtendedSpans
-import com.mikepenz.markdown.compose.extendedspans.RoundedCornerSpanPainter
-import com.mikepenz.markdown.compose.extendedspans.SquigglyUnderlineSpanPainter
-import com.mikepenz.markdown.compose.extendedspans.rememberSquigglyUnderlineAnimator
-import com.mikepenz.markdown.m3.Markdown
-import com.mikepenz.markdown.model.markdownExtendedSpans
-import dev.snipme.highlights.Highlights
-import dev.snipme.highlights.model.SyntaxThemes
+import com.atech.research.utils.ResearchLogLevel
+import com.atech.research.utils.researchHubLog
 
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun TestScreen(
+fun EditScreen(
     modifier: Modifier = Modifier,
     model: ResearchModel,
     onTitleChange: (String) -> Unit = {},
     onDescriptionChange: (String) -> Unit = {},
     hasError: Pair<Boolean, Boolean> = Pair(false, false),
+    onQuestionChange: (List<String>) -> Unit = {},
+    onViewMarkdownClick: () -> Unit = {},
+    onSaveClick: () -> Unit = {}
 ) {
     var typedQuestion by rememberSaveable { mutableStateOf("") }
     Column(
@@ -75,6 +63,7 @@ fun TestScreen(
             .padding(MaterialTheme.spacing.medium)
     ) {
         EditTextEnhance(
+            modifier = Modifier.fillMaxWidth(),
             value = model.title,
             placeholder = "Title",
             onValueChange = onTitleChange,
@@ -89,19 +78,12 @@ fun TestScreen(
             )
         )
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
-        EditTextEnhance(
+        MarkdownEditor(
             value = model.description,
-            placeholder = "Description",
-            onValueChange = onDescriptionChange,
-            isError = hasError.second,
-            supportingText = if (hasError.second) {
-                { Text("Description is required") }
-            } else null,
-            keyboardOptions = KeyboardOptions(
-                imeAction = androidx.compose.ui.text.input.ImeAction.Next,
-                keyboardType = androidx.compose.ui.text.input.KeyboardType.Text,
-                capitalization = KeyboardCapitalization.Sentences
-            )
+            onValueChange = {
+                onDescriptionChange(it)
+            },
+            viewInMarkdownClick = onViewMarkdownClick
         )
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
         HorizontalDivider()
@@ -149,52 +131,64 @@ fun TestScreen(
                     imeAction = androidx.compose.ui.text.input.ImeAction.Done,
                     keyboardType = androidx.compose.ui.text.input.KeyboardType.Text,
                     capitalization = KeyboardCapitalization.Sentences
-                )
+                ),
+                keyboardActions = KeyboardActions(onDone = {
+                    if (typedQuestion.isNotEmpty()) {
+                        onQuestionChange(model.questions + typedQuestion)
+                        typedQuestion = ""
+                    }
+                })
             )
             AnimatedVisibility(visible = typedQuestion.isNotEmpty()) {
                 IconButton(
                     modifier = Modifier,
-                    onClick = { /*TODO*/ }
+                    onClick = {
+                        onQuestionChange(model.questions + typedQuestion)
+                        typedQuestion = ""
+                    }
                 ) {
                     Icon(imageVector = Icons.Outlined.Add, contentDescription = null)
                 }
             }
         }
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
-        model.questions.forEach {
-            QuestionComposable(question = it, onRemoveClick = { /*TODO*/ })
+        Column(
+            modifier = Modifier.fillMaxWidth()
+                .animateContentSize(),
+        ) {
+            model.questions.forEach {
+                QuestionComposable(question = it, onRemoveClick = {
+                    onQuestionChange(model.questions.filter { allQuestion -> allQuestion != it })
+                })
+            }
         }
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
         ApplyButton(text = "Save") {
-
+            onSaveClick()
         }
+        BottomPadding()
     }
 }
 
-
-
-@Preview(
-    showBackground = true,
-    /*uiMode = UI_MODE_NIGHT_YES*/
-)
 @Composable
-private fun TestPreview() {
-    ResearchHubTheme() {
-        MarkdownViewer(
-            modifier = Modifier.padding(MaterialTheme.spacing.medium),
-            markdown = """
-                # Hello
-                ## World
-                ### This is a test
-                - Item 1
-                - Item 2
-                - Item 3
-                ```kotlin
-                void main() {
-                    println("Hello World")
-                }
-                ```
-            """.trimIndent()
+fun QuestionComposable(
+    question: String,
+    onRemoveClick: () -> Unit = {}
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = question,
+            modifier = Modifier.weight(3f),
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Start
         )
+        IconButton(
+            onClick = onRemoveClick
+        ) {
+            Icon(imageVector = Icons.Outlined.Remove, contentDescription = null)
+        }
     }
 }

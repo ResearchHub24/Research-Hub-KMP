@@ -2,6 +2,7 @@ package com.atech.research.common
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -48,6 +50,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.atech.research.ui.theme.captionColor
 import com.atech.research.ui.theme.spacing
+import researchhub.composeapp.generated.resources.Res
+import researchhub.composeapp.generated.resources.app_logo
 
 @Composable
 fun TitleComposable(
@@ -146,9 +150,9 @@ fun BottomPadding() {
 }
 
 
-fun LazyListScope.bottomPaddingLazy() {
+fun LazyListScope.bottomPaddingLazy(key: String = "bottom_padding") {
     item(
-        key = "bottom_padding"
+        key = key
     ) {
         BottomPadding()
     }
@@ -267,4 +271,34 @@ fun BodyComposable(
         style = MaterialTheme.typography.labelSmall,
         color = MaterialTheme.colorScheme.captionColor
     )
+}
+
+@Composable
+fun EmptyWelcomeScreen(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(MaterialTheme.spacing.medium),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(.5f)
+        ) {
+            Image(
+                org.jetbrains.compose.resources.painterResource(Res.drawable.app_logo),
+                contentDescription = "Logo",
+                modifier = modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+            )
+        }
+        Text(
+            "Welcome to Research Hub 🎉",
+            style = MaterialTheme.typography.titleLarge,
+        )
+    }
 }

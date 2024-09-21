@@ -1,10 +1,12 @@
 package com.atech.research.core.usecase
 
 import com.atech.research.core.ktor.ResearchHubClient
+import com.atech.research.core.ktor.model.ResearchModel
 
 
 data class ResearchUseCase(
-    val getAllPosts: GetPostedResearchUseCase
+    val getAllPosts: GetPostedResearchUseCase,
+    val updateOrPostResearch: UpdateOrPostResearchUseCase
 )
 
 
@@ -15,4 +17,17 @@ data class GetPostedResearchUseCase(
         userId: String? = null
     ) =
         client.getPostedResearch(userId)
+}
+
+
+data class UpdateOrPostResearchUseCase(
+    private val client: ResearchHubClient
+) {
+    suspend operator fun invoke(
+        researchModel: ResearchModel
+    ) = if (researchModel.path.isEmpty())
+        client.postResearch(researchModel)
+    else
+        client.updateResearch(researchModel)
+
 }

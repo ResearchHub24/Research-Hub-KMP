@@ -15,7 +15,6 @@ import androidx.compose.material.icons.rounded.Celebration
 import androidx.compose.material.icons.rounded.PendingActions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,7 +32,7 @@ import com.atech.research.ui.theme.spacing
 fun ResearchItem(
     modifier: Modifier = Modifier,
     model: ResearchModel,
-    onClick : () -> Unit ={}
+    onClick: () -> Unit = {}
 ) {
     Surface(
         modifier = Modifier
@@ -72,7 +71,9 @@ fun ResearchItem(
                 ) {
                     model.tags.forEach {
                         FilterChip(selected = true,
-                            onClick = {},
+                            onClick = {
+                                onClick()
+                            },
                             label = { Text(text = it.name) }
                         )
                     }

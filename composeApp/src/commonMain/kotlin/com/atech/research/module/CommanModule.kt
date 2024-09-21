@@ -5,6 +5,7 @@ import com.atech.research.core.ktor.ResearchHubClientImp
 import com.atech.research.core.ktor.httpClientEngineFactory
 import com.atech.research.core.usecase.GetPostedResearchUseCase
 import com.atech.research.core.usecase.ResearchUseCase
+import com.atech.research.core.usecase.UpdateOrPostResearchUseCase
 import com.atech.research.utils.PreferenceUtils
 import com.atech.research.utils.Prefs
 import org.koin.dsl.bind
@@ -18,7 +19,10 @@ val commonModule = module {
         GetPostedResearchUseCase(get())
     }
     single {
-        ResearchUseCase(get())
+        UpdateOrPostResearchUseCase(get())
+    }
+    single {
+        ResearchUseCase(get(), get())
     }
     single<String> {
         PreferenceUtils

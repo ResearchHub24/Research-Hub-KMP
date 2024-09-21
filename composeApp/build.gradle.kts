@@ -11,15 +11,15 @@ plugins {
     id("com.google.firebase.crashlytics")
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.googleAndroidLibrariesMapsplatformSecretsGradlePlugin)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
+//    alias(libs.plugins.ksp)
+//    alias(libs.plugins.room)
 }
 
 kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
@@ -51,7 +51,9 @@ kotlin {
             implementation(libs.bundles.firebase)
             implementation(libs.play.service.auth)
 
-            implementation(libs.room.runtime.android)
+//            implementation(libs.room.runtime.android)
+
+            implementation(libs.multiplatform.markdown.renderer.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -81,10 +83,14 @@ kotlin {
 
             api(libs.datastore)
             api(libs.datastore.preferences)
+//
+//            implementation(libs.room.runtime)
+//            implementation(libs.room.ktx)
+//            implementation(libs.sqlite.bundled)
 
-            implementation(libs.room.runtime)
-            implementation(libs.room.ktx)
-            implementation(libs.sqlite.bundled)
+            implementation(libs.multiplatform.markdown.renderer)
+            implementation(libs.multiplatform.markdown.renderer.m3)
+            implementation(libs.multiplatform.markdown.renderer.code)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -93,6 +99,7 @@ kotlin {
             implementation(libs.ktor.client.okhttp)
 
 //            implementation(libs.koin.jvm)
+            implementation(libs.multiplatform.markdown.renderer.jvm)
 
 
         }
@@ -129,8 +136,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     buildFeatures {
         compose = true
@@ -171,10 +178,10 @@ compose.desktop {
         }
     }
 }
-room {
-    schemaDirectory("$projectDir/schemas")
-}
-
-dependencies {
-    ksp(libs.room.compiler)
-}
+//room {
+//    schemaDirectory("$projectDir/schemas")
+//}
+//
+//dependencies {
+//    ksp(libs.room.compiler)
+//}

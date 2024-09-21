@@ -14,7 +14,10 @@ class HomeScreenViewModel(
 ) : ResearchHubViewModel() {
 
     private val _researchModel = mutableStateOf<DataState<List<ResearchModel>>>(DataState.Loading)
-    val researchModel: State<DataState<List<ResearchModel>>> get() = _researchModel
+    val allResearch: State<DataState<List<ResearchModel>>> get() = _researchModel
+
+    private val _currentResearchModel = mutableStateOf<ResearchModel?>(null)
+    val currentResearchModel: State<ResearchModel?> get() = _currentResearchModel
 
     init {
         onEvent(HomeScreenEvents.RefreshData)
@@ -23,6 +26,17 @@ class HomeScreenViewModel(
     fun onEvent(event: HomeScreenEvents) {
         when (event) {
             is HomeScreenEvents.RefreshData -> loadData()
+            is HomeScreenEvents.SetResearch -> _currentResearchModel.value = event.model
+            is HomeScreenEvents.OnEdit -> _currentResearchModel.value = event.model
+            is HomeScreenEvents.SaveChanges -> {
+                _currentResearchModel.value?.let {
+                    scope.launch {
+                        researchUseCase.updateOrPostResearch.invoke(it)
+                        loadData()
+                        event.onDone()
+                    }
+                }
+            }
         }
     }
 

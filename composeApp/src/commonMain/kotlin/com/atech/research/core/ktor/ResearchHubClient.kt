@@ -25,10 +25,14 @@ interface ResearchHubClient {
 
     suspend fun getPostedResearch(userId: String? = null): DataState<List<ResearchModel>>
 
+    suspend fun updateResearch(researchModel: ResearchModel): DataState<SuccessResponse>
+
+    suspend fun postResearch(researchModel: ResearchModel): DataState<SuccessResponse>
+
     companion object {
         private const val BASE_URL = "http://192.168.29.205:9090/api/v1"
 
-//        private const val BASE_URL = "http://192.168.17.1:9090/api/v1"
+        //        private const val BASE_URL = "http://192.168.17.1:9090/api/v1"
         const val USER = "$BASE_URL/users"
         const val LOGIN = "$BASE_URL/login"
         const val RESEARCH = "$BASE_URL/research"

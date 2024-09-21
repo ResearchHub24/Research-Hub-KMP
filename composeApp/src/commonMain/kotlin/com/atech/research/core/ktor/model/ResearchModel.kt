@@ -11,6 +11,7 @@ data class ResearchModel(
     val author: String,
     val authorUid: String,
     val tags: List<TagModel> = emptyList(),
+    val questions: List<String> = emptyList(),
     val path: String,
     val requirements: Requirements = Requirements(),
     val created: Long = System.currentTimeMillis(),
