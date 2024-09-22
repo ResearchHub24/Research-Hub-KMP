@@ -10,6 +10,7 @@ import com.atech.research.ui.navigation.ResearchNavigationGraph
 import com.atech.research.ui.theme.ResearchHubTheme
 import com.atech.research.utils.PrefManager
 import com.atech.research.utils.Prefs
+import com.atech.research.utils.isAndroid
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
@@ -20,7 +21,9 @@ val LocalDataStore = staticCompositionLocalOf<PrefManager> { error("No DataStore
 fun App(
     pref: PrefManager
 ) {
-    ResearchHubTheme {
+    ResearchHubTheme(
+        isAndroid = isAndroid()
+    ) {
         CompositionLocalProvider(LocalDataStore provides pref) {
             val navController = rememberNavController()
             val startDestination = if (pref.getString(Prefs.USER_ID.name)

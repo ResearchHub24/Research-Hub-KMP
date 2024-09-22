@@ -14,6 +14,14 @@ val SelectedChipContainColor = Color(
     0xFF3C6C34
 )
 
+val ComputerDarkBackground = Color(
+    0xFF1A1A1A
+)
+
+val ComputerLightBackground = Color(
+    0xFFFFFFFF
+)
+
 val lightColorScheme = ColorScheme(
     background = Color(0xfff9f9f9),
     error = Color(0xffba1a1a),
@@ -98,10 +106,21 @@ val ColorScheme.captionColor: Color
 
 @Composable
 fun ResearchHubTheme(
+    isAndroid: Boolean = true,
     isDark: Boolean = isDark(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (isDark) darkColorScheme else lightColorScheme
+    val colorScheme = if (isDark) darkColorScheme.let {
+        if (!isAndroid) darkColorScheme.copy(
+            surface = ComputerDarkBackground,
+            background = ComputerDarkBackground
+        ) else it
+    } else lightColorScheme.let {
+        if (!isAndroid) lightColorScheme.copy(
+            surface = ComputerLightBackground,
+            background = ComputerLightBackground
+        ) else it
+    }
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,

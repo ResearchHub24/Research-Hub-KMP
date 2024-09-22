@@ -126,7 +126,7 @@ fun HomeScreen(
                             viewModel.onEvent(
                                 HomeScreenEvents.SetResearch(
                                     ResearchModel(
-                                        title = "Title",
+                                        title = "",
                                         description = "",
                                         questions = emptyList(),
                                         tags = emptyList(),
