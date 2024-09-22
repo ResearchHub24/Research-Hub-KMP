@@ -13,6 +13,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.atech.research.module.KoinInitializer
 import com.atech.research.ui.theme.ResearchHubTheme
+import com.atech.research.utils.PrefManager
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import org.koin.core.context.stopKoin
@@ -51,7 +52,7 @@ fun main() = application {
             icon = painterResource(Res.drawable.app_logo),
         ) {
             App(
-                pref = koinInject<DataStore<Preferences>>()
+                pref = koinInject<PrefManager>()
             )
         }
     }

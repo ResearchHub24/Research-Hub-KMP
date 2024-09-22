@@ -4,8 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
+import com.atech.research.utils.PrefManager
 import org.koin.compose.koinInject
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +12,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val pref = koinInject<DataStore<Preferences>>()
+            val pref = koinInject<PrefManager>()
             App(
                 pref = pref
             )

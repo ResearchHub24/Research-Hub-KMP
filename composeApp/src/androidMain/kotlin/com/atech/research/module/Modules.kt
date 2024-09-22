@@ -1,5 +1,7 @@
 package com.atech.research.module
 
+import android.content.Context
+import android.content.SharedPreferences
 import com.atech.research.core.ktor.AndroidClientEngineFactory
 import com.atech.research.core.ktor.EngineFactory
 import com.atech.research.ui.compose.login.compose.login.LogInViewModel
@@ -9,7 +11,9 @@ import com.atech.research.ui.compose.login.compose.util.HasUserUseCase
 import com.atech.research.ui.compose.login.compose.util.LogInUseCase
 import com.atech.research.ui.compose.login.compose.util.LogInWithGoogleStudent
 import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
-import com.atech.research.utils.createDataStore
+import com.atech.research.utils.PrefManager
+import com.atech.research.utils.PrefManager.Companion.PREF_NAME
+import com.atech.research.utils.PrefManagerImp
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -30,8 +34,14 @@ val appModule = module {
     single { HasUserUseCase(get()) }
     single { LogInUseCase(get(), get()) }
     single { LogInWithGoogleStudent(get(), get()) }
-    single { createDataStore(context = get()) }
 //    single { getRoomDatabase(getDatabaseBuilder(get())) }
+    single<SharedPreferences> {
+        get<Context>().getSharedPreferences(
+            PREF_NAME,
+            Context.MODE_PRIVATE
+        )
+    }
+    single { PrefManagerImp(get()) }.bind(PrefManager::class)
     single {
         AndroidClientEngineFactory(get())
 

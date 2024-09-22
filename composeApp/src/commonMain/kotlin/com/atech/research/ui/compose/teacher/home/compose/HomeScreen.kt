@@ -47,7 +47,6 @@ import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.BackHandler
 import com.atech.research.utils.DataState
-import com.atech.research.utils.PreferenceUtils
 import com.atech.research.utils.Prefs
 import com.atech.research.utils.koinViewModel
 
@@ -60,8 +59,7 @@ enum class TerritoryScreen {
 fun HomeScreen(
     modifier: Modifier = Modifier,
 ) {
-    val uid by PreferenceUtils.builder(LocalDataStore.current).build()
-        .getStringPrefAsState(Prefs.USER_ID.key)
+    val uid = LocalDataStore.current.getString(Prefs.USER_ID.name)
     val viewModel = koinViewModel<HomeScreenViewModel>()
     LaunchedEffect(uid) {
         viewModel.onEvent(HomeScreenEvents.SetUserId(uid))

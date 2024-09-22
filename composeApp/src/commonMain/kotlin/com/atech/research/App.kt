@@ -10,16 +10,17 @@ import androidx.navigation.compose.rememberNavController
 import com.atech.research.ui.navigation.ResearchHubNavigation
 import com.atech.research.ui.navigation.ResearchNavigationGraph
 import com.atech.research.ui.theme.ResearchHubTheme
+import com.atech.research.utils.PrefManager
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
 val LocalDataStore =
-    staticCompositionLocalOf<DataStore<Preferences>> { error("No DataStore provided") }
+    staticCompositionLocalOf<PrefManager> { error("No DataStore provided") }
 
 @Composable
 @Preview
 fun App(
-    pref: DataStore<Preferences>
+    pref: PrefManager
 ) {
     ResearchHubTheme {
         CompositionLocalProvider(LocalDataStore provides pref) {

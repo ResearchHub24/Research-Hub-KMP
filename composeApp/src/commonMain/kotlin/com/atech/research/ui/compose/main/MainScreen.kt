@@ -25,7 +25,6 @@ import androidx.window.core.layout.WindowWidthSizeClass
 import com.atech.research.LocalDataStore
 import com.atech.research.core.ktor.model.UserType
 import com.atech.research.ui.compose.teacher.home.compose.HomeScreen
-import com.atech.research.utils.PreferenceUtils
 import com.atech.research.utils.Prefs
 
 enum class TeacherAppDestinations(
@@ -83,9 +82,7 @@ fun MainScreen() {
 
 @Composable
 private fun IsUser() =
-    PreferenceUtils.builder(LocalDataStore.current)
-        .build()
-        .getStringPrefAsState(Prefs.USER_TYPE.name).value == UserType.TEACHER.name
+    LocalDataStore.current.getString(Prefs.USER_TYPE.name) == UserType.TEACHER.name
 
 
 fun NavigationSuiteScope.navItemEntry(

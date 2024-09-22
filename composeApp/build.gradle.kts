@@ -81,8 +81,6 @@ kotlin {
             implementation(libs.material3.adaptive.navigation.suite)
             implementation(libs.material3.window.size)
 
-            api(libs.datastore)
-            api(libs.datastore.preferences)
 //
 //            implementation(libs.room.runtime)
 //            implementation(libs.room.ktx)
@@ -100,6 +98,10 @@ kotlin {
 
 //            implementation(libs.koin.jvm)
             implementation(libs.multiplatform.markdown.renderer.jvm)
+
+//            DataStore
+            implementation(libs.datastore)
+            implementation(libs.datastore.preferences)
 
 
         }

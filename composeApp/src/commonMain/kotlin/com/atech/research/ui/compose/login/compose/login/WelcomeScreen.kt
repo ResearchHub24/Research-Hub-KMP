@@ -13,14 +13,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavController
 import com.atech.research.LocalDataStore
 import com.atech.research.common.MainContainer
@@ -29,7 +24,6 @@ import com.atech.research.ui.navigation.SetUpScreenArgs
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.Prefs
 import com.atech.research.utils.isAndroid
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import researchhub.composeapp.generated.resources.Res
@@ -42,9 +36,7 @@ fun WelcomeScreen(
     navController: NavController
 ) {
     val pref = LocalDataStore.current
-    val uid by pref.data.map {
-        it[stringPreferencesKey(Prefs.USER_ID.key)] ?: ""
-    }.collectAsState(initial = "")
+    val uid = pref.getString(Prefs.USER_ID.name)
     LaunchedEffect(uid) {
         if (uid.isNotEmpty() && isAndroid()) {
             navigateToSetupScreen(navController, uid)
@@ -75,7 +67,6 @@ fun WelcomeScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val dataStore = LocalDataStore.current
                 val viewModel = getViewModel()
                 LoginScreenType(viewModel = viewModel,
                     onEvent = viewModel::onLoginEvent,
@@ -83,16 +74,14 @@ fun WelcomeScreen(
                         val uid1 = res.split("$").first()
                         val userTypeId = res.split("$").last()
                         scope.launch {
-                            dataStore.edit { pref ->
-                                pref[stringPreferencesKey(Prefs.USER_ID.key)] = uid1
-                                pref[stringPreferencesKey(Prefs.USER_TYPE.key)] = userTypeId
-                                if (!isAndroid()) {
-                                    pref[booleanPreferencesKey(Prefs.SET_PASSWORD_DONE.key)] = true
-                                    navigateToHome(navController)
-                                    return@edit
-                                }
-                                navigateToSetupScreen(navController, uid1)
+                            pref.saveString(Prefs.USER_ID.name, uid1)
+                            pref.saveString(Prefs.USER_TYPE.name, userTypeId)
+                            if (!isAndroid()) {
+                                pref.saveBoolean(Prefs.SET_PASSWORD_DONE.name, true)
+                                navigateToHome(navController)
+                                return@launch
                             }
+                            navigateToSetupScreen(navController, uid1)
                         }
                     })
             }

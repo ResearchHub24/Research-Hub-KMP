@@ -38,9 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.navigation.NavController
 import com.atech.research.LocalDataStore
 import com.atech.research.common.AppAlertDialog
@@ -58,7 +55,6 @@ import com.atech.research.ui.navigation.MainScreenScreenRoutes
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.DataState
 import com.atech.research.utils.Prefs
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.app_logo
@@ -85,13 +81,8 @@ fun SetUpScreen(
         }
         LaunchedEffect(user) {
             if (user is DataState.Success && user.data.password != null) {
-                scope.launch {
-                    pref.edit { pref ->
-                        pref[booleanPreferencesKey(Prefs.SET_PASSWORD_DONE.key)] =
-                            true
-                        pref[stringPreferencesKey(Prefs.USER_TYPE.key)] = user.data.userType ?: ""
-                    }
-                }
+                pref.saveBoolean(Prefs.SET_PASSWORD_DONE.name, true)
+                pref.saveString(Prefs.USER_TYPE.name, user.data.userType ?: "")
                 navigateToHome(navController)
             }
         }
@@ -113,14 +104,8 @@ fun SetUpScreen(
                                 return@SaveChanges
                             }
                             if (dataState is DataState.Success) {
-                                scope.launch {
-                                    pref.edit { pref ->
-                                        pref[booleanPreferencesKey(Prefs.SET_PASSWORD_DONE.key)] =
-                                            true
-                                        pref[stringPreferencesKey(Prefs.USER_TYPE.key)] =
-                                            userType.name
-                                    }
-                                }
+                                pref.saveBoolean(Prefs.SET_PASSWORD_DONE.name, true)
+                                pref.saveString(Prefs.USER_TYPE.name, userType.name)
                                 navigateToHome(navController)
                             }
                         })
