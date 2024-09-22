@@ -2,6 +2,7 @@ package com.atech.research.ui.compose.teacher.home.compose
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -46,6 +47,7 @@ import com.atech.research.ui.theme.spacing
 fun EditScreen(
     modifier: Modifier = Modifier,
     model: ResearchModel,
+    scrollState: ScrollState = rememberScrollState(),
     isSaveButtonVisible: Boolean = true,
     onTitleChange: (String) -> Unit = {},
     onDescriptionChange: (String) -> Unit = {},
@@ -59,7 +61,7 @@ fun EditScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scrollState)
             .padding(MaterialTheme.spacing.medium)
     ) {
         EditTextEnhance(

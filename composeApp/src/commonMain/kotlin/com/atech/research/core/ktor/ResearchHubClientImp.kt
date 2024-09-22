@@ -9,11 +9,11 @@ import com.atech.research.core.ktor.model.UserUpdateQueryHelper
 import com.atech.research.utils.DataState
 import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.checkError
+import com.atech.research.utils.getWithFallback
 import com.atech.research.utils.researchHubLog
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ResponseException
-import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
@@ -25,7 +25,7 @@ class ResearchHubClientImp(
     private val client: HttpClient
 ) : ResearchHubClient {
     override suspend fun getUser(uid: String): DataState<UserModel> = try {
-        checkError<UserModel, ErrorResponse>(client.get {
+        checkError<UserModel, ErrorResponse>(client.getWithFallback {
             url("${ResearchHubClient.USER}/$uid")
             contentType(ContentType.Application.Json)
         })
@@ -72,7 +72,7 @@ class ResearchHubClientImp(
 
     override suspend fun getPostedResearch(userId: String?): DataState<List<ResearchModel>> = try {
         checkError<List<ResearchModel>, ErrorResponse>(
-            client.get {
+            client.getWithFallback {
                 if (userId != null) url("${ResearchHubClient.RESEARCH}?userId=$userId")
                 else url(ResearchHubClient.RESEARCH)
                 contentType(ContentType.Application.Json)
@@ -116,7 +116,7 @@ class ResearchHubClientImp(
     override suspend fun getAllTags(): DataState<List<TagModel>> {
         return try {
             checkError<List<TagModel>, ErrorResponse>(
-                client.get {
+                client.getWithFallback {
                     url(ResearchHubClient.TAGS)
                     contentType(ContentType.Application.Json)
                 }.body()

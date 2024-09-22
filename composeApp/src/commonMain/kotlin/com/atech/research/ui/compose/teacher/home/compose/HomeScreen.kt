@@ -48,6 +48,7 @@ import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.BackHandler
 import com.atech.research.utils.DataState
 import com.atech.research.utils.Prefs
+import com.atech.research.utils.isAndroid
 import com.atech.research.utils.koinViewModel
 
 enum class TerritoryScreen {
@@ -81,6 +82,13 @@ fun HomeScreen(
             ""
         }
     }
+    val editScreenScrollState = rememberScrollState()
+    if (isAndroid())
+        LaunchedEffect(navigator.currentDestination) {
+            if (navigator.currentDestination?.pane == ListDetailPaneScaffoldRole.List) {
+                editScreenScrollState.animateScrollTo(0)
+            }
+        }
     MainContainer(modifier = modifier,
         title = title,
         enableTopBar = true,
@@ -136,7 +144,6 @@ fun HomeScreen(
                 }
             },
             detailPane = {
-
                 AnimatedPane {
                     if (currentResearch == null) {
                         EmptyWelcomeScreen()
@@ -144,6 +151,7 @@ fun HomeScreen(
                     }
                     EditScreen(
                         model = currentResearch!!,
+                        scrollState = editScreenScrollState,
                         isSaveButtonVisible = navigator.currentDestination?.pane == ListDetailPaneScaffoldRole.Detail,
                         onTitleChange = {
                             viewModel.onEvent(
