@@ -2,6 +2,7 @@ package com.atech.research.core.ktor
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.cache.storage.FileStorage
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -44,6 +45,11 @@ fun createHttpClient(
                     coerceInputValues = true
                 }
             )
+        }
+        install(HttpRequestRetry) {
+            maxRetries = 3
+            retryOnServerErrors(maxRetries = 3)
+            exponentialDelay()
         }
 
     }

@@ -9,11 +9,11 @@ import com.atech.research.ui.navigation.ResearchHubNavigation
 import com.atech.research.ui.navigation.ResearchNavigationGraph
 import com.atech.research.ui.theme.ResearchHubTheme
 import com.atech.research.utils.PrefManager
+import com.atech.research.utils.Prefs
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 
-val LocalDataStore =
-    staticCompositionLocalOf<PrefManager> { error("No DataStore provided") }
+val LocalDataStore = staticCompositionLocalOf<PrefManager> { error("No DataStore provided") }
 
 @Composable
 @Preview
@@ -23,10 +23,15 @@ fun App(
     ResearchHubTheme {
         CompositionLocalProvider(LocalDataStore provides pref) {
             val navController = rememberNavController()
+            val startDestination = if (pref.getString(Prefs.USER_ID.name)
+                    .isNotBlank() && pref.getBoolean(Prefs.SET_PASSWORD_DONE.name)
+            ) ResearchHubNavigation.MainScreen
+            else ResearchHubNavigation.LogInScreen
+
             ResearchNavigationGraph(
                 modifier = Modifier,
                 navHostController = navController,
-                startDestination = ResearchHubNavigation.LogInScreen,
+                startDestination = startDestination,
             )
         }
     }
