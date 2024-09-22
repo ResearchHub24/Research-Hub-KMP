@@ -61,6 +61,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
 ) {
     val uid = LocalDataStore.current.getString(Prefs.USER_ID.name)
+    val userName = LocalDataStore.current.getString(Prefs.USER_NAME.name)
     val viewModel = koinViewModel<HomeScreenViewModel>()
     LaunchedEffect(uid) {
         viewModel.onEvent(HomeScreenEvents.SetUserId(uid))
@@ -121,7 +122,24 @@ fun HomeScreen(
             listPane = {
                 AnimatedPane {
                     Scaffold(floatingActionButton = {
-                        ExtendedFloatingActionButton(onClick = {}) {
+                        ExtendedFloatingActionButton(onClick = {
+                            viewModel.onEvent(
+                                HomeScreenEvents.SetResearch(
+                                    ResearchModel(
+                                        title = "Title",
+                                        description = "",
+                                        questions = emptyList(),
+                                        tags = emptyList(),
+                                        authorUid = uid,
+                                        author = userName,
+                                        path = ""
+                                    )
+                                )
+                            )
+                            navigator.navigateTo(
+                                pane = ListDetailPaneScaffoldRole.Detail, content = currentResearch
+                            )
+                        }) {
                             Icon(imageVector = Icons.Outlined.Edit, contentDescription = null)
                             Text(text = "Compose")
                         }

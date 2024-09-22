@@ -15,3 +15,6 @@ interface PrefManager {
         const val PREF_NAME = "user.preferences_pb"
     }
 }
+enum class Prefs {
+    USER_ID,USER_NAME, SET_PASSWORD_DONE, USER_TYPE,
+}

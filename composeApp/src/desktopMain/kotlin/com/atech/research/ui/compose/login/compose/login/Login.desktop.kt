@@ -32,7 +32,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 actual fun LoginScreenType(
-    viewModel: LogInViewModel, onEvent: (LogInEvents) -> Unit, onLogInDone: (String) -> Unit
+    viewModel: LogInViewModel,
+    onEvent: (LogInEvents) -> Unit,
+    onLogInDone: (String, String) -> Unit
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -79,7 +81,10 @@ actual fun LoginScreenType(
 
                     is DataState.Success -> {
                         hasClick = false
-                        onLogInDone(dataState.data.message)
+                        onLogInDone(
+                            "${dataState.data.uid}$${dataState.data.userType}",
+                            dataState.data.displayName ?: ""
+                        )
                     }
                 }
             }))

@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 actual fun LoginScreenType(
     viewModel: LogInViewModel,
     onEvent: (LogInEvents) -> Unit,
-    onLogInDone: (String) -> Unit
+    onLogInDone: (String, String) -> Unit
 ) {
     val logInState by viewModel.logInState
     val context = LocalContext.current
@@ -77,7 +77,7 @@ actual fun LoginScreenType(
         }
         logInState.uId?.let {
             logInMessage = "Sign Done"
-            onLogInDone(it)
+            onLogInDone(it, logInState.userName ?: "")
         }
     }
     GoogleButton(loadingText = logInMessage, hasClick = hasClick, hasClickChange = { value ->
@@ -111,7 +111,8 @@ class LogInViewModelImp(
 
                 DataState.Loading -> {}
                 is DataState.Success -> {
-                    _logInState.value = LogInState(uId = state.data)
+                    _logInState.value =
+                        LogInState(uId = state.data.uid, userName = state.data.displayName)
                 }
             }
         }

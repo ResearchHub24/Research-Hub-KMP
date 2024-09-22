@@ -23,7 +23,9 @@ import com.atech.research.ui.navigation.MainScreenScreenRoutes
 import com.atech.research.ui.navigation.SetUpScreenArgs
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.Prefs
+import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.isAndroid
+import com.atech.research.utils.researchHubLog
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import researchhub.composeapp.generated.resources.Res
@@ -70,19 +72,19 @@ fun WelcomeScreen(
                 val viewModel = getViewModel()
                 LoginScreenType(viewModel = viewModel,
                     onEvent = viewModel::onLoginEvent,
-                    onLogInDone = { res ->
+                    onLogInDone = { res,name ->
                         val uid1 = res.split("$").first()
-                        val userTypeId = res.split("$").last()
-                        scope.launch {
                             pref.saveString(Prefs.USER_ID.name, uid1)
-                            pref.saveString(Prefs.USER_TYPE.name, userTypeId)
+                            pref.saveString(Prefs.USER_NAME.name, name)
                             if (!isAndroid()) {
+                                val userTypeId = res.split("$").last()
+                                pref.saveString(Prefs.USER_TYPE.name, userTypeId)
                                 pref.saveBoolean(Prefs.SET_PASSWORD_DONE.name, true)
                                 navigateToHome(navController)
-                                return@launch
+                                return@LoginScreenType
                             }
                             navigateToSetupScreen(navController, uid1)
-                        }
+
                     })
             }
         }

@@ -53,9 +53,9 @@ class ResearchHubClientImp(
         DataState.Error(e)
     }
 
-    override suspend fun logInUser(email: String, password: String): DataState<SuccessResponse> =
+    override suspend fun logInUser(email: String, password: String): DataState<UserModel> =
         try {
-            checkError<SuccessResponse, ErrorResponse>(
+            checkError<UserModel, ErrorResponse>(
                 client.post {
                     url("${ResearchHubClient.LOGIN}?email=$email&password=$password")
                 }

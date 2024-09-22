@@ -74,7 +74,7 @@ data class LogInWithGoogleStudent @Inject constructor(
 ) {
     suspend operator fun invoke(
         uid: String,
-        state: (DataState<String>) -> Unit = { _ -> }
+        state: (DataState<UserModel>) -> Unit = { _ -> }
     ) {
         try {
             val credential = GoogleAuthProvider.getCredential(uid, null)
@@ -94,12 +94,11 @@ data class LogInWithGoogleStudent @Inject constructor(
                     displayName = userName,
                     photoUrl = userPhoto.toString(),
                 )
-                Log.d("AAA","$model")
                 logInUseCase.invoke(userId, model) { state1 ->
                     if (state1 is DataState.Error)
                         state(state1)
                     if (state1 is DataState.Success) {
-                        state.invoke(state1)
+                        state.invoke(DataState.Success(model))
                     }
                 }
             }

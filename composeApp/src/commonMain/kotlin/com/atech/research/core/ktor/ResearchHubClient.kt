@@ -21,7 +21,7 @@ interface ResearchHubClient {
     suspend fun logInUser(
         email: String,
         password: String
-    ): DataState<SuccessResponse>
+    ): DataState<UserModel>
 
 
     suspend fun getPostedResearch(userId: String? = null): DataState<List<ResearchModel>>
