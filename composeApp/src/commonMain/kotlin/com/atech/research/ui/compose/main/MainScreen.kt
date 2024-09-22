@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Dashboard
+import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
@@ -51,6 +53,9 @@ fun MainScreen() {
         }
     }
     NavigationSuiteScaffold(
+        navigationSuiteColors = NavigationSuiteDefaults.colors(
+            navigationRailContainerColor = BottomAppBarDefaults.containerColor
+        ),
         layoutType = customNavSuiteType,
         navigationSuiteItems = {
             TeacherAppDestinations.entries.filter { it.forTeacher == isTeacher }.forEach { item ->

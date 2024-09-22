@@ -77,19 +77,22 @@ fun HomeScreen(
     }
     val title: String = when (navigator.currentDestination?.pane) {
         ThreePaneScaffoldRole.Secondary -> "Posted Research"
-        ThreePaneScaffoldRole.Primary -> "Detail"
+        ThreePaneScaffoldRole.Primary -> when {
+            currentResearch?.title.isNullOrBlank() -> "Compose Research"
+            else -> "Detail"
+        }
+
         ThreePaneScaffoldRole.Tertiary -> ""
         null -> {
             ""
         }
     }
     val editScreenScrollState = rememberScrollState()
-    if (isAndroid())
-        LaunchedEffect(navigator.currentDestination) {
-            if (navigator.currentDestination?.pane == ListDetailPaneScaffoldRole.List) {
-                editScreenScrollState.animateScrollTo(0)
-            }
+    if (isAndroid()) LaunchedEffect(navigator.currentDestination) {
+        if (navigator.currentDestination?.pane == ListDetailPaneScaffoldRole.List) {
+            editScreenScrollState.animateScrollTo(0)
         }
+    }
     MainContainer(modifier = modifier,
         title = title,
         enableTopBar = true,
@@ -167,8 +170,7 @@ fun HomeScreen(
                         EmptyWelcomeScreen()
                         return@AnimatedPane
                     }
-                    EditScreen(
-                        model = currentResearch!!,
+                    EditScreen(model = currentResearch!!,
                         scrollState = editScreenScrollState,
                         isSaveButtonVisible = navigator.currentDestination?.pane == ListDetailPaneScaffoldRole.Detail,
                         onTitleChange = {
@@ -212,8 +214,7 @@ fun HomeScreen(
                             navigator.navigateTo(
                                 pane = ThreePaneScaffoldRole.Tertiary, content = currentResearch
                             )
-                        }
-                    )
+                        })
                 }
             },
             extraPane = {
