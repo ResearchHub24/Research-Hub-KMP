@@ -14,6 +14,7 @@ import com.atech.research.utils.researchHubLog
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ResponseException
+import io.ktor.client.request.delete
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
@@ -106,6 +107,20 @@ class ResearchHubClientImp(
                     contentType(ContentType.Application.Json)
                     setBody(researchModel)
                 }
+            )
+        } catch (e: Exception) {
+            researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
+            DataState.Error(e)
+        }
+    }
+
+    override suspend fun deleteResearch(id: String): DataState<SuccessResponse> {
+        return try {
+            checkError<SuccessResponse, ErrorResponse>(
+                client.delete {
+                    url("${ResearchHubClient.DELETE_RESEARCH}?researchId=$id")
+                    contentType(ContentType.Application.Json)
+                }.body()
             )
         } catch (e: Exception) {
             researchHubLog(ResearchLogLevel.ERROR, "Error: $e")

@@ -30,6 +30,8 @@ interface ResearchHubClient {
 
     suspend fun postResearch(researchModel: ResearchModel): DataState<SuccessResponse>
 
+    suspend fun deleteResearch(id: String): DataState<SuccessResponse>
+
     suspend fun getAllTags(): DataState<List<TagModel>>
 
     suspend fun addTag(tagModel: TagModel): DataState<String>
@@ -45,6 +47,7 @@ interface ResearchHubClient {
         const val LOGIN = "$BASE_URL/login"
         const val RESEARCH = "$BASE_URL/research"
         const val RESEARCH_POST = "$RESEARCH/post"
+        const val DELETE_RESEARCH = "$RESEARCH/delete"
         const val TAGS = "$RESEARCH/tags"
     }
 }

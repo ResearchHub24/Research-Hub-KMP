@@ -6,7 +6,8 @@ import com.atech.research.core.ktor.model.ResearchModel
 
 data class ResearchUseCase(
     val getAllPosts: GetPostedResearchUseCase,
-    val updateOrPostResearch: UpdateOrPostResearchUseCase
+    val updateOrPostResearch: UpdateOrPostResearchUseCase,
+    val deleteResearch: DeleteResearchUseCase
 )
 
 
@@ -30,4 +31,12 @@ data class UpdateOrPostResearchUseCase(
     else
         client.updateResearch(researchModel)
 
+}
+
+data class DeleteResearchUseCase(
+    private val client: ResearchHubClient
+) {
+    suspend operator fun invoke(
+        id: String
+    ) = client.deleteResearch(id)
 }

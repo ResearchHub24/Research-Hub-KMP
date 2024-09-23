@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -29,11 +30,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.atech.research.LocalDataStore
+import com.atech.research.common.AppAlertDialog
 import com.atech.research.common.BottomPadding
 import com.atech.research.common.EmptyWelcomeScreen
 import com.atech.research.common.MainContainer
@@ -93,6 +96,8 @@ fun HomeScreen(
             editScreenScrollState.animateScrollTo(0)
         }
     }
+    var isDialogVisible by rememberSaveable { mutableStateOf(false) }
+    var currentDeletedResearch by remember { mutableStateOf<ResearchModel?>(null) }
     MainContainer(modifier = modifier,
         title = title,
         enableTopBar = true,
@@ -147,16 +152,48 @@ fun HomeScreen(
                             Text(text = "Compose")
                         }
                     }) {
+                        AnimatedVisibility(isDialogVisible && currentDeletedResearch != null) {
+                            AppAlertDialog(
+                                dialogTitle = "Delete Research",
+                                dialogText = "Are you sure you want to delete this research?\nThis action cannot be undone.",
+                                icon = Icons.Outlined.Warning,
+                                onDismissRequest = {
+                                    isDialogVisible = false
+                                    currentDeletedResearch = null
+                                },
+                                onConfirmation = {
+                                    viewModel.onEvent(
+                                        HomeScreenEvents.DeleteResearch(
+                                            currentDeletedResearch!!,
+                                            onDone = {
+                                                isDialogVisible = false
+                                                currentDeletedResearch = null
+                                                viewModel.onEvent(HomeScreenEvents.SetResearch(null))
+                                            }
+                                        )
+                                    )
+                                }
+                            )
+                        }
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(), state = state
                         ) {
                             items(researchList) { research ->
-                                ResearchItem(model = research, onClick = {
-                                    viewModel.onEvent(HomeScreenEvents.SetResearch(research))
-                                    navigator.navigateTo(
-                                        pane = ListDetailPaneScaffoldRole.Detail, content = research
-                                    )
-                                })
+                                ResearchItem(
+                                    model = research,
+                                    isDeleteButtonVisible = true,
+                                    onClick = {
+                                        viewModel.onEvent(HomeScreenEvents.SetResearch(research))
+                                        navigator.navigateTo(
+                                            pane = ListDetailPaneScaffoldRole.Detail,
+                                            content = research
+                                        )
+                                    },
+                                    onDeleted = {
+                                        isDialogVisible = true
+                                        currentDeletedResearch = research
+                                    }
+                                )
                             }
                             bottomPaddingLazy("pad1")
                             bottomPaddingLazy("pad2")
@@ -198,9 +235,8 @@ fun HomeScreen(
                         },
                         onSaveClick = {
                             viewModel.onEvent(HomeScreenEvents.SaveChanges {
-                                while (navigator.canNavigateBack()) {
-                                    navigator.navigateBack()
-                                }
+                                navigator.navigateBack()
+                                viewModel.onEvent(HomeScreenEvents.SetResearch(null))
                             })
                         },
                         onViewMarkdownClick = {

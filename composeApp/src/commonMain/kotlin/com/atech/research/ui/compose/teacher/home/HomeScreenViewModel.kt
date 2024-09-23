@@ -39,35 +39,41 @@ class HomeScreenViewModel(
             is HomeScreenEvents.RefreshData -> loadData()
             is HomeScreenEvents.SetResearch -> _currentResearchModel.value = event.model
             is HomeScreenEvents.OnEdit -> _currentResearchModel.value = event.model
-            is HomeScreenEvents.SaveChanges ->
-                _currentResearchModel.value?.let {
-                    scope.launch {
-                        researchUseCase.updateOrPostResearch.invoke(it)
-                        loadData()
-                        event.onDone()
-                    }
+            is HomeScreenEvents.SaveChanges -> _currentResearchModel.value?.let {
+                scope.launch {
+                    researchUseCase.updateOrPostResearch.invoke(it)
+                    loadData()
+                    event.onDone()
                 }
+            }
 
 
             HomeScreenEvents.LoadTags -> loadTags()
 
             is HomeScreenEvents.AddTag -> scope.launch {
                 val dataState = tagUseCase.addTag.invoke(event.tag)
-                if (dataState is DataState.Error)
-                    event.onDone(dataState.exception)
+                if (dataState is DataState.Error) event.onDone(dataState.exception)
 
                 if (dataState is DataState.Success) {
                     event.onDone(null)
                     onEvent(HomeScreenEvents.LoadTags)
                 }
             }
+
+            is HomeScreenEvents.DeleteResearch -> {
+                scope.launch {
+                    val dataState = researchUseCase.deleteResearch.invoke(event.model.path)
+                    if (dataState is DataState.Error) event.onDone(dataState.exception)
+                    if (dataState is DataState.Success) event.onDone(null)
+                    loadData()
+                }
+            }
         }
     }
 
-    private fun loadTags() =
-        scope.launch {
-            _allTags.value = tagUseCase.getAllTags.invoke()
-        }
+    private fun loadTags() = scope.launch {
+        _allTags.value = tagUseCase.getAllTags.invoke()
+    }
 
     private fun loadData() = scope.launch {
         _researchModel.value = researchUseCase.getAllPosts.invoke(_userId.value)

@@ -11,4 +11,5 @@ sealed interface HomeScreenEvents {
     data class SaveChanges(val onDone: () -> Unit) : HomeScreenEvents
     data object LoadTags : HomeScreenEvents
     data class AddTag(val tag: TagModel, val onDone: (Exception?) -> Unit) : HomeScreenEvents
+    data class DeleteResearch(val model: ResearchModel, val onDone: (Exception?) -> Unit) : HomeScreenEvents
 }

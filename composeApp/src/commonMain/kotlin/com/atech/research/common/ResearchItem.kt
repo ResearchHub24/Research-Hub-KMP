@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Celebration
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.PendingActions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -32,7 +32,11 @@ import com.atech.research.ui.theme.spacing
 fun ResearchItem(
     modifier: Modifier = Modifier,
     model: ResearchModel,
-    onClick: () -> Unit = {}
+    isDeleteButtonVisible: Boolean = false,
+    onClick: () -> Unit = {},
+    onDeleted: () -> Unit = {},
+    onViApplication: () -> Unit = {},
+    onNotify: () -> Unit = {},
 ) {
     Surface(
         modifier = Modifier
@@ -85,10 +89,11 @@ fun ResearchItem(
                 )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
                 ) {
                     TextButton(
-                        onClick = {},
+                        onClick = { onNotify() },
+                        modifier = Modifier.weight(1f)
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Celebration,
@@ -97,16 +102,29 @@ fun ResearchItem(
                         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.extraSmall))
                         Text(text = "Notify")
                     }
-                    Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
                     TextButton(
-                        onClick = {},
+                        onClick = { onViApplication() },
+                        modifier = Modifier.weight(1f)
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.PendingActions,
                             contentDescription = null,
                         )
                         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.extraSmall))
-                        Text(text = "All Application")
+                        Text(text = "Applications")
+                    }
+                    if (isDeleteButtonVisible) {
+                        TextButton(
+                            onClick = { onDeleted() },
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Delete,
+                                contentDescription = null,
+                            )
+                            Spacer(modifier = Modifier.padding(MaterialTheme.spacing.extraSmall))
+                            Text(text = "Delete")
+                        }
                     }
                 }
             }

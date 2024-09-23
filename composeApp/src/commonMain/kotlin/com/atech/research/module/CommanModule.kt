@@ -4,6 +4,7 @@ import com.atech.research.core.ktor.ResearchHubClient
 import com.atech.research.core.ktor.ResearchHubClientImp
 import com.atech.research.core.ktor.httpClientEngineFactory
 import com.atech.research.core.usecase.AddTagUseCase
+import com.atech.research.core.usecase.DeleteResearchUseCase
 import com.atech.research.core.usecase.DeleteTagUseCase
 import com.atech.research.core.usecase.GetAllTagsUseCase
 import com.atech.research.core.usecase.GetPostedResearchUseCase
@@ -24,7 +25,10 @@ val commonModule = module {
         UpdateOrPostResearchUseCase(get())
     }
     single {
-        ResearchUseCase(get(), get())
+        DeleteResearchUseCase(get())
+    }
+    single {
+        ResearchUseCase(get(), get(), get())
     }
 
     single { GetAllTagsUseCase(get()) }
