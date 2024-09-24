@@ -12,6 +12,7 @@ import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
 import com.atech.research.utils.PrefManager
 import com.atech.research.utils.PrefManager.Companion.PREF_NAME
 import com.atech.research.utils.PrefManagerImp
+import com.atech.research.utils.generateImageLoader
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import java.nio.file.Paths
@@ -29,6 +30,7 @@ val viewModelModule = module {
     single {
         PrefManagerImp(get())
     }.bind(PrefManager::class)
-//    single { getRoomDatabase(getDatabaseBuilder()) }
     single { HomeScreenViewModel(get(), get()) }
+    single { generateImageLoader() }
+
 }

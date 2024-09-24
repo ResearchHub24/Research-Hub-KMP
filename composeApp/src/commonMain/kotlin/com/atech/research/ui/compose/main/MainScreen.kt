@@ -1,8 +1,10 @@
 package com.atech.research.ui.compose.main
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Dashboard
@@ -23,11 +25,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.atech.research.LocalDataStore
 import com.atech.research.core.ktor.model.UserType
 import com.atech.research.ui.compose.teacher.home.compose.HomeScreen
 import com.atech.research.utils.Prefs
+import com.seiko.imageloader.ui.AutoSizeImage
+import org.jetbrains.compose.resources.painterResource
+import researchhub.composeapp.generated.resources.Res
+import researchhub.composeapp.generated.resources.ic_google_logo
 
 enum class TeacherAppDestinations(
     val label: String,
@@ -79,6 +86,10 @@ fun MainScreen() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text("Profile")
+                    AutoSizeImage(
+                        "https://www.w3schools.com/w3images/avatar2.png",
+                        contentDescription = "image",
+                    )
                 }
             }
         }

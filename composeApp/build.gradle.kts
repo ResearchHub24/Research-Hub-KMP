@@ -56,6 +56,7 @@ kotlin {
 //            implementation(libs.room.runtime.android)
 
             implementation(libs.multiplatform.markdown.renderer.android)
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -91,6 +92,9 @@ kotlin {
             implementation(libs.multiplatform.markdown.renderer)
             implementation(libs.multiplatform.markdown.renderer.m3)
             implementation(libs.multiplatform.markdown.renderer.code)
+
+            api("io.github.qdsfdhvh:image-loader:1.8.3")
+            api("io.github.qdsfdhvh:image-loader-extension-compose-resources:1.8.3")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -104,8 +108,6 @@ kotlin {
 //            DataStore
             implementation(libs.datastore)
             implementation(libs.datastore.preferences)
-
-
         }
     }
 }

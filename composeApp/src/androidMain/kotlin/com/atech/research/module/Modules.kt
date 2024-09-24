@@ -14,6 +14,7 @@ import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
 import com.atech.research.utils.PrefManager
 import com.atech.research.utils.PrefManager.Companion.PREF_NAME
 import com.atech.research.utils.PrefManagerImp
+import com.atech.research.utils.generateImageLoader
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -46,6 +47,7 @@ val appModule = module {
         AndroidClientEngineFactory(get())
 
     }.bind(EngineFactory::class)
+    single { generateImageLoader(get()) }
 }
 
 val viewModelModule = module {
