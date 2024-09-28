@@ -10,6 +10,7 @@ import com.atech.research.ui.compose.login.compose.setup.SetUpViewModel
 import com.atech.research.ui.compose.login.compose.util.HasUserUseCase
 import com.atech.research.ui.compose.login.compose.util.LogInUseCase
 import com.atech.research.ui.compose.login.compose.util.LogInWithGoogleStudent
+import com.atech.research.ui.compose.profile.ProfileViewModel
 import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
 import com.atech.research.utils.PrefManager
 import com.atech.research.utils.PrefManager.Companion.PREF_NAME
@@ -59,4 +60,5 @@ val viewModelModule = module {
     viewModel {
         HomeScreenViewModel(get(), get())
     }
+    viewModel { ProfileViewModel(get(), get()) }
 }

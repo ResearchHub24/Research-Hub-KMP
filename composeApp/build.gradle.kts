@@ -93,8 +93,10 @@ kotlin {
             implementation(libs.multiplatform.markdown.renderer.m3)
             implementation(libs.multiplatform.markdown.renderer.code)
 
-            api("io.github.qdsfdhvh:image-loader:1.8.3")
-            api("io.github.qdsfdhvh:image-loader-extension-compose-resources:1.8.3")
+            api(libs.image.loader)
+            api(libs.image.loader.extension.compose.resources)
+
+            implementation(libs.kotlinx.datetime)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

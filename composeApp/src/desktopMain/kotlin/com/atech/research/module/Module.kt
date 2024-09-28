@@ -8,6 +8,7 @@ import com.atech.research.getAppDataPath
 import com.atech.research.ui.compose.login.compose.login.LogInViewModel
 import com.atech.research.ui.compose.login.compose.login.LogInViewModelImp
 import com.atech.research.ui.compose.login.compose.setup.SetUpViewModel
+import com.atech.research.ui.compose.profile.ProfileViewModel
 import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
 import com.atech.research.utils.PrefManager
 import com.atech.research.utils.PrefManager.Companion.PREF_NAME
@@ -32,5 +33,6 @@ val viewModelModule = module {
     }.bind(PrefManager::class)
     single { HomeScreenViewModel(get(), get()) }
     single { generateImageLoader() }
+    single { ProfileViewModel(get(),get()) }
 
 }

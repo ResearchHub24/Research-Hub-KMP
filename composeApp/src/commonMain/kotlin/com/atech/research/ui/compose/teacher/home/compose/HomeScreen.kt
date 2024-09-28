@@ -20,6 +20,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
@@ -35,6 +36,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import com.atech.research.LocalDataStore
 import com.atech.research.common.AppAlertDialog
 import com.atech.research.common.BottomPadding
@@ -63,6 +65,7 @@ enum class TerritoryScreen {
 fun HomeScreen(
     modifier: Modifier = Modifier,
 ) {
+    val appBarBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val uid = LocalDataStore.current.getString(Prefs.USER_ID.name)
     val userName = LocalDataStore.current.getString(Prefs.USER_NAME.name)
     val viewModel = koinViewModel<HomeScreenViewModel>()
@@ -98,7 +101,9 @@ fun HomeScreen(
     }
     var isDialogVisible by rememberSaveable { mutableStateOf(false) }
     var currentDeletedResearch by remember { mutableStateOf<ResearchModel?>(null) }
-    MainContainer(modifier = modifier,
+    MainContainer(modifier = modifier
+        .nestedScroll(appBarBehavior.nestedScrollConnection),
+        scrollBehavior = appBarBehavior,
         title = title,
         enableTopBar = true,
         onNavigationClick = if (navigator.canNavigateBack()) {

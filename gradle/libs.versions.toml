@@ -10,9 +10,12 @@ android-targetSdk = "35"
 androidx-activityCompose = "1.9.2"
 androidx-lifecycle = "2.8.2"
 compose-plugin = "1.7.0-beta02"
+imageLoader = "1.8.3"
+imageLoaderExtensionComposeResources = "1.8.3"
 kotlin = "2.0.20"
 kotlinx-coroutines = "1.8.1"
 
+kotlinxDatetime = "0.6.0"
 ktor = "3.0.0-beta-2"
 
 koin = "3.6.0-alpha3"
@@ -43,10 +46,13 @@ adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", versi
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+image-loader-extension-compose-resources = { module = "io.github.qdsfdhvh:image-loader-extension-compose-resources", version.ref = "imageLoaderExtensionComposeResources" }
+image-loader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "imageLoader" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 
 
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-json = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }

@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.ui.theme.spacing
+import com.atech.research.utils.convertToDateFormat
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -84,7 +85,8 @@ fun ResearchItem(
                 }
                 Spacer(modifier = Modifier.padding(MaterialTheme.spacing.extraSmall))
                 Text(
-                    text = if (model.deadline != null) "Deadline: ${model.deadline}" else "Posted on: ${model.created}",
+                    text = if (model.deadline != null) "Deadline: ${model.deadline.convertToDateFormat()}"
+                    else "Posted on: ${model.created.convertToDateFormat()}",
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Row(

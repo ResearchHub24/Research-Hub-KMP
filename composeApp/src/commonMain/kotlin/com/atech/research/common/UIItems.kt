@@ -227,11 +227,13 @@ fun ProgressBar(
 
 @Composable
 fun CardSection(
-    modifier: Modifier = Modifier, title: String, content: @Composable ColumnScope.() -> Unit
+    modifier: Modifier = Modifier,
+    title: String,
+    content: @Composable ColumnScope.() -> Unit
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(0.dp),
+        shape = RoundedCornerShape(MaterialTheme.spacing.large),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
