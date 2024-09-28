@@ -55,6 +55,13 @@ import com.atech.research.utils.DataState
 import com.atech.research.utils.Prefs
 import com.atech.research.utils.isAndroid
 import com.atech.research.utils.koinViewModel
+import org.jetbrains.compose.resources.stringResource
+import researchhub.composeapp.generated.resources.Res
+import researchhub.composeapp.generated.resources.compose_research
+import researchhub.composeapp.generated.resources.delete
+import researchhub.composeapp.generated.resources.detail
+import researchhub.composeapp.generated.resources.posted_research
+import researchhub.composeapp.generated.resources.research
 
 enum class TerritoryScreen {
     ViewMarkdown, EditTag
@@ -82,10 +89,10 @@ fun HomeScreen(
         navigator.navigateBack()
     }
     val title: String = when (navigator.currentDestination?.pane) {
-        ThreePaneScaffoldRole.Secondary -> "Posted Research"
+        ThreePaneScaffoldRole.Secondary -> stringResource(Res.string.posted_research)
         ThreePaneScaffoldRole.Primary -> when {
-            currentResearch?.title.isNullOrBlank() -> "Compose Research"
-            else -> "Detail"
+            currentResearch?.title.isNullOrBlank() -> stringResource(Res.string.compose_research)
+            else -> stringResource(Res.string.detail)
         }
 
         ThreePaneScaffoldRole.Tertiary -> ""
@@ -101,8 +108,7 @@ fun HomeScreen(
     }
     var isDialogVisible by rememberSaveable { mutableStateOf(false) }
     var currentDeletedResearch by remember { mutableStateOf<ResearchModel?>(null) }
-    MainContainer(modifier = modifier
-        .nestedScroll(appBarBehavior.nestedScrollConnection),
+    MainContainer(modifier = modifier.nestedScroll(appBarBehavior.nestedScrollConnection),
         scrollBehavior = appBarBehavior,
         title = title,
         enableTopBar = true,
@@ -154,12 +160,18 @@ fun HomeScreen(
                             )
                         }) {
                             Icon(imageVector = Icons.Outlined.Edit, contentDescription = null)
-                            Text(text = "Compose")
+                            Text(
+                                text = stringResource(Res.string.compose_research).replace(
+                                    "research", ""
+                                )
+                            )
                         }
                     }) {
                         AnimatedVisibility(isDialogVisible && currentDeletedResearch != null) {
-                            AppAlertDialog(
-                                dialogTitle = "Delete Research",
+                            AppAlertDialog(dialogTitle = stringResource(
+                                Res.string.delete,
+                                Res.string.research.key
+                            ),
                                 dialogText = "Are you sure you want to delete this research?\nThis action cannot be undone.",
                                 icon = Icons.Outlined.Warning,
                                 onDismissRequest = {
@@ -168,24 +180,20 @@ fun HomeScreen(
                                 },
                                 onConfirmation = {
                                     viewModel.onEvent(
-                                        HomeScreenEvents.DeleteResearch(
-                                            currentDeletedResearch!!,
+                                        HomeScreenEvents.DeleteResearch(currentDeletedResearch!!,
                                             onDone = {
                                                 isDialogVisible = false
                                                 currentDeletedResearch = null
                                                 viewModel.onEvent(HomeScreenEvents.SetResearch(null))
-                                            }
-                                        )
+                                            })
                                     )
-                                }
-                            )
+                                })
                         }
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(), state = state
                         ) {
                             items(researchList) { research ->
-                                ResearchItem(
-                                    model = research,
+                                ResearchItem(model = research,
                                     isDeleteButtonVisible = true,
                                     onClick = {
                                         viewModel.onEvent(HomeScreenEvents.SetResearch(research))
@@ -197,8 +205,7 @@ fun HomeScreen(
                                     onDeleted = {
                                         isDialogVisible = true
                                         currentDeletedResearch = research
-                                    }
-                                )
+                                    })
                             }
                             bottomPaddingLazy("pad1")
                             bottomPaddingLazy("pad2")

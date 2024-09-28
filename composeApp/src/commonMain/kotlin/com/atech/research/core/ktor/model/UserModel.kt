@@ -36,9 +36,9 @@ data class UserModel(
 data class EducationDetails(
     val university: String,
     val degree: String,
-    val startYear: Long,
-    val endYear: Long?,
-    val grade: Long?,
+    val startYear: String,
+    val endYear: String?,
+    val grade: String?,
     val description: String
 )
 

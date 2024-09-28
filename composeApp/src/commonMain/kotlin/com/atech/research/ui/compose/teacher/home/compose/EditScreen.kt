@@ -41,6 +41,15 @@ import com.atech.research.common.MarkdownEditor
 import com.atech.research.common.TitleComposable
 import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.ui.theme.spacing
+import org.jetbrains.compose.resources.stringResource
+import researchhub.composeapp.generated.resources.Res
+import researchhub.composeapp.generated.resources.add_question
+import researchhub.composeapp.generated.resources.add_tag
+import researchhub.composeapp.generated.resources.is_required
+import researchhub.composeapp.generated.resources.question
+import researchhub.composeapp.generated.resources.save
+import researchhub.composeapp.generated.resources.tag
+import researchhub.composeapp.generated.resources.title
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -67,11 +76,11 @@ fun EditScreen(
         EditTextEnhance(
             modifier = Modifier.fillMaxWidth(),
             value = model.title,
-            placeholder = "Title",
+            placeholder = stringResource(Res.string.title),
             onValueChange = onTitleChange,
             isError = hasError.first,
             supportingText = if (hasError.first) {
-                { Text("Title is required") }
+                { Text(stringResource(Res.string.is_required, Res.string.title)) }
             } else null,
             keyboardOptions = KeyboardOptions(
                 imeAction = androidx.compose.ui.text.input.ImeAction.Next,
@@ -89,7 +98,7 @@ fun EditScreen(
         )
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
         HorizontalDivider()
-        TitleComposable(title = "Tags")
+        TitleComposable(title = stringResource(Res.string.tag))
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small),
         ) {
@@ -105,12 +114,12 @@ fun EditScreen(
             }
         }
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
-        ApplyButton(text = "Add Tags") {
+        ApplyButton(text = stringResource(Res.string.add_tag)) {
             onAddTagClick()
         }
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
         HorizontalDivider()
-        TitleComposable(title = "Questions")
+        TitleComposable(title = stringResource(Res.string.question))
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -125,7 +134,7 @@ fun EditScreen(
                     }
                     .animateContentSize(),
                 value = typedQuestion,
-                placeholder = "Add Question",
+                placeholder = stringResource(Res.string.add_question),
                 onValueChange = { typedQuestion = it },
                 isError = hasError.second,
                 /*supportingText = if (hasError.second) {
@@ -168,7 +177,7 @@ fun EditScreen(
         }
         Spacer(modifier = Modifier.padding(MaterialTheme.spacing.medium))
         ApplyButton(
-            text = "Save",
+            text = stringResource(Res.string.save),
             enable = isSaveButtonVisible
         ) {
             onSaveClick()
