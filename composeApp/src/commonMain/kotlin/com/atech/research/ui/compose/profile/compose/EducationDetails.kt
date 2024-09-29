@@ -83,16 +83,22 @@ private enum class Request {
 fun EducationDetails(
     modifier: Modifier = Modifier,
     state: EducationDetails,
-    onEvent: (ProfileEvents) -> Unit
+    onEvent: (ProfileEvents) -> Unit,
+    onSaveClick: () -> Unit
 ) {
+    val present = stringResource(Res.string.present)
     val yearList =
         (2010..Calendar.getInstance().get(Calendar.YEAR)).map { it.toString() }.reversed()
-    var isCurrentlyLearning by remember { mutableStateOf(false) }
+    var isCurrentlyLearning by remember(state.endYear) {
+        mutableStateOf(
+            state.endYear == present
+        )
+    }
     var request by remember { mutableStateOf(Request.START_YEAR) }
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     val isYearValid = state.endYear?.let { year ->
-        if (year == Res.string.present.key) true
+        if (year == present) true
         else if (year.isNotBlank() && state.startYear.toInt() <= year.toInt()) true
         else false
     } ?: false
@@ -313,6 +319,7 @@ fun EducationDetails(
                     }
                 }
             })
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -322,7 +329,7 @@ fun EducationDetails(
                         ProfileEvents.OnEducationEdit(
                             model = state.copy(
                                 endYear = if (value)
-                                    Res.string.present.key
+                                    present
                                 else "",
                                 grade = if (value) "0" else null
                             )
@@ -338,7 +345,7 @@ fun EducationDetails(
                     ProfileEvents.OnEducationEdit(
                         model = state.copy(
                             endYear = if (value)
-                                Res.string.present.key
+                                present
                             else "",
                             grade = if (value) "0" else null
                         )
@@ -421,22 +428,8 @@ fun EducationDetails(
             text = stringResource(
                 Res.string.education,
                 if (state.created == null) stringResource(Res.string.add) else stringResource(Res.string.update)
-            ), enable = hasError.not()
-        ) {
-//            onEvent(
-//                ResumeScreenEvents.OnEducationSave { message ->
-//                    if (message != null) {
-//                        toast(context, message)
-//                        return@OnEducationSave
-//                    }
-//                    toast(
-//                        context,
-//                        context.getString(R.string.education_details_added)
-//                    )
-//                    navController.popBackStack()
-//                }
-//            )
-        }
+            ), enable = hasError.not(), action = onSaveClick
+        )
         BottomPadding()
     }
 }

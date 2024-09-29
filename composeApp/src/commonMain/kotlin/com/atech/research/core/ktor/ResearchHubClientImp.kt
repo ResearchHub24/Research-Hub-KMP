@@ -11,6 +11,7 @@ import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.checkError
 import com.atech.research.utils.getWithFallback
 import com.atech.research.utils.researchHubLog
+import com.atech.research.utils.toJson
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ResponseException
@@ -41,7 +42,15 @@ class ResearchHubClientImp(
         checkError<SuccessResponse, ErrorResponse>(
             client.post {
                 val query = varargs.joinToString("&") {
-                    "${it.queryType}=${it.value}"
+                    when (it) {
+                        is UserUpdateQueryHelper.UpdateUserEducationDetails ->
+                            "${it.queryType}=${it.value.toJson()}"
+
+                        is UserUpdateQueryHelper.UpdateUserFilledForm ->
+                            "${it.queryType}=${it.value.toJson()}"
+
+                        else -> "${it.queryType}=${it.value}"
+                    }
                 }
                 url("${ResearchHubClient.USER}/$uid/update?$query")
                 contentType(ContentType.Application.Json)

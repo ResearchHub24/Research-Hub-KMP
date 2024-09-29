@@ -11,4 +11,15 @@ sealed interface ProfileEvents {
     data class OnEducationEdit(
         val model: EducationDetails,
     ) : ProfileEvents
+
+    data class OnSaveEducationClick(
+        val educationDetailsList: List<EducationDetails>,
+        val onComplete: (String?) -> Unit = {},
+    ) : ProfileEvents
+
+    data class OnDeleteEducationClick(
+        val educationDetailsList: List<EducationDetails>,
+        val yetToDelete: EducationDetails,
+        val onComplete: (String?) -> Unit = {},
+    ) : ProfileEvents
 }

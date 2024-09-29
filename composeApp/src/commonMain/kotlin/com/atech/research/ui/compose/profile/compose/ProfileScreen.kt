@@ -1,5 +1,6 @@
 package com.atech.research.ui.compose.profile.compose
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,10 +26,15 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import com.atech.research.common.AppAlertDialog
+import com.atech.research.common.ApplyButton
 import com.atech.research.common.AsyncImage
 import com.atech.research.common.CardSection
 import com.atech.research.common.EducationDetailsItems
@@ -38,7 +46,17 @@ import com.atech.research.ui.compose.profile.ProfileViewModel
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.BackHandler
 import com.atech.research.utils.DataState
+import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.koinViewModel
+import com.atech.research.utils.researchHubLog
+import org.jetbrains.compose.resources.stringResource
+import researchhub.composeapp.generated.resources.Res
+import researchhub.composeapp.generated.resources.add
+import researchhub.composeapp.generated.resources.delete
+import researchhub.composeapp.generated.resources.education
+import researchhub.composeapp.generated.resources.education_delete_message
+import researchhub.composeapp.generated.resources.link
+import researchhub.composeapp.generated.resources.personal_details
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
@@ -50,11 +68,11 @@ fun ProfileScreen(
     val appBarBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val scrollState = rememberScrollState()
     val navigator = rememberListDetailPaneScaffoldNavigator<UserModel>()
+    var isDeleteEducationDialogVisible by remember { mutableStateOf(false) }
     BackHandler(navigator.canNavigateBack()) {
         navigator.navigateBack()
     }
-    MainContainer(modifier = modifier
-        .nestedScroll(appBarBehavior.nestedScrollConnection),
+    MainContainer(modifier = modifier.nestedScroll(appBarBehavior.nestedScrollConnection),
         title = "Profile",
         scrollBehavior = appBarBehavior,
         enableTopBar = true,
@@ -70,19 +88,48 @@ fun ProfileScreen(
         }
         if (userDataState is DataState.Success) {
             val user = (userDataState as DataState.Success).data
-            ListDetailPaneScaffold(
-                modifier = modifier.padding(paddingValue),
+            ListDetailPaneScaffold(modifier = modifier.padding(paddingValue),
                 directive = navigator.scaffoldDirective,
                 value = navigator.scaffoldValue,
                 listPane = {
 //                    navigator.navigateTo(ThreePaneScaffoldRole.Primary)
                     AnimatedPane {
+
                         Column(
                             modifier = Modifier.fillMaxSize().verticalScroll(scrollState)
-                                .padding(paddingValue).padding(MaterialTheme.spacing.medium)
+                                .padding(MaterialTheme.spacing.medium)
                         ) {
+                            AnimatedVisibility(isDeleteEducationDialogVisible) {
+                                AppAlertDialog(
+                                    icon = Icons.Outlined.Warning,
+                                    dialogTitle = stringResource(
+                                        Res.string.education,
+                                        stringResource(Res.string.delete)
+                                    ),
+                                    dialogText = stringResource(Res.string.education_delete_message),
+                                    onDismissRequest = {
+                                        isDeleteEducationDialogVisible = false
+                                    },
+                                    onConfirmation = {
+                                        viewModel.onEvent(
+                                            ProfileEvents.OnDeleteEducationClick(
+                                                educationDetailsList = user.educationDetails
+                                                    ?: emptyList(),
+                                                yetToDelete = viewModel.currentEducationDetails.value
+                                                    ?: return@AppAlertDialog,
+                                                onComplete = {
+//                                                Todo: Handle Error
+                                                    viewModel.onEvent(ProfileEvents.OnEditClick(null))
+                                                    isDeleteEducationDialogVisible = false
+                                                }
+                                            )
+                                        )
+                                    }
+                                )
+                            }
+
                             CardSection(
-                                title = "Personal Information",
+                                title = stringResource(Res.string.personal_details),
                             ) {
                                 TopLayout(
                                     name = user.displayName ?: "",
@@ -92,7 +139,7 @@ fun ProfileScreen(
                             }
                             Spacer(Modifier.height(MaterialTheme.spacing.medium))
                             CardSection(
-                                title = "Education",
+                                title = stringResource(Res.string.education),
                             ) {
                                 Column(
                                     modifier = Modifier.fillMaxWidth()
@@ -101,6 +148,7 @@ fun ProfileScreen(
                                         EducationDetailsItems(title = "${educationDetails.degree}\n${educationDetails.startYear} - ${educationDetails.endYear ?: "Present"} ${educationDetails.grade?.let { "( $it )" } ?: ""}",
                                             des = educationDetails.university,
                                             onEditClick = {
+//                                                Todo : Handle Error
                                                 viewModel.onEvent(
                                                     ProfileEvents.OnEditClick(
                                                         educationDetails
@@ -109,13 +157,35 @@ fun ProfileScreen(
                                                 navigator.navigateTo(
                                                     pane = ListDetailPaneScaffoldRole.Extra
                                                 )
-                                            })
+                                            },
+                                            onDeleteClick = {
+                                                viewModel.onEvent(
+                                                    ProfileEvents.OnEditClick(
+                                                        educationDetails
+                                                    )
+                                                )
+                                                isDeleteEducationDialogVisible = true
+                                            }
+                                        )
                                     }
+                                    Spacer(Modifier.height(MaterialTheme.spacing.medium))
+                                    ApplyButton(text = stringResource(
+                                        Res.string.add, stringResource(Res.string.education)
+                                    ), action = {
+                                        viewModel.onEvent(
+                                            ProfileEvents.OnEditClick(
+                                                com.atech.research.core.ktor.model.EducationDetails()
+                                            )
+                                        )
+                                        navigator.navigateTo(
+                                            pane = ListDetailPaneScaffoldRole.Extra
+                                        )
+                                    })
                                 }
                             }
                             Spacer(Modifier.height(MaterialTheme.spacing.medium))
                             CardSection(
-                                title = "Links",
+                                title = stringResource(Res.string.link),
                             ) {
                                 Box(
                                     modifier = Modifier.fillMaxWidth().height(500.dp)
@@ -138,14 +208,24 @@ fun ProfileScreen(
                     AnimatedPane {
                         val currentItem by viewModel.currentEducationDetails
                         if (currentItem == null) return@AnimatedPane
-
-                        EducationDetails(
-                            state = currentItem!!,
-                            onEvent = viewModel::onEvent
-                        )
+                        EducationDetails(state = currentItem!!,
+                            onEvent = viewModel::onEvent,
+                            onSaveClick = {
+                                viewModel.onEvent(
+                                    ProfileEvents.OnSaveEducationClick(
+                                        educationDetailsList = user.educationDetails ?: emptyList(),
+                                        onComplete = {
+                                            researchHubLog(
+                                                ResearchLogLevel.DEBUG,
+                                                "ProfileScreen $it"
+                                            )
+                                            navigator.navigateBack()
+                                        }
+                                    )
+                                )
+                            })
                     }
-                }
-            )
+                })
         }
     }
 }

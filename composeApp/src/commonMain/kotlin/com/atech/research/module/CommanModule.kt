@@ -12,6 +12,7 @@ import com.atech.research.core.usecase.GetUseDetailUseCase
 import com.atech.research.core.usecase.ResearchUseCase
 import com.atech.research.core.usecase.TagUseCase
 import com.atech.research.core.usecase.UpdateOrPostResearchUseCase
+import com.atech.research.core.usecase.UpdateUserDetailUseCase
 import com.atech.research.core.usecase.UserUseCases
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -39,6 +40,7 @@ val commonModule = module {
     single { TagUseCase(get(), get(), get()) }
 
     single { GetUseDetailUseCase(get()) }
-    single { UserUseCases(get()) }
+    single { UpdateUserDetailUseCase(get()) }
+    single { UserUseCases(get(), get()) }
 
 }

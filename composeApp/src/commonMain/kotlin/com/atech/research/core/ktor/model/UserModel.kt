@@ -3,7 +3,6 @@ package com.atech.research.core.ktor.model
 import androidx.annotation.Keep
 import kotlinx.serialization.Serializable
 
-
 @Keep
 @Serializable
 enum class UserType {
@@ -34,12 +33,12 @@ data class UserModel(
 @Keep
 @Serializable
 data class EducationDetails(
-    val university: String,
-    val degree: String,
-    val startYear: String,
-    val endYear: String?,
-    val grade: String?,
-    val description: String,
+    val university: String = "",
+    val degree: String = "",
+    val startYear: String = "",
+    val endYear: String? = null,
+    val grade: String? = null,
+    val description: String = "",
     val created: Long? = null
 )
 

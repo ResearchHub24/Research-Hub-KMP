@@ -18,6 +18,7 @@
     <string name="update">Update</string>
     <string name="add">Add</string>
     <string name="education">%1$s Education</string>
+    <string name="education_delete_message">Are you sure you want to delete this education?</string>
     <string name="education_details_are_require">Education details are require</string>
     <string name="skills">Skills</string>
     <string name="add_skills">Add Skills</string>
