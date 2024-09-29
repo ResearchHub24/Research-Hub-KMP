@@ -17,7 +17,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +33,7 @@ import com.atech.research.common.EducationDetailsItems
 import com.atech.research.common.MainContainer
 import com.atech.research.common.ProgressBar
 import com.atech.research.core.ktor.model.UserModel
+import com.atech.research.ui.compose.profile.ProfileEvents
 import com.atech.research.ui.compose.profile.ProfileViewModel
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.BackHandler
@@ -40,8 +43,7 @@ import com.atech.research.utils.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun ProfileScreen(
-    modifier: Modifier = Modifier,
-    forTeacher: Boolean = true
+    modifier: Modifier = Modifier, forTeacher: Boolean = true
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val userDataState by viewModel.user
@@ -51,12 +53,17 @@ fun ProfileScreen(
     BackHandler(navigator.canNavigateBack()) {
         navigator.navigateBack()
     }
-    MainContainer(
-        modifier = modifier.nestedScroll(appBarBehavior.nestedScrollConnection),
+    MainContainer(modifier = modifier
+        .nestedScroll(appBarBehavior.nestedScrollConnection),
         title = "Profile",
         scrollBehavior = appBarBehavior,
-        enableTopBar = true
-    ) { paddingValue ->
+        enableTopBar = true,
+        onNavigationClick = if (navigator.canNavigateBack()) {
+            {
+                viewModel.onEvent(ProfileEvents.OnEditClick(null))
+                navigator.navigateBack()
+            }
+        } else null) { paddingValue ->
         if (userDataState is DataState.Loading) {
             ProgressBar(paddingValue)
             return@MainContainer
@@ -64,62 +71,79 @@ fun ProfileScreen(
         if (userDataState is DataState.Success) {
             val user = (userDataState as DataState.Success).data
             ListDetailPaneScaffold(
+                modifier = modifier.padding(paddingValue),
                 directive = navigator.scaffoldDirective,
                 value = navigator.scaffoldValue,
                 listPane = {
 //                    navigator.navigateTo(ThreePaneScaffoldRole.Primary)
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(scrollState)
-                            .padding(paddingValue)
-                            .padding(MaterialTheme.spacing.medium)
-                    ) {
-                        CardSection(
-                            title = "Personal Information",
+                    AnimatedPane {
+                        Column(
+                            modifier = Modifier.fillMaxSize().verticalScroll(scrollState)
+                                .padding(paddingValue).padding(MaterialTheme.spacing.medium)
                         ) {
-                            TopLayout(
-                                name = user.displayName ?: "",
-                                email = user.email ?: "",
-                                profileImage = user.photoUrl ?: ""
-                            )
-                        }
-                        Spacer(Modifier.height(MaterialTheme.spacing.medium))
-                        CardSection(
-                            title = "Education",
-                        ) {
-                            Column(
-                                modifier = Modifier.fillMaxWidth()
+                            CardSection(
+                                title = "Personal Information",
                             ) {
-                                user.educationDetails?.forEach { educationDetails ->
-                                    EducationDetailsItems(
-                                        title = "${educationDetails.degree}\n${educationDetails.startYear} - ${educationDetails.endYear ?: "Present"} ${educationDetails.grade?.let { "( $it )" } ?: ""}",
-                                        des = educationDetails.university,
-                                    )
+                                TopLayout(
+                                    name = user.displayName ?: "",
+                                    email = user.email ?: "",
+                                    profileImage = user.photoUrl ?: ""
+                                )
+                            }
+                            Spacer(Modifier.height(MaterialTheme.spacing.medium))
+                            CardSection(
+                                title = "Education",
+                            ) {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    user.educationDetails?.forEach { educationDetails ->
+                                        EducationDetailsItems(title = "${educationDetails.degree}\n${educationDetails.startYear} - ${educationDetails.endYear ?: "Present"} ${educationDetails.grade?.let { "( $it )" } ?: ""}",
+                                            des = educationDetails.university,
+                                            onEditClick = {
+                                                viewModel.onEvent(
+                                                    ProfileEvents.OnEditClick(
+                                                        educationDetails
+                                                    )
+                                                )
+                                                navigator.navigateTo(
+                                                    pane = ListDetailPaneScaffoldRole.Extra
+                                                )
+                                            })
+                                    }
                                 }
                             }
-                        }
-                        Spacer(Modifier.height(MaterialTheme.spacing.medium))
-                        CardSection(
-                            title = "Links",
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(500.dp)
-                                    .background(MaterialTheme.colorScheme.surface)
+                            Spacer(Modifier.height(MaterialTheme.spacing.medium))
+                            CardSection(
+                                title = "Links",
                             ) {
-                                Text(
-                                    text = "Education",
-                                    style = MaterialTheme.typography.titleLarge,
-                                    modifier = Modifier.align(Alignment.Center)
-                                )
+                                Box(
+                                    modifier = Modifier.fillMaxWidth().height(500.dp)
+                                        .background(MaterialTheme.colorScheme.surface)
+                                ) {
+                                    Text(
+                                        text = "Link",
+                                        style = MaterialTheme.typography.titleLarge,
+                                        modifier = Modifier.align(Alignment.Center)
+                                    )
+                                }
                             }
                         }
                     }
                 },
                 detailPane = {
 
+                },
+                extraPane = {
+                    AnimatedPane {
+                        val currentItem by viewModel.currentEducationDetails
+                        if (currentItem == null) return@AnimatedPane
+
+                        EducationDetails(
+                            state = currentItem!!,
+                            onEvent = viewModel::onEvent
+                        )
+                    }
                 }
             )
         }
@@ -129,33 +153,25 @@ fun ProfileScreen(
 
 @Composable
 fun TopLayout(
-    modifier: Modifier = Modifier,
-    name: String,
-    email: String,
-    profileImage: String
+    modifier: Modifier = Modifier, name: String, email: String, profileImage: String
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .fillMaxHeight(.4f),
+        modifier = modifier.fillMaxWidth().fillMaxHeight(.4f),
         verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImage(
-            modifier = Modifier
-                .size(200.dp),
+            modifier = Modifier.size(200.dp),
             url = profileImage,
             isLoadCircular = true,
         )
         Spacer(Modifier.height(MaterialTheme.spacing.medium))
         Text(
-            text = name,
-            style = MaterialTheme.typography.titleLarge
+            text = name, style = MaterialTheme.typography.titleLarge
         )
         Spacer(Modifier.height(MaterialTheme.spacing.medium))
         Text(
-            text = email,
-            style = MaterialTheme.typography.titleMedium
+            text = email, style = MaterialTheme.typography.titleMedium
         )
     }
 }

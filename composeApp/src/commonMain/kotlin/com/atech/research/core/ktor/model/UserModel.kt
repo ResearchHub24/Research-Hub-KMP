@@ -39,7 +39,8 @@ data class EducationDetails(
     val startYear: String,
     val endYear: String?,
     val grade: String?,
-    val description: String
+    val description: String,
+    val created: Long? = null
 )
 
 @Keep

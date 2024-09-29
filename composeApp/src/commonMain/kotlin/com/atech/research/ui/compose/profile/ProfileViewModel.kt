@@ -2,6 +2,7 @@ package com.atech.research.ui.compose.profile
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import com.atech.research.core.ktor.model.EducationDetails
 import com.atech.research.core.ktor.model.UserModel
 import com.atech.research.core.usecase.UserUseCases
 import com.atech.research.utils.DataState
@@ -18,14 +19,25 @@ class ProfileViewModel(
     private val _user = mutableStateOf<DataState<UserModel>>(DataState.Loading)
     val user: State<DataState<UserModel>> get() = _user
 
+    private val _currentEducationDetails = mutableStateOf<EducationDetails?>(null)
+    val currentEducationDetails: State<EducationDetails?> get() = _currentEducationDetails
+
     init {
-        onEvent(ProfileTestCases.LoadData)
+        onEvent(ProfileEvents.LoadData)
     }
 
-    fun onEvent(event: ProfileTestCases) {
+    fun onEvent(event: ProfileEvents) {
         when (event) {
-            is ProfileTestCases.LoadData -> {
+            is ProfileEvents.LoadData -> {
                 loadUser()
+            }
+
+            is ProfileEvents.OnEditClick -> {
+                _currentEducationDetails.value = event.model
+            }
+
+            is ProfileEvents.OnEducationEdit -> {
+                _currentEducationDetails.value = event.model
             }
         }
     }
