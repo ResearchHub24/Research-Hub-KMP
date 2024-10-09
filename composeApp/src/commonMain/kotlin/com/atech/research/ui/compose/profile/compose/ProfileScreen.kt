@@ -1,8 +1,6 @@
 package com.atech.research.ui.compose.profile.compose
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -58,6 +56,11 @@ import researchhub.composeapp.generated.resources.education_delete_message
 import researchhub.composeapp.generated.resources.link
 import researchhub.composeapp.generated.resources.personal_details
 
+
+private enum class ScreenType {
+    EDUCATION, LINK
+}
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun ProfileScreen(
@@ -69,6 +72,8 @@ fun ProfileScreen(
     val scrollState = rememberScrollState()
     val navigator = rememberListDetailPaneScaffoldNavigator<UserModel>()
     var isDeleteEducationDialogVisible by remember { mutableStateOf(false) }
+    var screenType by remember { mutableStateOf(ScreenType.EDUCATION) }
+    var deleteType by remember { mutableStateOf(ScreenType.EDUCATION) }
     BackHandler(navigator.canNavigateBack()) {
         navigator.navigateBack()
     }
@@ -79,6 +84,7 @@ fun ProfileScreen(
         onNavigationClick = if (navigator.canNavigateBack()) {
             {
                 viewModel.onEvent(ProfileEvents.OnEditClick(null))
+                viewModel.onEvent(ProfileEvents.OnLinkClick(null))
                 navigator.navigateBack()
             }
         } else null) { paddingValue ->
@@ -94,16 +100,15 @@ fun ProfileScreen(
                 listPane = {
 //                    navigator.navigateTo(ThreePaneScaffoldRole.Primary)
                     AnimatedPane {
-
                         Column(
                             modifier = Modifier.fillMaxSize().verticalScroll(scrollState)
                                 .padding(MaterialTheme.spacing.medium)
                         ) {
                             AnimatedVisibility(isDeleteEducationDialogVisible) {
-                                AppAlertDialog(
-                                    icon = Icons.Outlined.Warning,
+                                AppAlertDialog(icon = Icons.Outlined.Warning,
                                     dialogTitle = stringResource(
-                                        Res.string.education,
+                                        if (deleteType == ScreenType.LINK) Res.string.link
+                                        else Res.string.education,
                                         stringResource(Res.string.delete)
                                     ),
                                     dialogText = stringResource(Res.string.education_delete_message),
@@ -111,6 +116,25 @@ fun ProfileScreen(
                                         isDeleteEducationDialogVisible = false
                                     },
                                     onConfirmation = {
+                                        if (deleteType == ScreenType.LINK) {
+                                            viewModel.onEvent(
+                                                ProfileEvents.OnDeleteLinkClick(
+                                                    linkList = user.links ?: emptyList(),
+                                                    yetToDelete = viewModel.currentLinkClick.value
+                                                        ?: return@AppAlertDialog,
+                                                    onComplete = {
+//                                                        Todo: Handle Error
+                                                        viewModel.onEvent(
+                                                            ProfileEvents.OnLinkClick(
+                                                                null
+                                                            )
+                                                        )
+                                                        isDeleteEducationDialogVisible = false
+                                                    }
+                                                )
+                                            )
+                                            return@AppAlertDialog
+                                        }
                                         viewModel.onEvent(
                                             ProfileEvents.OnDeleteEducationClick(
                                                 educationDetailsList = user.educationDetails
@@ -121,11 +145,9 @@ fun ProfileScreen(
 //                                                Todo: Handle Error
                                                     viewModel.onEvent(ProfileEvents.OnEditClick(null))
                                                     isDeleteEducationDialogVisible = false
-                                                }
-                                            )
+                                                })
                                         )
-                                    }
-                                )
+                                    })
                             }
 
                             CardSection(
@@ -139,7 +161,7 @@ fun ProfileScreen(
                             }
                             Spacer(Modifier.height(MaterialTheme.spacing.medium))
                             CardSection(
-                                title = stringResource(Res.string.education),
+                                title = stringResource(Res.string.education, ""),
                             ) {
                                 Column(
                                     modifier = Modifier.fillMaxWidth()
@@ -159,19 +181,20 @@ fun ProfileScreen(
                                                 )
                                             },
                                             onDeleteClick = {
+                                                deleteType = ScreenType.EDUCATION
                                                 viewModel.onEvent(
                                                     ProfileEvents.OnEditClick(
                                                         educationDetails
                                                     )
                                                 )
                                                 isDeleteEducationDialogVisible = true
-                                            }
-                                        )
+                                            })
                                     }
                                     Spacer(Modifier.height(MaterialTheme.spacing.medium))
                                     ApplyButton(text = stringResource(
                                         Res.string.add, stringResource(Res.string.education)
                                     ), action = {
+                                        screenType = ScreenType.EDUCATION
                                         viewModel.onEvent(
                                             ProfileEvents.OnEditClick(
                                                 com.atech.research.core.ktor.model.EducationDetails()
@@ -187,43 +210,96 @@ fun ProfileScreen(
                             CardSection(
                                 title = stringResource(Res.string.link),
                             ) {
-                                Box(
-                                    modifier = Modifier.fillMaxWidth().height(500.dp)
-                                        .background(MaterialTheme.colorScheme.surface)
-                                ) {
-                                    Text(
-                                        text = "Link",
-                                        style = MaterialTheme.typography.titleLarge,
-                                        modifier = Modifier.align(Alignment.Center)
+                                user.links?.forEach { linkModel ->
+                                    EducationDetailsItems(
+                                        title = linkModel.link,
+                                        des = linkModel.description,
+                                        isLink = true,
+                                        onEditClick = {
+                                            screenType = ScreenType.LINK
+                                            viewModel.onEvent(
+                                                ProfileEvents.OnLinkClick(
+                                                    linkModel
+                                                )
+                                            )
+                                            navigator.navigateTo(
+                                                pane = ListDetailPaneScaffoldRole.Extra
+                                            )
+                                        },
+                                        onDeleteClick = {
+                                            deleteType = ScreenType.LINK
+                                            viewModel.onEvent(
+                                                ProfileEvents.OnLinkClick(
+                                                    linkModel
+                                                )
+                                            )
+                                            isDeleteEducationDialogVisible = true
+                                        }
                                     )
                                 }
+                                Spacer(Modifier.height(MaterialTheme.spacing.medium))
+                                ApplyButton(text = stringResource(
+                                    Res.string.add, stringResource(Res.string.link),
+                                ), action = {
+                                    viewModel.onEvent(
+                                        ProfileEvents.OnLinkClick(
+                                            null
+                                        )
+                                    )
+                                    screenType = ScreenType.LINK
+                                    navigator.navigateTo(
+                                        pane = ListDetailPaneScaffoldRole.Extra
+                                    )
+                                })
                             }
                         }
                     }
                 },
-                detailPane = {
-
-                },
+                detailPane = {},
                 extraPane = {
                     AnimatedPane {
-                        val currentItem by viewModel.currentEducationDetails
-                        if (currentItem == null) return@AnimatedPane
-                        EducationDetails(state = currentItem!!,
-                            onEvent = viewModel::onEvent,
-                            onSaveClick = {
-                                viewModel.onEvent(
-                                    ProfileEvents.OnSaveEducationClick(
-                                        educationDetailsList = user.educationDetails ?: emptyList(),
-                                        onComplete = {
-                                            researchHubLog(
-                                                ResearchLogLevel.DEBUG,
-                                                "ProfileScreen $it"
-                                            )
-                                            navigator.navigateBack()
-                                        }
+                        AnimatedVisibility(screenType == ScreenType.EDUCATION) {
+                            val currentItem by viewModel.currentEducationDetails
+                            if (currentItem == null) return@AnimatedVisibility
+                            EducationDetails(
+                                state = currentItem!!,
+                                onEvent = viewModel::onEvent,
+                                onSaveClick = {
+                                    viewModel.onEvent(
+                                        ProfileEvents.OnSaveEducationClick(educationDetailsList = user.educationDetails
+                                            ?: emptyList(),
+                                            onComplete = {
+                                                researchHubLog(
+                                                    ResearchLogLevel.DEBUG, "ProfileScreen $it"
+                                                )
+                                                navigator.navigateBack()
+                                            })
                                     )
-                                )
-                            })
+                                })
+                        }
+
+                        AnimatedVisibility(screenType == ScreenType.LINK) {
+                            AddOrEditLink(
+                                state = viewModel.currentLinkClick.value,
+                                onLinkSave = {
+                                    viewModel.onEvent(
+                                        ProfileEvents.OnAddLinkClick(linkList = user.links
+                                            ?: emptyList(),
+                                            link = it,
+                                            onComplete = { error ->
+                                                if (error != null) {
+//                                                TODO: Handle Error
+                                                    researchHubLog(
+                                                        ResearchLogLevel.DEBUG,
+                                                        "ProfileScreen $error"
+                                                    )
+                                                }
+
+                                                navigator.navigateBack()
+                                            })
+                                    )
+                                })
+                        }
                     }
                 })
         }

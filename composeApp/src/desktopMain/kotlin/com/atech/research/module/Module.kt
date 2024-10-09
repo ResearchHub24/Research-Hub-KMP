@@ -10,6 +10,7 @@ import com.atech.research.ui.compose.login.compose.login.LogInViewModelImp
 import com.atech.research.ui.compose.login.compose.setup.SetUpViewModel
 import com.atech.research.ui.compose.profile.ProfileViewModel
 import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
+import com.atech.research.utils.LinkHelper
 import com.atech.research.utils.PrefManager
 import com.atech.research.utils.PrefManager.Companion.PREF_NAME
 import com.atech.research.utils.PrefManagerImp
@@ -34,5 +35,6 @@ val viewModelModule = module {
     single { HomeScreenViewModel(get(), get()) }
     single { generateImageLoader() }
     single { ProfileViewModel(get(),get()) }
+    single { LinkHelper()  }
 
 }

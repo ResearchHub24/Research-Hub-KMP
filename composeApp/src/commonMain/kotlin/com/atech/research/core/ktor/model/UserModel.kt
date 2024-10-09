@@ -27,7 +27,7 @@ data class UserModel(
     val selectedForm: List<String>? = null,
 //    Teacher
     val verified: Boolean = false,
-    val links: List<String>? = null,
+    val links: List<LinkModel>? = null,
 )
 
 @Keep
@@ -40,6 +40,14 @@ data class EducationDetails(
     val grade: String? = null,
     val description: String = "",
     val created: Long? = null
+)
+
+@Keep
+@Serializable
+data class LinkModel(
+    val link: String = "",
+    val description: String = "",
+    val created: Long = 0L,
 )
 
 @Keep
@@ -81,6 +89,6 @@ sealed class UserUpdateQueryHelper<out T : Any>(open val value: T, val queryType
     data class UpdateUserVerified(override val value: Boolean) :
         UserUpdateQueryHelper<Boolean>(value, "verified")
 
-    data class UpdateUserLinks(override val value: List<String>) :
-        UserUpdateQueryHelper<List<String>>(value, "links")
+    data class UpdateUserLinks(override val value: List<LinkModel>) :
+        UserUpdateQueryHelper<List<LinkModel>>(value, "links")
 }

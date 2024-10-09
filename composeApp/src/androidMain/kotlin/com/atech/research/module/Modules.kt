@@ -12,6 +12,7 @@ import com.atech.research.ui.compose.login.compose.util.LogInUseCase
 import com.atech.research.ui.compose.login.compose.util.LogInWithGoogleStudent
 import com.atech.research.ui.compose.profile.ProfileViewModel
 import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
+import com.atech.research.utils.LinkHelper
 import com.atech.research.utils.PrefManager
 import com.atech.research.utils.PrefManager.Companion.PREF_NAME
 import com.atech.research.utils.PrefManagerImp
@@ -49,6 +50,8 @@ val appModule = module {
 
     }.bind(EngineFactory::class)
     single { generateImageLoader(get()) }
+
+    single { LinkHelper(get()) }
 }
 
 val viewModelModule = module {

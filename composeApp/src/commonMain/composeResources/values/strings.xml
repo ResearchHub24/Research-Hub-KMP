@@ -76,8 +76,9 @@
     <string name="saved">Save changes</string>
     <string name="all_chats">All Chats</string>
     <string name="no_chats_yet">No chats yet</string>
-    <string name="delete">Delete %1$s</string>
+    <string name="delete">Delete</string>
     <string name="posted_research">Posted Research</string>
     <string name="compose_research">Compose Research</string>
     <string name="detail">Detail</string>
+    <string name="description">Description</string>
 </resources>

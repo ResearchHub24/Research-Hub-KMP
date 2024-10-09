@@ -3,6 +3,7 @@ package com.atech.research.ui.compose.profile
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.atech.research.core.ktor.model.EducationDetails
+import com.atech.research.core.ktor.model.LinkModel
 import com.atech.research.core.ktor.model.UserModel
 import com.atech.research.core.ktor.model.UserUpdateQueryHelper
 import com.atech.research.core.usecase.UserUseCases
@@ -23,6 +24,9 @@ class ProfileViewModel(
 
     private val _currentEducationDetails = mutableStateOf<EducationDetails?>(null)
     val currentEducationDetails: State<EducationDetails?> get() = _currentEducationDetails
+
+    private val _currentLinkClick = mutableStateOf<LinkModel?>(null)
+    val currentLinkClick: State<LinkModel?> get() = _currentLinkClick
 
     init {
         onEvent(ProfileEvents.LoadData)
@@ -53,7 +57,7 @@ class ProfileViewModel(
                                 else it
                             }
                         }
-                    updateEducationDetails(updatedList, event.onComplete)
+                    updateEducationDetails(updatedList, onError = event.onComplete)
                 }
             }
 
@@ -61,7 +65,29 @@ class ProfileViewModel(
                 val updatedList = event.educationDetailsList.filter {
                     it.created != event.yetToDelete.created
                 }
-                updateEducationDetails(updatedList, event.onComplete)
+                updateEducationDetails(updatedList, onError = event.onComplete)
+            }
+
+            is ProfileEvents.OnLinkClick ->
+                _currentLinkClick.value = event.link
+
+
+            is ProfileEvents.OnAddLinkClick -> {
+                val updateLinkList = when (event.link.created) {
+                    0L -> event.linkList + event.link.copy(created = System.currentTimeMillis())
+                    else -> event.linkList.map {
+                        if (it.created == event.link.created) event.link
+                        else it
+                    }
+                }
+                updateEducationDetails(updatedLinks = updateLinkList, onError = event.onComplete)
+            }
+
+            is ProfileEvents.OnDeleteLinkClick -> {
+                val updatedLinkList = event.linkList.filter {
+                    it.created != event.yetToDelete.created
+                }
+                updateEducationDetails(updatedLinks = updatedLinkList, onError = event.onComplete)
             }
         }
     }
@@ -71,13 +97,15 @@ class ProfileViewModel(
     }
 
     private fun updateEducationDetails(
-        updatedList: List<EducationDetails>,
+        updatedList: List<EducationDetails> = emptyList(),
+        updatedLinks: List<LinkModel>? = null,
         onError: (String?) -> Unit = {}
     ) = scope.launch {
         try {
             val dataState = useCases.updateUserDetail(
                 pref.getString(Prefs.USER_ID.name),
-                UserUpdateQueryHelper.UpdateUserEducationDetails(updatedList)
+                if (updatedLinks != null) UserUpdateQueryHelper.UpdateUserLinks(updatedLinks)
+                else UserUpdateQueryHelper.UpdateUserEducationDetails(updatedList)
             )
             if (dataState is DataState.Success) {
                 _currentEducationDetails.value = null

@@ -49,6 +49,9 @@ class ResearchHubClientImp(
                         is UserUpdateQueryHelper.UpdateUserFilledForm ->
                             "${it.queryType}=${it.value.toJson()}"
 
+                        is UserUpdateQueryHelper.UpdateUserLinks ->
+                            "${it.queryType}=${it.value.toJson()}"
+
                         else -> "${it.queryType}=${it.value}"
                     }
                 }
