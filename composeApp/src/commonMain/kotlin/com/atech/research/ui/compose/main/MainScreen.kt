@@ -1,8 +1,11 @@
 package com.atech.research.ui.compose.main
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Dashboard
+import androidx.compose.material.icons.rounded.AccountCircle
+import androidx.compose.material.icons.rounded.AppRegistration
+import androidx.compose.material.icons.rounded.Dashboard
+import androidx.compose.material.icons.rounded.Groups2
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -20,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.atech.research.LocalDataStore
 import com.atech.research.core.ktor.model.UserType
@@ -29,13 +31,20 @@ import com.atech.research.ui.compose.teacher.home.compose.HomeScreen
 import com.atech.research.utils.Prefs
 
 enum class TeacherAppDestinations(
-    val label: String,
-    val icon: ImageVector,
-    val forTeacher: Boolean = false
+    val label: String, val icon: ImageVector, val forTeacher: Boolean = false
 ) {
-    Home("Home", Icons.Outlined.Dashboard, true),
-    Profile("Profile", Icons.Outlined.AccountCircle, true),
-
+    Home("Home", Icons.Rounded.Dashboard, true),
+    Faculty(
+        "Faculty",
+        Icons.Rounded.Groups2,
+        false
+    ),
+    FillResearch("Fill Research", Icons.Rounded.AppRegistration, false),
+    Profile(
+        "Profile",
+        Icons.Rounded.AccountCircle,
+        true
+    )
 }
 
 
@@ -53,30 +62,31 @@ fun MainScreen(
             NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo)
         }
     }
-    NavigationSuiteScaffold(
-        navigationSuiteColors = NavigationSuiteDefaults.colors(
-            navigationRailContainerColor = BottomAppBarDefaults.containerColor
-        ),
-        layoutType = customNavSuiteType,
-        navigationSuiteItems = {
-            TeacherAppDestinations.entries.filter { it.forTeacher == isTeacher }.forEach { item ->
-                navItemEntry(
-                    item = item,
-                    selected = item == currentDestination,
-                    onClick = {
-                        currentDestination = item
-                    }
-                )
-            }
+    NavigationSuiteScaffold(navigationSuiteColors = NavigationSuiteDefaults.colors(
+        navigationRailContainerColor = BottomAppBarDefaults.containerColor
+    ), layoutType = customNavSuiteType, navigationSuiteItems = {
+        setAccordingToUser(isTeacher = isTeacher, teacherComposable = {
+            TeacherAppDestinations.entries.filter { it.forTeacher == isTeacher }
+        }, studentComposable = {
+            TeacherAppDestinations.entries
+        }).forEach { item ->
+            navItemEntry(item = item, selected = item == currentDestination, onClick = {
+                currentDestination = item
+            })
         }
-    ) {
+    }) {
         when (currentDestination) {
-            TeacherAppDestinations.Home -> SetComposableAccordingToUser(
-                teacherComposable = { HomeScreen() },
-                studentComposable = {}
-            )
+            TeacherAppDestinations.Home -> SetComposableAccordingToUser(teacherComposable = { HomeScreen() },
+                studentComposable = {})
 
             TeacherAppDestinations.Profile -> ProfileScreen(navHostController = navHostController)
+            TeacherAppDestinations.Faculty -> Column {
+                Text("Faculty")
+            }
+
+            TeacherAppDestinations.FillResearch -> Column {
+                Text("Fill Research")
+            }
         }
     }
 }
@@ -87,16 +97,17 @@ fun SetComposableAccordingToUser(
     isTeacher: Boolean = IsUser(),
     teacherComposable: @Composable () -> Unit = {},
     studentComposable: @Composable () -> Unit = {}
-) =
-    if (isTeacher)
-        teacherComposable()
-    else
-        studentComposable()
+) = if (isTeacher) teacherComposable()
+else studentComposable()
+
+fun <T> setAccordingToUser(
+    isTeacher: Boolean, teacherComposable: () -> T, studentComposable: () -> T
+) = if (isTeacher) teacherComposable()
+else studentComposable()
 
 
 @Composable
-fun IsUser() =
-    LocalDataStore.current.getString(Prefs.USER_TYPE.name) == UserType.TEACHER.name
+fun IsUser() = LocalDataStore.current.getString(Prefs.USER_TYPE.name) == UserType.TEACHER.name
 
 
 fun NavigationSuiteScope.navItemEntry(
@@ -105,19 +116,12 @@ fun NavigationSuiteScope.navItemEntry(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    item(
-        modifier = modifier,
-        selected = selected,
-        onClick = onClick,
-        label = {
-            Text(item.label)
-        },
-        icon = {
-            Icon(
-                imageVector = item.icon,
-                contentDescription = item.label
-            )
-        },
-        alwaysShowLabel = false
+    item(modifier = modifier, selected = selected, onClick = onClick, label = {
+//        Text(item.label)
+    }, icon = {
+        Icon(
+            imageVector = item.icon, contentDescription = item.label
+        )
+    }, alwaysShowLabel = false
     )
 }
