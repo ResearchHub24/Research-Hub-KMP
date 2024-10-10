@@ -19,6 +19,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.atech.research.LocalDataStore
 import com.atech.research.core.ktor.model.UserType
@@ -38,9 +40,11 @@ enum class TeacherAppDestinations(
 
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    navHostController: NavController
+) {
     val isTeacher = IsUser()
-    var currentDestination by rememberSaveable { mutableStateOf(TeacherAppDestinations.Profile) }
+    var currentDestination by rememberSaveable { mutableStateOf(TeacherAppDestinations.Home) }
     val adaptiveInfo = currentWindowAdaptiveInfo()
     val customNavSuiteType = with(adaptiveInfo) {
         if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) {
@@ -67,15 +71,31 @@ fun MainScreen() {
         }
     ) {
         when (currentDestination) {
-            TeacherAppDestinations.Home -> HomeScreen()
+            TeacherAppDestinations.Home -> SetComposableAccordingToUser(
+                teacherComposable = { HomeScreen() },
+                studentComposable = {}
+            )
 
-            TeacherAppDestinations.Profile -> ProfileScreen()
+            TeacherAppDestinations.Profile -> ProfileScreen(navHostController = navHostController)
         }
     }
 }
 
+
 @Composable
-private fun IsUser() =
+fun SetComposableAccordingToUser(
+    isTeacher: Boolean = IsUser(),
+    teacherComposable: @Composable () -> Unit = {},
+    studentComposable: @Composable () -> Unit = {}
+) =
+    if (isTeacher)
+        teacherComposable()
+    else
+        studentComposable()
+
+
+@Composable
+fun IsUser() =
     LocalDataStore.current.getString(Prefs.USER_TYPE.name) == UserType.TEACHER.name
 
 

@@ -20,7 +20,9 @@ fun NavGraphBuilder.mainScreenGraph(navController: NavController) {
         fadeThroughComposable(
             route = MainScreenScreenRoutes.HomeScreen.route
         ) {
-            MainScreen()
+            MainScreen(
+                navHostController = navController
+            )
         }
     }
 }

@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.atech.research.common.AppAlertDialog
 import com.atech.research.common.ApplyButton
 import com.atech.research.common.AsyncImage
@@ -41,12 +42,15 @@ import com.atech.research.common.ProgressBar
 import com.atech.research.core.ktor.model.UserModel
 import com.atech.research.ui.compose.profile.ProfileEvents
 import com.atech.research.ui.compose.profile.ProfileViewModel
+import com.atech.research.ui.navigation.ResearchHubNavigation
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.BackHandler
 import com.atech.research.utils.DataState
 import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.koinViewModel
 import com.atech.research.utils.researchHubLog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.stringResource
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.add
@@ -54,7 +58,9 @@ import researchhub.composeapp.generated.resources.delete
 import researchhub.composeapp.generated.resources.education
 import researchhub.composeapp.generated.resources.education_delete_message
 import researchhub.composeapp.generated.resources.link
+import researchhub.composeapp.generated.resources.log_out
 import researchhub.composeapp.generated.resources.personal_details
+import researchhub.composeapp.generated.resources.profile
 
 
 private enum class ScreenType {
@@ -64,7 +70,7 @@ private enum class ScreenType {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun ProfileScreen(
-    modifier: Modifier = Modifier, forTeacher: Boolean = true
+    modifier: Modifier = Modifier, forTeacher: Boolean = true, navHostController: NavController
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val userDataState by viewModel.user
@@ -78,7 +84,7 @@ fun ProfileScreen(
         navigator.navigateBack()
     }
     MainContainer(modifier = modifier.nestedScroll(appBarBehavior.nestedScrollConnection),
-        title = "Profile",
+        title = stringResource(Res.string.profile),
         scrollBehavior = appBarBehavior,
         enableTopBar = true,
         onNavigationClick = if (navigator.canNavigateBack()) {
@@ -108,8 +114,7 @@ fun ProfileScreen(
                                 AppAlertDialog(icon = Icons.Outlined.Warning,
                                     dialogTitle = stringResource(
                                         if (deleteType == ScreenType.LINK) Res.string.link
-                                        else Res.string.education,
-                                        stringResource(Res.string.delete)
+                                        else Res.string.education, stringResource(Res.string.delete)
                                     ),
                                     dialogText = stringResource(Res.string.education_delete_message),
                                     onDismissRequest = {
@@ -118,8 +123,8 @@ fun ProfileScreen(
                                     onConfirmation = {
                                         if (deleteType == ScreenType.LINK) {
                                             viewModel.onEvent(
-                                                ProfileEvents.OnDeleteLinkClick(
-                                                    linkList = user.links ?: emptyList(),
+                                                ProfileEvents.OnDeleteLinkClick(linkList = user.links
+                                                    ?: emptyList(),
                                                     yetToDelete = viewModel.currentLinkClick.value
                                                         ?: return@AppAlertDialog,
                                                     onComplete = {
@@ -130,8 +135,7 @@ fun ProfileScreen(
                                                             )
                                                         )
                                                         isDeleteEducationDialogVisible = false
-                                                    }
-                                                )
+                                                    })
                                             )
                                             return@AppAlertDialog
                                         }
@@ -211,8 +215,7 @@ fun ProfileScreen(
                                 title = stringResource(Res.string.link),
                             ) {
                                 user.links?.forEach { linkModel ->
-                                    EducationDetailsItems(
-                                        title = linkModel.link,
+                                    EducationDetailsItems(title = linkModel.link,
                                         des = linkModel.description,
                                         isLink = true,
                                         onEditClick = {
@@ -234,8 +237,7 @@ fun ProfileScreen(
                                                 )
                                             )
                                             isDeleteEducationDialogVisible = true
-                                        }
-                                    )
+                                        })
                                 }
                                 Spacer(Modifier.height(MaterialTheme.spacing.medium))
                                 ApplyButton(text = stringResource(
@@ -252,6 +254,29 @@ fun ProfileScreen(
                                     )
                                 })
                             }
+                            Spacer(Modifier.height(MaterialTheme.spacing.large))
+                            ApplyButton(text = stringResource(Res.string.log_out), action = {
+//                                Todo: Shakya - Implement Alert Dialog
+                                viewModel.onEvent(ProfileEvents.PerformSignOut {
+                                    if (it != null) {
+                                        researchHubLog(
+                                            ResearchLogLevel.ERROR,
+                                            "ProfileScreen $it"
+                                        )
+//                                        Todo: Handle Error
+                                        return@PerformSignOut
+                                    }
+                                    runBlocking(Dispatchers.Main) {
+                                        navHostController.navigate(
+                                            ResearchHubNavigation.LogInScreen.route
+                                        ) {
+                                            popUpTo(ResearchHubNavigation.MainScreen.route) {
+                                                inclusive = true
+                                            }
+                                        }
+                                    }
+                                })
+                            })
                         }
                     }
                 },
@@ -267,38 +292,34 @@ fun ProfileScreen(
                                 onSaveClick = {
                                     viewModel.onEvent(
                                         ProfileEvents.OnSaveEducationClick(educationDetailsList = user.educationDetails
-                                            ?: emptyList(),
-                                            onComplete = {
-                                                researchHubLog(
-                                                    ResearchLogLevel.DEBUG, "ProfileScreen $it"
-                                                )
-                                                navigator.navigateBack()
-                                            })
+                                            ?: emptyList(), onComplete = {
+                                            researchHubLog(
+                                                ResearchLogLevel.DEBUG, "ProfileScreen $it"
+                                            )
+                                            navigator.navigateBack()
+                                        })
                                     )
                                 })
                         }
 
                         AnimatedVisibility(screenType == ScreenType.LINK) {
-                            AddOrEditLink(
-                                state = viewModel.currentLinkClick.value,
-                                onLinkSave = {
-                                    viewModel.onEvent(
-                                        ProfileEvents.OnAddLinkClick(linkList = user.links
-                                            ?: emptyList(),
-                                            link = it,
-                                            onComplete = { error ->
-                                                if (error != null) {
+                            AddOrEditLink(state = viewModel.currentLinkClick.value, onLinkSave = {
+                                viewModel.onEvent(
+                                    ProfileEvents.OnAddLinkClick(linkList = user.links
+                                        ?: emptyList(),
+                                        link = it,
+                                        onComplete = { error ->
+                                            if (error != null) {
 //                                                TODO: Handle Error
-                                                    researchHubLog(
-                                                        ResearchLogLevel.DEBUG,
-                                                        "ProfileScreen $error"
-                                                    )
-                                                }
+                                                researchHubLog(
+                                                    ResearchLogLevel.DEBUG, "ProfileScreen $error"
+                                                )
+                                            }
 
-                                                navigator.navigateBack()
-                                            })
-                                    )
-                                })
+                                            navigator.navigateBack()
+                                        })
+                                )
+                            })
                         }
                     }
                 })

@@ -22,7 +22,8 @@ data class HasUserUseCase(
         uid: String, state: (DataState<Boolean>) -> Unit = { _ -> }
     ) {
         try {
-            val doc = db.collection(DB).document(PATH).collection(SUB_DB).document(uid).get().await()
+            val doc =
+                db.collection(DB).document(PATH).collection(SUB_DB).document(uid).get().await()
             state(DataState.Success(doc.exists()))
         } catch (e: Exception) {
             state(DataState.Error(e))
@@ -104,6 +105,19 @@ data class LogInWithGoogleStudent @Inject constructor(
             }
         } catch (e: Exception) {
             state(DataState.Error(e))
+        }
+    }
+}
+
+data class SignOutUseCase @Inject constructor(
+    private val auth: FirebaseAuth
+) {
+    operator fun invoke(action: (Exception?) -> Unit) {
+        try {
+            auth.signOut()
+            action(null)
+        } catch (e: Exception) {
+            action(e)
         }
     }
 }

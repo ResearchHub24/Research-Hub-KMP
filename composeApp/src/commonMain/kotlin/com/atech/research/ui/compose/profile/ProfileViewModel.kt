@@ -16,7 +16,9 @@ import com.atech.research.utils.researchHubLog
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
-    private val useCases: UserUseCases, private val pref: PrefManager
+    private val useCases: UserUseCases,
+    private val pref: PrefManager,
+    private val signOutHelper: SignOutHelper
 ) : ResearchHubViewModel() {
 
     private val _user = mutableStateOf<DataState<UserModel>>(DataState.Loading)
@@ -68,8 +70,7 @@ class ProfileViewModel(
                 updateEducationDetails(updatedList, onError = event.onComplete)
             }
 
-            is ProfileEvents.OnLinkClick ->
-                _currentLinkClick.value = event.link
+            is ProfileEvents.OnLinkClick -> _currentLinkClick.value = event.link
 
 
             is ProfileEvents.OnAddLinkClick -> {
@@ -88,6 +89,20 @@ class ProfileViewModel(
                     it.created != event.yetToDelete.created
                 }
                 updateEducationDetails(updatedLinks = updatedLinkList, onError = event.onComplete)
+            }
+
+            is ProfileEvents.PerformSignOut -> scope.launch {
+                signOutHelper.signOut { error ->
+                    if (error != null) {
+                        event.onComplete(error.message)
+                    } else {
+                        pref.remove(Prefs.USER_ID.name)
+                        pref.remove(Prefs.USER_TYPE.name)
+                        pref.remove(Prefs.USER_NAME.name)
+                        pref.remove(Prefs.SET_PASSWORD_DONE.name)
+                        event.onComplete(null)
+                    }
+                }
             }
         }
     }

@@ -39,4 +39,8 @@ sealed interface ProfileEvents {
         val yetToDelete: LinkModel,
         val onComplete: (String?) -> Unit = {},
     ) : ProfileEvents
+
+    data class PerformSignOut(
+        val onComplete: (String?) -> Unit = {},
+    ) : ProfileEvents
 }

@@ -10,7 +10,9 @@ import com.atech.research.ui.compose.login.compose.setup.SetUpViewModel
 import com.atech.research.ui.compose.login.compose.util.HasUserUseCase
 import com.atech.research.ui.compose.login.compose.util.LogInUseCase
 import com.atech.research.ui.compose.login.compose.util.LogInWithGoogleStudent
+import com.atech.research.ui.compose.login.compose.util.SignOutUseCase
 import com.atech.research.ui.compose.profile.ProfileViewModel
+import com.atech.research.ui.compose.profile.SignOutHelper
 import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
 import com.atech.research.utils.LinkHelper
 import com.atech.research.utils.PrefManager
@@ -37,6 +39,7 @@ val appModule = module {
     single { HasUserUseCase(get()) }
     single { LogInUseCase(get(), get()) }
     single { LogInWithGoogleStudent(get(), get()) }
+    single { SignOutUseCase(get()) }
 //    single { getRoomDatabase(getDatabaseBuilder(get())) }
     single<SharedPreferences> {
         get<Context>().getSharedPreferences(
@@ -52,6 +55,8 @@ val appModule = module {
     single { generateImageLoader(get()) }
 
     single { LinkHelper(get()) }
+
+    single { SignOutHelper(get(), get()) }
 }
 
 val viewModelModule = module {
@@ -63,5 +68,5 @@ val viewModelModule = module {
     viewModel {
         HomeScreenViewModel(get(), get())
     }
-    viewModel { ProfileViewModel(get(), get()) }
+    viewModel { ProfileViewModel(get(), get(), get()) }
 }

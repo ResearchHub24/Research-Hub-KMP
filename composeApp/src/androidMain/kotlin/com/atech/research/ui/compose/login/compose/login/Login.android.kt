@@ -1,6 +1,7 @@
 package com.atech.research.ui.compose.login.compose.login
 
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -18,6 +19,7 @@ import androidx.lifecycle.viewModelScope
 import com.atech.research.common.GoogleButton
 import com.atech.research.ui.compose.login.compose.util.GoogleAuthUiClient
 import com.atech.research.ui.compose.login.compose.util.LogInWithGoogleStudent
+import com.atech.research.ui.compose.login.compose.util.SignOutUseCase
 import com.atech.research.utils.DataState
 import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.koinViewModel
