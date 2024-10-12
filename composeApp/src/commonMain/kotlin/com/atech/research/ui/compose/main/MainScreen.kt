@@ -1,5 +1,6 @@
 package com.atech.research.ui.compose.main
 
+import StudentHomeScreen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
@@ -77,7 +78,9 @@ fun MainScreen(
     }) {
         when (currentDestination) {
             TeacherAppDestinations.Home -> SetComposableAccordingToUser(teacherComposable = { HomeScreen() },
-                studentComposable = {})
+                studentComposable = {
+                    StudentHomeScreen()
+                })
 
             TeacherAppDestinations.Profile -> ProfileScreen(navHostController = navHostController)
             TeacherAppDestinations.Faculty -> Column {

@@ -1,5 +1,3 @@
-package com.atech.research.common
-
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -12,12 +10,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -39,16 +39,13 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Devices.TABLET
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.atech.research.ui.theme.ResearchHubTheme
+import com.atech.research.common.MainContainer
 import com.atech.research.ui.theme.spacing
 
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun StudentHomeScreen(
+fun StudentHomeScreen(
     modifier: Modifier = Modifier
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
@@ -72,6 +69,7 @@ private fun ListScreen(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     MainContainer(
         title = "Home",
+        enableTopBar = true,
         customTopBar = {
             Row(
                 modifier = Modifier
@@ -90,7 +88,16 @@ private fun ListScreen(
                             expanded = expanded,
                             onExpandedChange = { expanded = it },
                             placeholder = { Text("Search") },
-                            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                            leadingIcon = {
+                                IconButton(onClick = {
+                                    expanded = !expanded
+                                }) {
+                                    Icon(
+                                        if (expanded) Icons.AutoMirrored.Default.ArrowBack else Icons.Default.Search,
+                                        contentDescription = null
+                                    )
+                                }
+                            },
                             trailingIcon = {
                                 Icon(
                                     if (expanded) Icons.Default.FilterAlt else Icons.Default.AccountCircle,
@@ -165,14 +172,5 @@ private fun WelcomeSection() {
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight(400)
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Preview(device =TABLET, showBackground = true)
-@Composable
-private fun TestPreview() {
-    ResearchHubTheme() {
-        StudentHomeScreen()
     }
 }
