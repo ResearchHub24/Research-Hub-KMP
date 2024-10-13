@@ -62,7 +62,7 @@ fun Toolbar(
 fun MainContainer(
     modifier: Modifier = Modifier,
     enableTopBar: Boolean = getPlatformName() == Platform.ANDROID,
-    customTopBar: @Composable () -> Unit = {},
+    customTopBar: (@Composable () -> Unit)? = null,
     title: String = "",
     appBarColor: Color = MaterialTheme.colorScheme.background,
     scrollBehavior: TopAppBarScrollBehavior? = null,
@@ -74,7 +74,7 @@ fun MainContainer(
     content: @Composable (PaddingValues) -> Unit = { }
 ) {
     val topAppBar: @Composable () -> Unit = if (enableTopBar) {
-        if (customTopBar != {}) {
+        if (customTopBar != null) {
             customTopBar
         } else {
             {

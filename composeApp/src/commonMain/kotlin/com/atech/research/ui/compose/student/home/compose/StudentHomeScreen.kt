@@ -1,4 +1,5 @@
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -36,52 +38,56 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.atech.research.common.MainContainer
+import com.atech.research.common.ProgressBar
+import com.atech.research.common.ResearchItem
+import com.atech.research.core.ktor.model.ResearchModel
+import com.atech.research.ui.compose.student.home.StudentHomeViewModel
 import com.atech.research.ui.theme.spacing
+import com.atech.research.utils.DataState
+import com.atech.research.utils.koinViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun StudentHomeScreen(
     modifier: Modifier = Modifier
 ) {
+    val viewModel = koinViewModel<StudentHomeViewModel>()
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
-    ListDetailPaneScaffold(
-        modifier = modifier,
+    val allResearch by viewModel.allResearch
+    ListDetailPaneScaffold(modifier = modifier,
         directive = navigator.scaffoldDirective,
         value = navigator.scaffoldValue,
         listPane = {
-            ListScreen()
+            ListScreen(
+                items = allResearch
+            )
         },
-        detailPane = {}
-    )
+        detailPane = {})
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ListScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier, items: DataState<List<ResearchModel>> = DataState.Loading
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     MainContainer(
         title = "Home",
+        scrollBehavior = scrollBehavior,
         enableTopBar = true,
         customTopBar = {
             Row(
-                modifier = Modifier
-                    .padding(
-                        horizontal =
-                        if (!expanded) MaterialTheme.spacing.medium else MaterialTheme.spacing.default
-                    )
-                    .animateContentSize()
+                modifier = Modifier.padding(
+                    horizontal = if (!expanded) MaterialTheme.spacing.medium else MaterialTheme.spacing.default
+                ).animateContentSize()
+                    .background(TopAppBarDefaults.topAppBarColors().containerColor)
             ) {
                 SearchBar(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     inputField = {
                         SearchBarDefaults.InputField(
                             onSearch = { expanded = false },
@@ -119,39 +125,50 @@ private fun ListScreen(
                                 supportingContent = { Text("Additional info") },
                                 leadingContent = {
                                     Icon(
-                                        Icons.Filled.Star,
-                                        contentDescription = null
+                                        Icons.Filled.Star, contentDescription = null
                                     )
                                 },
                                 colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-                                modifier =
-                                Modifier
-                                    .clickable {
+                                modifier = Modifier.clickable {
 //                                textFieldState.setTextAndPlaceCursorAtEnd(resultText)
-                                        expanded = false
-                                    }
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 4.dp)
+                                    expanded = false
+                                }.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)
                             )
                         }
                     }
                 }
             }
         },
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-        scrollBehavior = scrollBehavior,
+        modifier = modifier,
     ) { contentPadding ->
-        Column(
-            modifier = Modifier
-                .padding(contentPadding)
+        LazyColumn(
+            modifier = Modifier.padding(
+            ).nestedScroll(scrollBehavior.nestedScrollConnection), contentPadding = contentPadding
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .padding(horizontal = MaterialTheme.spacing.medium)
-                    .semantics { traversalIndex = 1f }
-            ) {
-                item(key = "welcome") {
-                    WelcomeSection()
+            if (items is DataState.Loading) {
+                item(key = "progress") {
+                    ProgressBar(contentPadding)
+                }
+                return@LazyColumn
+            }
+            if (items is DataState.Error) {
+                item(key = "error") {
+                    Text(items.exception.message ?: "Something went wrong")
+                }
+                return@LazyColumn
+            }
+            item(key = "welcome") {
+                WelcomeSection()
+            }
+            if (items is DataState.Success && items.data.isEmpty()) {
+                item(key = "empty") {
+                    Text("No research found")
+                }
+                return@LazyColumn
+            }
+            if (items is DataState.Success) {
+                items(items = items.data) { research ->
+                    ResearchItem(model = research)
                 }
             }
         }
@@ -160,7 +177,11 @@ private fun ListScreen(
 
 @Composable
 private fun WelcomeSection() {
-    Column {
+    Column(
+        modifier = Modifier.padding(
+            MaterialTheme.spacing.large, vertical = MaterialTheme.spacing.medium
+        )
+    ) {
         Text(
             "Welcome to Research Hub!",
             style = MaterialTheme.typography.headlineSmall,

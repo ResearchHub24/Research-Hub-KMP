@@ -42,11 +42,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices.TABLET
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.ui.theme.ResearchHubTheme
 import com.atech.research.ui.theme.spacing
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun StudentHomeScreen(
     modifier: Modifier = Modifier
@@ -134,20 +135,17 @@ private fun ListScreen(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         scrollBehavior = scrollBehavior,
     ) { contentPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
-                .padding(contentPadding)
+                .padding(horizontal = MaterialTheme.spacing.medium)
+                .semantics { traversalIndex = 1f },
+            contentPadding = contentPadding
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .padding(horizontal = MaterialTheme.spacing.medium)
-                    .semantics { traversalIndex = 1f }
-            ) {
-                item(key = "welcome") {
-                    WelcomeSection()
-                }
+            item(key = "welcome") {
+                WelcomeSection()
             }
         }
+
     }
 }
 
@@ -165,11 +163,13 @@ private fun WelcomeSection() {
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight(400)
         )
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
     }
 }
 
+
 @Preview(showBackground = true)
-@Preview(device =TABLET, showBackground = true)
+@Preview(device = TABLET, showBackground = true)
 @Composable
 private fun TestPreview() {
     ResearchHubTheme() {

@@ -44,7 +44,7 @@ import com.atech.research.common.EmptyWelcomeScreen
 import com.atech.research.common.MainContainer
 import com.atech.research.common.MarkdownViewer
 import com.atech.research.common.ProgressBar
-import com.atech.research.common.ResearchItem
+import com.atech.research.common.ResearchTeacherItem
 import com.atech.research.common.bottomPaddingLazy
 import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.ui.compose.teacher.home.HomeScreenEvents
@@ -193,7 +193,7 @@ fun HomeScreen(
                             modifier = Modifier.fillMaxSize(), state = state
                         ) {
                             items(researchList) { research ->
-                                ResearchItem(model = research,
+                                ResearchTeacherItem(model = research,
                                     isDeleteButtonVisible = true,
                                     onClick = {
                                         viewModel.onEvent(HomeScreenEvents.SetResearch(research))
