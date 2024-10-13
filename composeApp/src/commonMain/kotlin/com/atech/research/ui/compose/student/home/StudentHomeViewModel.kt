@@ -13,7 +13,8 @@ class StudentHomeViewModel(
 ) : ResearchHubViewModel() {
     private val _researchModel = mutableStateOf<DataState<List<ResearchModel>>>(DataState.Loading)
     val allResearch: State<DataState<List<ResearchModel>>> get() = _researchModel
-
+    private val _currentModel = mutableStateOf<ResearchModel?>(null)
+    val selectedResearch: State<ResearchModel?> get() = _currentModel
 
     init {
         onEvent(StudentHomeEvents.LoadData)
@@ -22,6 +23,7 @@ class StudentHomeViewModel(
     fun onEvent(event: StudentHomeEvents) {
         when (event) {
             StudentHomeEvents.LoadData -> loadData()
+            is StudentHomeEvents.OnResearchClick -> _currentModel.value = event.model
         }
     }
 

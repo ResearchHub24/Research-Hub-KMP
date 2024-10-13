@@ -16,14 +16,15 @@ import com.atech.research.ui.theme.spacing
 fun ApplyButton(
     text: String,
     modifier: Modifier = Modifier,
+    canFillWidth: Boolean = true,
     enable: Boolean = true,
     horizontalPadding: Dp = MaterialTheme.spacing.default,
     action: () -> Unit
 ) {
     TextButton(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = horizontalPadding),
+            .padding(horizontal = horizontalPadding)
+            .let { if (canFillWidth) it.fillMaxWidth() else it },
         onClick = action,
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,

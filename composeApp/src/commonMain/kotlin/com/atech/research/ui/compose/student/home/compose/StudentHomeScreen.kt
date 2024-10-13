@@ -28,7 +28,9 @@ import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,8 +46,11 @@ import com.atech.research.common.MainContainer
 import com.atech.research.common.ProgressBar
 import com.atech.research.common.ResearchItem
 import com.atech.research.core.ktor.model.ResearchModel
+import com.atech.research.ui.compose.student.home.StudentHomeEvents
 import com.atech.research.ui.compose.student.home.StudentHomeViewModel
+import com.atech.research.ui.compose.student.home.compose.DetailScreen
 import com.atech.research.ui.theme.spacing
+import com.atech.research.utils.BackHandler
 import com.atech.research.utils.DataState
 import com.atech.research.utils.koinViewModel
 
@@ -57,21 +62,43 @@ fun StudentHomeScreen(
     val viewModel = koinViewModel<StudentHomeViewModel>()
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
     val allResearch by viewModel.allResearch
+    val currentResearch by viewModel.selectedResearch
+    BackHandler(navigator.canNavigateBack()) {
+        navigator.navigateBack()
+    }
     ListDetailPaneScaffold(modifier = modifier,
         directive = navigator.scaffoldDirective,
         value = navigator.scaffoldValue,
         listPane = {
-            ListScreen(
-                items = allResearch
-            )
+            AnimatedPane {
+                ListScreen(
+                    items = allResearch,
+                    onItemClicked = {
+                        viewModel.onEvent(StudentHomeEvents.OnResearchClick(it))
+                        navigator.navigateTo(pane = ListDetailPaneScaffoldRole.Detail, content = it)
+                    }
+                )
+            }
         },
-        detailPane = {})
+        detailPane = {
+            AnimatedPane {
+                DetailScreen(
+                    researchModel = currentResearch,
+                    onNavigationClick = {
+                        viewModel.onEvent(StudentHomeEvents.OnResearchClick(null))
+                        navigator.navigateBack()
+                    }
+                )
+            }
+        })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ListScreen(
-    modifier: Modifier = Modifier, items: DataState<List<ResearchModel>> = DataState.Loading
+    modifier: Modifier = Modifier,
+    items: DataState<List<ResearchModel>> = DataState.Loading,
+    onItemClicked: (ResearchModel) -> Unit = {}
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -168,7 +195,12 @@ private fun ListScreen(
             }
             if (items is DataState.Success) {
                 items(items = items.data) { research ->
-                    ResearchItem(model = research)
+                    ResearchItem(
+                        model = research,
+                        onClick = {
+                            onItemClicked(research)
+                        }
+                    )
                 }
             }
         }
