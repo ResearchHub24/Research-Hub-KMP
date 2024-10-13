@@ -24,6 +24,7 @@ import com.atech.research.common.EditText
 import com.atech.research.common.GoogleButton
 import com.atech.research.common.PasswordEditTextCompose
 import com.atech.research.core.ktor.ResearchHubClient
+import com.atech.research.core.ktor.model.LoginResponse
 import com.atech.research.ui.theme.captionColor
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.DataState
@@ -34,7 +35,7 @@ import kotlinx.coroutines.launch
 actual fun LoginScreenType(
     viewModel: LogInViewModel,
     onEvent: (LogInEvents) -> Unit,
-    onLogInDone: (String, String) -> Unit
+    onLogInDone: (LoginResponse) -> Unit
 ) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -82,8 +83,7 @@ actual fun LoginScreenType(
                     is DataState.Success -> {
                         hasClick = false
                         onLogInDone(
-                            "${dataState.data.uid}$${dataState.data.userType}",
-                            dataState.data.displayName ?: ""
+                            dataState.data
                         )
                     }
                 }

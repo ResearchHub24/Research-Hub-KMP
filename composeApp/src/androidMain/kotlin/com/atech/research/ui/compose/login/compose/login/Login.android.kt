@@ -1,7 +1,6 @@
 package com.atech.research.ui.compose.login.compose.login
 
 import android.app.Activity.RESULT_OK
-import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -17,9 +16,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewModelScope
 import com.atech.research.common.GoogleButton
+import com.atech.research.core.ktor.model.LoginResponse
 import com.atech.research.ui.compose.login.compose.util.GoogleAuthUiClient
 import com.atech.research.ui.compose.login.compose.util.LogInWithGoogleStudent
-import com.atech.research.ui.compose.login.compose.util.SignOutUseCase
 import com.atech.research.utils.DataState
 import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.koinViewModel
@@ -31,7 +30,7 @@ import kotlinx.coroutines.launch
 actual fun LoginScreenType(
     viewModel: LogInViewModel,
     onEvent: (LogInEvents) -> Unit,
-    onLogInDone: (String, String) -> Unit
+    onLogInDone: (LoginResponse) -> Unit
 ) {
     val logInState by viewModel.logInState
     val context = LocalContext.current
@@ -79,7 +78,15 @@ actual fun LoginScreenType(
         }
         logInState.uId?.let {
             logInMessage = "Sign Done"
-            onLogInDone(it, logInState.userName ?: "")
+            onLogInDone(
+                LoginResponse(
+                    uid = logInState.uId ?: "",
+                    name = logInState.userName ?: "",
+                    email = logInState.email ?: "",
+                    photoUrl = logInState.photoUrl ?: "",
+                    userType = logInState.userType ?: ""
+                )
+            )
         }
     }
     GoogleButton(loadingText = logInMessage, hasClick = hasClick, hasClickChange = { value ->
@@ -114,7 +121,13 @@ class LogInViewModelImp(
                 DataState.Loading -> {}
                 is DataState.Success -> {
                     _logInState.value =
-                        LogInState(uId = state.data.uid, userName = state.data.displayName)
+                        LogInState(
+                            uId = state.data.uid,
+                            userName = state.data.displayName,
+                            photoUrl = state.data.photoUrl,
+                            email = state.data.email,
+                            userType = state.data.userType
+                        )
                 }
             }
         }

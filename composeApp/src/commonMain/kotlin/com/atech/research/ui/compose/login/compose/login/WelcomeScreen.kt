@@ -23,10 +23,7 @@ import com.atech.research.ui.navigation.MainScreenScreenRoutes
 import com.atech.research.ui.navigation.SetUpScreenArgs
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.Prefs
-import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.isAndroid
-import com.atech.research.utils.researchHubLog
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.app_logo
@@ -34,8 +31,7 @@ import researchhub.composeapp.generated.resources.app_logo
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WelcomeScreen(
-    modifier: Modifier = Modifier,
-    navController: NavController
+    modifier: Modifier = Modifier, navController: NavController
 ) {
     val pref = LocalDataStore.current
     val uid = pref.getString(Prefs.USER_ID.name)
@@ -72,19 +68,18 @@ fun WelcomeScreen(
                 val viewModel = getViewModel()
                 LoginScreenType(viewModel = viewModel,
                     onEvent = viewModel::onLoginEvent,
-                    onLogInDone = { res,name ->
-                        val uid1 = res.split("$").first()
-                            pref.saveString(Prefs.USER_ID.name, uid1)
-                            pref.saveString(Prefs.USER_NAME.name, name)
-                            if (!isAndroid()) {
-                                val userTypeId = res.split("$").last()
-                                pref.saveString(Prefs.USER_TYPE.name, userTypeId)
-                                pref.saveBoolean(Prefs.SET_PASSWORD_DONE.name, true)
-                                navigateToHome(navController)
-                                return@LoginScreenType
-                            }
-                            navigateToSetupScreen(navController, uid1)
-
+                    onLogInDone = { loginResponse ->
+                        pref.saveString(Prefs.USER_ID.name, loginResponse.uid)
+                        pref.saveString(Prefs.USER_NAME.name, loginResponse.name)
+                        pref.saveString(Prefs.USER_EMAIL.name, loginResponse.email)
+                        pref.saveString(Prefs.USER_PROFILE_URL.name, loginResponse.photoUrl ?: "")
+                        if (!isAndroid()) {
+                            pref.saveString(Prefs.USER_TYPE.name, loginResponse.userType)
+                            pref.saveBoolean(Prefs.SET_PASSWORD_DONE.name, true)
+                            navigateToHome(navController)
+                            return@LoginScreenType
+                        }
+                        navigateToSetupScreen(navController, loginResponse.uid)
                     })
             }
         }

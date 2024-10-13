@@ -1,6 +1,7 @@
 package com.atech.research.core.ktor
 
 import com.atech.research.core.ktor.model.ErrorResponse
+import com.atech.research.core.ktor.model.LoginResponse
 import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.core.ktor.model.SuccessResponse
 import com.atech.research.core.ktor.model.TagModel
@@ -66,9 +67,9 @@ class ResearchHubClientImp(
         DataState.Error(e)
     }
 
-    override suspend fun logInUser(email: String, password: String): DataState<UserModel> =
+    override suspend fun logInUser(email: String, password: String): DataState<LoginResponse> =
         try {
-            checkError<UserModel, ErrorResponse>(
+            checkError<LoginResponse, ErrorResponse>(
                 client.post {
                     url("${ResearchHubClient.LOGIN}?email=$email&password=$password")
                 }

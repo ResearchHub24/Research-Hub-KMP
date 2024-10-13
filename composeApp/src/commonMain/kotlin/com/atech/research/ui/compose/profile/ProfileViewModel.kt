@@ -100,6 +100,8 @@ class ProfileViewModel(
                         pref.remove(Prefs.USER_TYPE.name)
                         pref.remove(Prefs.USER_NAME.name)
                         pref.remove(Prefs.SET_PASSWORD_DONE.name)
+                        pref.remove(Prefs.USER_EMAIL.name)
+                        pref.remove(Prefs.USER_PROFILE_URL.name)
                         event.onComplete(null)
                     }
                 }

@@ -75,6 +75,8 @@ fun HomeScreen(
     val appBarBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val uid = LocalDataStore.current.getString(Prefs.USER_ID.name)
     val userName = LocalDataStore.current.getString(Prefs.USER_NAME.name)
+    val userEmail = LocalDataStore.current.getString(Prefs.USER_EMAIL.name)
+    val userPhoto = LocalDataStore.current.getString(Prefs.USER_PROFILE_URL.name)
     val viewModel = koinViewModel<HomeScreenViewModel>()
     LaunchedEffect(uid) {
         viewModel.onEvent(HomeScreenEvents.SetUserId(uid))
@@ -151,7 +153,9 @@ fun HomeScreen(
                                         tags = emptyList(),
                                         authorUid = uid,
                                         author = userName,
-                                        path = ""
+                                        path = "",
+                                        authorEmail = userEmail,
+                                        authorPhoto = userPhoto
                                     )
                                 )
                             )
