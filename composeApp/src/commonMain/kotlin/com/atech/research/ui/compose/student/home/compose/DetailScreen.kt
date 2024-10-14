@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.atech.research.common.AsyncImage
 import com.atech.research.common.BottomPadding
@@ -37,6 +38,9 @@ import com.atech.research.common.MainContainer
 import com.atech.research.common.MarkdownViewer
 import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.ui.theme.spacing
+import com.atech.research.utils.getScreenHeight
+import com.atech.research.utils.getScreenWidth
+import com.atech.research.utils.removeExtraSpacesPreserveLineBreaks
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -67,12 +71,12 @@ internal fun DetailScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
-                text = researchModel.title,
+                text = researchModel.title.removeExtraSpacesPreserveLineBreaks(),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(bottom = MaterialTheme.spacing.medium)
             )
             MarkdownViewer(
-                markdown = researchModel.description,
+                markdown = researchModel.description.removeExtraSpacesPreserveLineBreaks(),
                 modifier = Modifier.padding(bottom = MaterialTheme.spacing.medium)
             )
             HorizontalDivider()
@@ -132,7 +136,12 @@ internal fun DetailScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         AsyncImage(
-                            modifier = Modifier.size(100.dp),
+                            modifier = Modifier.size(
+                                calculateImageSize(
+                                    getScreenWidth().value,
+                                    getScreenHeight().value
+                                )
+                            ),
                             url = researchModel.authorPhoto,
                             isLoadCircular = true,
                         )
@@ -163,5 +172,14 @@ internal fun DetailScreen(
             BottomPadding()
             BottomPadding()
         }
+    }
+}
+
+private fun calculateImageSize(screenWidth: Float, screenHeight: Float): Dp {
+    val smallerDimension = minOf(screenWidth, screenHeight)
+    return when {
+        smallerDimension < 600f -> 80.dp  // For smaller screens
+        smallerDimension < 900f -> 100.dp // For medium screens
+        else -> 120.dp                    // For larger screens
     }
 }
