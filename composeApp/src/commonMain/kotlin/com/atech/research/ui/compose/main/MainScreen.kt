@@ -19,6 +19,7 @@ import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -56,30 +57,50 @@ fun MainScreen(
     val isTeacher = IsUser()
     var currentDestination by rememberSaveable { mutableStateOf(TeacherAppDestinations.Home) }
     val adaptiveInfo = currentWindowAdaptiveInfo()
+    var showNavigation by remember { mutableStateOf(true) }
+
     val customNavSuiteType = with(adaptiveInfo) {
-        if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.EXPANDED) {
-            NavigationSuiteType.NavigationRail
-        } else {
-            NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo)
+        when (windowSizeClass.windowWidthSizeClass) {
+            WindowWidthSizeClass.COMPACT -> when {
+                showNavigation -> NavigationSuiteType.NavigationBar
+                else -> NavigationSuiteType.None
+            }
+
+            WindowWidthSizeClass.MEDIUM -> NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(
+                adaptiveInfo
+            )
+
+            WindowWidthSizeClass.EXPANDED -> NavigationSuiteType.NavigationRail
+            else -> NavigationSuiteScaffoldDefaults.calculateFromAdaptiveInfo(adaptiveInfo)
         }
     }
-    NavigationSuiteScaffold(navigationSuiteColors = NavigationSuiteDefaults.colors(
-        navigationRailContainerColor = BottomAppBarDefaults.containerColor
-    ), layoutType = customNavSuiteType, navigationSuiteItems = {
-        setAccordingToUser(isTeacher = isTeacher, teacherComposable = {
-            TeacherAppDestinations.entries.filter { it.forTeacher == isTeacher }
-        }, studentComposable = {
-            TeacherAppDestinations.entries
-        }).forEach { item ->
-            navItemEntry(item = item, selected = item == currentDestination, onClick = {
-                currentDestination = item
-            })
+    NavigationSuiteScaffold(
+        navigationSuiteColors = NavigationSuiteDefaults.colors(
+            navigationRailContainerColor = BottomAppBarDefaults.containerColor
+        ),
+        layoutType = customNavSuiteType,
+        navigationSuiteItems = {
+            setAccordingToUser(isTeacher = isTeacher, teacherComposable = {
+                TeacherAppDestinations.entries.filter { it.forTeacher == isTeacher }
+            }, studentComposable = {
+                TeacherAppDestinations.entries
+            }).forEach { item ->
+                navItemEntry(item = item, selected = item == currentDestination, onClick = {
+                    currentDestination = item
+                })
+            }
         }
-    }) {
+    ) {
         when (currentDestination) {
-            TeacherAppDestinations.Home -> SetComposableAccordingToUser(teacherComposable = { HomeScreen() },
+            TeacherAppDestinations.Home -> SetComposableAccordingToUser(teacherComposable = {
+                HomeScreen {
+                    showNavigation = it
+                }
+            },
                 studentComposable = {
-                    StudentHomeScreen()
+                    StudentHomeScreen {
+                        showNavigation = it
+                    }
                 })
 
             TeacherAppDestinations.Profile -> ProfileScreen(navHostController = navHostController)

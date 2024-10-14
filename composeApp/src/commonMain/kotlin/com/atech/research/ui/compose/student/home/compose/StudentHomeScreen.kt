@@ -31,8 +31,10 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -52,12 +54,15 @@ import com.atech.research.ui.compose.student.home.compose.DetailScreen
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.BackHandler
 import com.atech.research.utils.DataState
+import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.koinViewModel
+import com.atech.research.utils.researchHubLog
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun StudentHomeScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    canShowAppBar: (Boolean) -> Unit
 ) {
     val viewModel = koinViewModel<StudentHomeViewModel>()
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
@@ -65,6 +70,9 @@ fun StudentHomeScreen(
     val currentResearch by viewModel.selectedResearch
     BackHandler(navigator.canNavigateBack()) {
         navigator.navigateBack()
+    }
+    LaunchedEffect(navigator.currentDestination?.pane) {
+        canShowAppBar(navigator.currentDestination?.pane == ThreePaneScaffoldRole.Secondary)
     }
     ListDetailPaneScaffold(modifier = modifier,
         directive = navigator.scaffoldDirective,

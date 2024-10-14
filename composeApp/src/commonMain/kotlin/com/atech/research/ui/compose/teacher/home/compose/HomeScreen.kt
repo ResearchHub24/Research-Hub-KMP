@@ -71,6 +71,7 @@ enum class TerritoryScreen {
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    canShowAppBar: (Boolean) -> Unit
 ) {
     val appBarBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val uid = LocalDataStore.current.getString(Prefs.USER_ID.name)
@@ -87,6 +88,9 @@ fun HomeScreen(
     val allTags by viewModel.allTags
     var territoryScreen by rememberSaveable { mutableStateOf(TerritoryScreen.ViewMarkdown) }
     val navigator = rememberListDetailPaneScaffoldNavigator<ResearchModel>()
+    LaunchedEffect(navigator.currentDestination?.pane) {
+        canShowAppBar(navigator.currentDestination?.pane == ThreePaneScaffoldRole.Secondary)
+    }
     BackHandler(navigator.canNavigateBack()) {
         navigator.navigateBack()
     }
