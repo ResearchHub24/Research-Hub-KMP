@@ -31,6 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.atech.research.common.AppAlertDialog
 import com.atech.research.common.ApplyButton
@@ -45,6 +47,8 @@ import com.atech.research.ui.compose.profile.ProfileViewModel
 import com.atech.research.ui.navigation.ResearchHubNavigation
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.BackHandler
+import com.atech.research.utils.DataLoader
+import com.atech.research.utils.DataLoaderImpl
 import com.atech.research.utils.DataState
 import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.koinViewModel
@@ -80,6 +84,10 @@ fun ProfileScreen(
     var isDeleteEducationDialogVisible by remember { mutableStateOf(false) }
     var screenType by remember { mutableStateOf(ScreenType.EDUCATION) }
     var deleteType by remember { mutableStateOf(ScreenType.EDUCATION) }
+    val dataLoader: DataLoader by DataLoaderImpl()
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+    dataLoader.registerLifecycleOwner(lifecycleOwner)
+    dataLoader.setTask { viewModel.onEvent(ProfileEvents.LoadData) }
     BackHandler(navigator.canNavigateBack()) {
         navigator.navigateBack()
     }
