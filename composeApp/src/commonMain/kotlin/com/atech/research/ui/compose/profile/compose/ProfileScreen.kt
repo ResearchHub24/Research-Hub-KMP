@@ -65,10 +65,11 @@ import researchhub.composeapp.generated.resources.link
 import researchhub.composeapp.generated.resources.log_out
 import researchhub.composeapp.generated.resources.personal_details
 import researchhub.composeapp.generated.resources.profile
+import researchhub.composeapp.generated.resources.skill
 
 
 private enum class ScreenType {
-    EDUCATION, LINK
+    EDUCATION, LINK, SKILL
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
@@ -102,8 +103,7 @@ fun ProfileScreen(
         enableTopBar = true,
         onNavigationClick = if (navigator.canNavigateBack() || fromDetailScreen) {
             {
-                if (!navigator.canNavigateBack())
-                    onNavigateBack()
+                if (!navigator.canNavigateBack()) onNavigateBack()
                 viewModel.onEvent(ProfileEvents.OnEditClick(null))
                 viewModel.onEvent(ProfileEvents.OnLinkClick(null))
                 navigator.navigateBack()
@@ -225,6 +225,29 @@ fun ProfileScreen(
                                     })
                                 }
                             }
+                            Spacer(Modifier.height(MaterialTheme.spacing.medium))
+                            CardSection(
+                                title = stringResource(Res.string.skill),
+                            ) {
+                                user.skillList?.forEach {
+                                    EducationDetailsItems(
+                                        title = it,
+                                        des = "",
+                                        canShowButtons = true,
+                                        canShowEditButton = false
+                                    )
+                                }
+                                Spacer(Modifier.height(MaterialTheme.spacing.medium))
+                                ApplyButton(text = stringResource(
+                                    Res.string.add, stringResource(Res.string.skill)
+                                ), action = {
+                                    screenType = ScreenType.SKILL
+                                    navigator.navigateTo(
+                                        pane = ListDetailPaneScaffoldRole.Extra
+                                    )
+                                })
+                            }
+
                             if (isTeacher) {
                                 Spacer(Modifier.height(MaterialTheme.spacing.medium))
                                 CardSection(
@@ -279,8 +302,7 @@ fun ProfileScreen(
                                     viewModel.onEvent(ProfileEvents.PerformSignOut {
                                         if (it != null) {
                                             researchHubLog(
-                                                ResearchLogLevel.ERROR,
-                                                "ProfileScreen $it"
+                                                ResearchLogLevel.ERROR, "ProfileScreen $it"
                                             )
 //                                        Todo: Handle Error
                                             return@PerformSignOut
@@ -306,8 +328,7 @@ fun ProfileScreen(
                         AnimatedVisibility(screenType == ScreenType.EDUCATION) {
                             val currentItem by viewModel.currentEducationDetails
                             if (currentItem == null) return@AnimatedVisibility
-                            EducationDetails(
-                                state = currentItem!!,
+                            EducationDetails(state = currentItem!!,
                                 onEvent = viewModel::onEvent,
                                 onSaveClick = {
                                     viewModel.onEvent(
@@ -340,6 +361,38 @@ fun ProfileScreen(
                                         })
                                 )
                             })
+                        }
+
+                        AnimatedVisibility(screenType == ScreenType.SKILL) {
+                            viewModel.onEvent(ProfileEvents.LoadSkillList)
+                            val skill by viewModel.skillList
+                            if (skill is DataState.Loading) {
+                                ProgressBar(paddingValue)
+                                return@AnimatedVisibility
+                            }
+                            if (skill is DataState.Success) {
+                                AddOrEditSkill(
+                                    skillList = (skill as DataState.Success).data,
+                                    selectedList = user.skillList ?: emptyList(),
+                                    onDoneClick = {
+                                        viewModel.onEvent(
+                                            ProfileEvents.OnAddSkillClick(
+                                                skillList = it,
+                                                onComplete = { error ->
+//                                                    TODO: Handle Error
+                                                    if (error != null) {
+                                                        researchHubLog(
+                                                            ResearchLogLevel.DEBUG,
+                                                            "ProfileScreen $error"
+                                                        )
+                                                    }
+                                                    navigator.navigateBack()
+                                                }
+                                            )
+                                        )
+                                    }
+                                )
+                            }
                         }
                     }
                 })

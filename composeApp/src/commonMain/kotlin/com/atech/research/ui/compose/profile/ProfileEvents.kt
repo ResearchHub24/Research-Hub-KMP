@@ -43,4 +43,11 @@ sealed interface ProfileEvents {
     data class PerformSignOut(
         val onComplete: (String?) -> Unit = {},
     ) : ProfileEvents
+
+    data object LoadSkillList : ProfileEvents
+
+    data class OnAddSkillClick(
+        val skillList: List<String>,
+        val onComplete: (String?) -> Unit = {},
+    ) : ProfileEvents
 }

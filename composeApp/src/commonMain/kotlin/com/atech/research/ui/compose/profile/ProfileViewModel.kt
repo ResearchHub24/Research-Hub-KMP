@@ -30,6 +30,9 @@ class ProfileViewModel(
     private val _currentLinkClick = mutableStateOf<LinkModel?>(null)
     val currentLinkClick: State<LinkModel?> get() = _currentLinkClick
 
+    private val _skillList = mutableStateOf<DataState<List<String>>>(DataState.Loading)
+    val skillList: State<DataState<List<String>>> get() = _skillList
+
     init {
         onEvent(ProfileEvents.LoadData)
     }
@@ -106,6 +109,15 @@ class ProfileViewModel(
                     }
                 }
             }
+
+            ProfileEvents.LoadSkillList -> loadSkill()
+            is ProfileEvents.OnAddSkillClick -> {
+                val updatedList = event.skillList
+                researchHubLog(
+                    ResearchLogLevel.DEBUG, "Updated List: $updatedList"
+                )
+                updateEducationDetails(skillList = updatedList, onError = event.onComplete)
+            }
         }
     }
 
@@ -116,13 +128,17 @@ class ProfileViewModel(
     private fun updateEducationDetails(
         updatedList: List<EducationDetails> = emptyList(),
         updatedLinks: List<LinkModel>? = null,
+        skillList: List<String>? = null,
         onError: (String?) -> Unit = {}
     ) = scope.launch {
         try {
             val dataState = useCases.updateUserDetail(
                 pref.getString(Prefs.USER_ID.name),
-                if (updatedLinks != null) UserUpdateQueryHelper.UpdateUserLinks(updatedLinks)
-                else UserUpdateQueryHelper.UpdateUserEducationDetails(updatedList)
+                when {
+                    updatedLinks != null -> UserUpdateQueryHelper.UpdateUserLinks(updatedLinks)
+                    skillList != null -> UserUpdateQueryHelper.UpdateUserSkillList(skillList)
+                    else -> UserUpdateQueryHelper.UpdateUserEducationDetails(updatedList)
+                },
             )
             if (dataState is DataState.Success) {
                 _currentEducationDetails.value = null
@@ -134,6 +150,13 @@ class ProfileViewModel(
             }
         } catch (e: Exception) {
             researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
+        }
+    }
+
+    private fun loadSkill() {
+        scope.launch {
+            val dataState = useCases.getAllSkills()
+            _skillList.value = dataState
         }
     }
 }

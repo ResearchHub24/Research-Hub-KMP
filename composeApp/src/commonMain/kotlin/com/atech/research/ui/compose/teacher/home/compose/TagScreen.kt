@@ -5,15 +5,16 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.CardDefaults
@@ -33,7 +34,6 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import com.atech.research.common.DisplayCard
 import com.atech.research.common.EditTextEnhance
-import com.atech.research.common.ProgressBar
 import com.atech.research.common.TagItem
 import com.atech.research.common.TitleComposable
 import com.atech.research.core.ktor.model.TagModel
@@ -56,7 +56,9 @@ fun TagScreen(
 //    }
     var typedTag by rememberSaveable { mutableStateOf("") }
     Column(
-        modifier = modifier.fillMaxSize().padding(MaterialTheme.spacing.medium),
+        modifier = modifier.fillMaxSize()
+            .padding(MaterialTheme.spacing.medium)
+            .verticalScroll(rememberScrollState()),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

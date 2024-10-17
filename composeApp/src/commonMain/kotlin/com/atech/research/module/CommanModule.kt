@@ -7,6 +7,7 @@ import com.atech.research.core.usecase.AddTagUseCase
 import com.atech.research.core.usecase.DeleteResearchUseCase
 import com.atech.research.core.usecase.DeleteTagUseCase
 import com.atech.research.core.usecase.GetAllResearch
+import com.atech.research.core.usecase.GetAllSkillsUseCase
 import com.atech.research.core.usecase.GetAllTagsUseCase
 import com.atech.research.core.usecase.GetPostedResearchUseCase
 import com.atech.research.core.usecase.GetUseDetailUseCase
@@ -43,7 +44,8 @@ val commonModule = module {
 
     single { GetUseDetailUseCase(get()) }
     single { UpdateUserDetailUseCase(get()) }
-    single { UserUseCases(get(), get()) }
+    single { GetAllSkillsUseCase(get()) }
+    single { UserUseCases(get(), get(), get()) }
 
     single { GetAllResearch(get()) }
     single { StudentResearchUseCases(get()) }

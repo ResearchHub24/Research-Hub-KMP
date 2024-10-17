@@ -53,6 +53,9 @@ class ResearchHubClientImp(
                         is UserUpdateQueryHelper.UpdateUserLinks ->
                             "${it.queryType}=${it.value.toJson()}"
 
+                        is UserUpdateQueryHelper.UpdateUserSkillList ->
+                            "${it.queryType}=${it.value.toJson()}"
+
                         else -> "${it.queryType}=${it.value}"
                     }
                 }
@@ -175,6 +178,20 @@ class ResearchHubClientImp(
             DataState.Success(
                 client.put {
                     url("${ResearchHubClient.RESEARCH_POST}/tags/delete?id=${tagModel.name}")
+                    contentType(ContentType.Application.Json)
+                }.body()
+            )
+        } catch (e: Exception) {
+            researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
+            DataState.Error(e)
+        }
+    }
+
+    override suspend fun getAllSkills(): DataState<List<String>> {
+        return try {
+            checkError<List<String>, ErrorResponse>(
+                client.getWithFallback {
+                    url(ResearchHubClient.SKILLS)
                     contentType(ContentType.Application.Json)
                 }.body()
             )

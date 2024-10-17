@@ -39,16 +39,19 @@ interface ResearchHubClient {
 
     suspend fun deleteTag(tagModel: TagModel): DataState<String>
 
+    suspend fun getAllSkills(): DataState<List<String>>
+
 
     companion object {
         private const val BASE_URL = "http://192.168.29.205:9090/api/v1"
 
-//                private const val BASE_URL = "http://192.168.66.65:9090/api/v1"
+        //                private const val BASE_URL = "http://192.168.66.65:9090/api/v1"
         const val USER = "$BASE_URL/users"
         const val LOGIN = "$BASE_URL/login"
         const val RESEARCH = "$BASE_URL/research"
         const val RESEARCH_POST = "$RESEARCH/post"
         const val DELETE_RESEARCH = "$RESEARCH/delete"
         const val TAGS = "$RESEARCH/tags"
+        const val SKILLS = "$RESEARCH/skills"
     }
 }

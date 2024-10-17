@@ -30,6 +30,7 @@ fun EducationDetailsItems(
     des: String,
     isLink: Boolean = false,
     canShowButtons: Boolean = true,
+    canShowEditButton: Boolean = true,
     onEditClick: () -> Unit = {},
     onDeleteClick: () -> Unit = {}
 ) {
@@ -75,10 +76,11 @@ fun EducationDetailsItems(
                     imageVector = Icons.Outlined.Delete,
                     modifier = Modifier.size(48.dp)
                 )
-                CustomIconButton(
-                    action = onEditClick,
-                    modifier = Modifier.size(48.dp)
-                )
+                if (canShowEditButton)
+                    CustomIconButton(
+                        action = onEditClick,
+                        modifier = Modifier.size(48.dp)
+                    )
             }
         }
     }
