@@ -34,6 +34,7 @@ import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldRole
+import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldScope
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,6 +58,8 @@ import com.atech.research.ui.compose.student.home.StudentHomeViewModel
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.BackHandler
 import com.atech.research.utils.DataState
+import com.atech.research.utils.DeviceType
+import com.atech.research.utils.getDisplayType
 import com.atech.research.utils.koinViewModel
 import org.jetbrains.compose.resources.stringResource
 import researchhub.composeapp.generated.resources.Res
@@ -65,6 +68,9 @@ import researchhub.composeapp.generated.resources.resume
 private enum class ListScreenType {
     RESUME, LIST
 }
+
+@Composable
+fun isBiggerDisplay(): Boolean = getDisplayType() != DeviceType.MOBILE
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
@@ -88,6 +94,29 @@ fun StudentHomeScreen(
     LaunchedEffect(navigator.currentDestination?.pane) {
         canShowAppBar(navigator.currentDestination?.pane == ThreePaneScaffoldRole.Secondary)
     }
+    val detailPain: @Composable ThreePaneScaffoldScope.() -> Unit =
+        if (listScreenType != ListScreenType.RESUME) {
+            {
+                AnimatedPane {
+                    DetailScreen(researchModel = currentResearch, onNavigationClick = {
+                        viewModel.onEvent(StudentHomeEvents.OnResearchClick(null))
+                        navigator.navigateBack()
+                    }, onApplyClick = {
+                        listScreenType = ListScreenType.RESUME
+                    })
+                }
+            }
+        } else if (listScreenType == ListScreenType.RESUME && !isBiggerDisplay()) {
+            {
+                profileSection(navHostController, {
+                    listScreenType = ListScreenType.LIST
+//                    navigator.navigateTo(pane = ListDetailPaneScaffoldRole.List, content = Unit)
+                })
+            }
+        } else {
+            {}
+        }
+
     ListDetailPaneScaffold(modifier = modifier,
         directive = navigator.scaffoldDirective,
         value = navigator.scaffoldValue,
@@ -101,38 +130,36 @@ fun StudentHomeScreen(
                     })
                 }
             }
-            if (listScreenType == ListScreenType.RESUME) {
-                AnimatedPane {
-                    ProfileScreen(
-                        title = stringResource(Res.string.resume),
-                        navHostController = navHostController,
-                        isTeacher = false,
-                        fromDetailScreen = true,
-                        onNavigateBack = {
-                            listScreenType = ListScreenType.LIST
-                        }
-                    )
-                }
+            if (listScreenType == ListScreenType.RESUME && isBiggerDisplay()) {
+                profileSection(navHostController, {
+                    listScreenType = ListScreenType.LIST
+                })
                 return@ListDetailPaneScaffold
             }
         },
-        detailPane = {
-            if (listScreenType != ListScreenType.RESUME) {
-                AnimatedPane {
-                    DetailScreen(researchModel = currentResearch, onNavigationClick = {
-                        viewModel.onEvent(StudentHomeEvents.OnResearchClick(null))
-                        navigator.navigateBack()
-                    }, onApplyClick = {
-                        listScreenType = ListScreenType.RESUME
-                    })
-                }
-                return@ListDetailPaneScaffold
-            }
-
-        },
+        detailPane = detailPain,
         extraPane = {
         }
     )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
+private fun ThreePaneScaffoldScope.profileSection(
+    navHostController: NavController,
+    onNavigateBack: () -> Unit,
+) {
+    AnimatedPane {
+        ProfileScreen(
+            title = stringResource(Res.string.resume),
+            navHostController = navHostController,
+            isTeacher = false,
+            fromDetailScreen = true,
+            onNavigateBack = {
+                onNavigateBack()
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

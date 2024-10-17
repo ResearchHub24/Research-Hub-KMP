@@ -1,7 +1,9 @@
 package com.atech.research.ui.compose.profile.compose
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,8 +14,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -38,6 +43,7 @@ import com.atech.research.common.AppAlertDialog
 import com.atech.research.common.ApplyButton
 import com.atech.research.common.AsyncImage
 import com.atech.research.common.CardSection
+import com.atech.research.common.DisplayCard
 import com.atech.research.common.EducationDetailsItems
 import com.atech.research.common.MainContainer
 import com.atech.research.common.ProgressBar
@@ -58,6 +64,8 @@ import kotlinx.coroutines.runBlocking
 import org.jetbrains.compose.resources.stringResource
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.add
+import researchhub.composeapp.generated.resources.apply
+import researchhub.composeapp.generated.resources.complete_your_profile
 import researchhub.composeapp.generated.resources.delete
 import researchhub.composeapp.generated.resources.education
 import researchhub.composeapp.generated.resources.education_delete_message
@@ -94,6 +102,9 @@ fun ProfileScreen(
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     dataLoader.registerLifecycleOwner(lifecycleOwner)
     dataLoader.setTask { viewModel.onEvent(ProfileEvents.LoadData) }
+    BackHandler(!navigator.canNavigateBack()) {
+        onNavigateBack()
+    }
     BackHandler(navigator.canNavigateBack()) {
         navigator.navigateBack()
     }
@@ -318,6 +329,49 @@ fun ProfileScreen(
                                         }
                                     })
                                 })
+                            }
+                            if (fromDetailScreen) {
+                                val hasError =
+                                    user.educationDetails?.isNotEmpty() ?: false && user.skillList?.isNotEmpty() ?: false
+                                Spacer(Modifier.height(MaterialTheme.spacing.large))
+                                AnimatedVisibility(!hasError) {
+                                    DisplayCard(
+                                        modifier = Modifier.fillMaxSize()
+                                            .padding(MaterialTheme.spacing.medium),
+                                        border = BorderStroke(
+                                            width = CardDefaults.outlinedCardBorder().width,
+                                            color = MaterialTheme.colorScheme.error
+                                        ),
+                                    ) {
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth(),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Outlined.ErrorOutline,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.error
+                                            )
+                                            Text(
+                                                text = stringResource(Res.string.complete_your_profile),
+                                                modifier = Modifier.padding(MaterialTheme.spacing.medium),
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = MaterialTheme.colorScheme.error
+                                            )
+                                        }
+                                    }
+                                }
+                                Spacer(Modifier.height(MaterialTheme.spacing.large))
+                                ApplyButton(
+                                    enable = hasError,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalPadding = MaterialTheme.spacing.medium,
+                                    text = stringResource(Res.string.apply),
+                                    action = {
+                                        onNavigateBack()
+                                    }
+                                )
                             }
                         }
                     }
