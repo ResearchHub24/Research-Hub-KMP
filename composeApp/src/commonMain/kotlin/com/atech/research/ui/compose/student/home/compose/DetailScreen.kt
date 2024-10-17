@@ -47,9 +47,11 @@ import com.atech.research.utils.removeExtraSpacesPreserveLineBreaks
 internal fun DetailScreen(
     modifier: Modifier = Modifier,
     researchModel: ResearchModel?,
-    onNavigationClick: (() -> Unit)? = null
+    onNavigationClick: (() -> Unit)? = null,
+    onApplyClick: (() -> Unit) = {}
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val scrollState = rememberScrollState()
     val navigationClick = if (researchModel != null) {
         onNavigationClick
     } else null
@@ -68,7 +70,7 @@ internal fun DetailScreen(
                 .fillMaxSize()
                 .padding(contentPadding)
                 .padding(MaterialTheme.spacing.medium)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
         ) {
             Text(
                 text = researchModel.title.removeExtraSpacesPreserveLineBreaks(),
@@ -102,7 +104,7 @@ internal fun DetailScreen(
             TextButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClick = {}
+                onClick = onApplyClick
             ) {
                 Icon(
                     imageVector = Icons.Rounded.AppRegistration,

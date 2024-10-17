@@ -74,7 +74,12 @@ private enum class ScreenType {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun ProfileScreen(
-    modifier: Modifier = Modifier, forTeacher: Boolean = true, navHostController: NavController
+    modifier: Modifier = Modifier,
+    title: String = stringResource(Res.string.profile),
+    isTeacher: Boolean = true,
+    navHostController: NavController,
+    fromDetailScreen: Boolean = false,
+    onNavigateBack: (() -> Unit) = {}
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val userDataState by viewModel.user
@@ -92,11 +97,13 @@ fun ProfileScreen(
         navigator.navigateBack()
     }
     MainContainer(modifier = modifier.nestedScroll(appBarBehavior.nestedScrollConnection),
-        title = stringResource(Res.string.profile),
+        title = title,
         scrollBehavior = appBarBehavior,
         enableTopBar = true,
-        onNavigationClick = if (navigator.canNavigateBack()) {
+        onNavigationClick = if (navigator.canNavigateBack() || fromDetailScreen) {
             {
+                if (!navigator.canNavigateBack())
+                    onNavigateBack()
                 viewModel.onEvent(ProfileEvents.OnEditClick(null))
                 viewModel.onEvent(ProfileEvents.OnLinkClick(null))
                 navigator.navigateBack()
@@ -218,73 +225,78 @@ fun ProfileScreen(
                                     })
                                 }
                             }
-                            Spacer(Modifier.height(MaterialTheme.spacing.medium))
-                            CardSection(
-                                title = stringResource(Res.string.link),
-                            ) {
-                                user.links?.forEach { linkModel ->
-                                    EducationDetailsItems(title = linkModel.link,
-                                        des = linkModel.description,
-                                        isLink = true,
-                                        onEditClick = {
-                                            screenType = ScreenType.LINK
-                                            viewModel.onEvent(
-                                                ProfileEvents.OnLinkClick(
-                                                    linkModel
-                                                )
-                                            )
-                                            navigator.navigateTo(
-                                                pane = ListDetailPaneScaffoldRole.Extra
-                                            )
-                                        },
-                                        onDeleteClick = {
-                                            deleteType = ScreenType.LINK
-                                            viewModel.onEvent(
-                                                ProfileEvents.OnLinkClick(
-                                                    linkModel
-                                                )
-                                            )
-                                            isDeleteEducationDialogVisible = true
-                                        })
-                                }
+                            if (isTeacher) {
                                 Spacer(Modifier.height(MaterialTheme.spacing.medium))
-                                ApplyButton(text = stringResource(
-                                    Res.string.add, stringResource(Res.string.link),
-                                ), action = {
-                                    viewModel.onEvent(
-                                        ProfileEvents.OnLinkClick(
-                                            null
-                                        )
-                                    )
-                                    screenType = ScreenType.LINK
-                                    navigator.navigateTo(
-                                        pane = ListDetailPaneScaffoldRole.Extra
-                                    )
-                                })
-                            }
-                            Spacer(Modifier.height(MaterialTheme.spacing.large))
-                            ApplyButton(text = stringResource(Res.string.log_out), action = {
-//                                Todo: Shakya - Implement Alert Dialog
-                                viewModel.onEvent(ProfileEvents.PerformSignOut {
-                                    if (it != null) {
-                                        researchHubLog(
-                                            ResearchLogLevel.ERROR,
-                                            "ProfileScreen $it"
-                                        )
-//                                        Todo: Handle Error
-                                        return@PerformSignOut
+                                CardSection(
+                                    title = stringResource(Res.string.link),
+                                ) {
+                                    user.links?.forEach { linkModel ->
+                                        EducationDetailsItems(title = linkModel.link,
+                                            des = linkModel.description,
+                                            isLink = true,
+                                            onEditClick = {
+                                                screenType = ScreenType.LINK
+                                                viewModel.onEvent(
+                                                    ProfileEvents.OnLinkClick(
+                                                        linkModel
+                                                    )
+                                                )
+                                                navigator.navigateTo(
+                                                    pane = ListDetailPaneScaffoldRole.Extra
+                                                )
+                                            },
+                                            onDeleteClick = {
+                                                deleteType = ScreenType.LINK
+                                                viewModel.onEvent(
+                                                    ProfileEvents.OnLinkClick(
+                                                        linkModel
+                                                    )
+                                                )
+                                                isDeleteEducationDialogVisible = true
+                                            })
                                     }
-                                    runBlocking(Dispatchers.Main) {
-                                        navHostController.navigate(
-                                            ResearchHubNavigation.LogInScreen.route
-                                        ) {
-                                            popUpTo(ResearchHubNavigation.MainScreen.route) {
-                                                inclusive = true
+                                    Spacer(Modifier.height(MaterialTheme.spacing.medium))
+                                    ApplyButton(text = stringResource(
+                                        Res.string.add, stringResource(Res.string.link),
+                                    ), action = {
+                                        viewModel.onEvent(
+                                            ProfileEvents.OnLinkClick(
+                                                null
+                                            )
+                                        )
+                                        screenType = ScreenType.LINK
+                                        navigator.navigateTo(
+                                            pane = ListDetailPaneScaffoldRole.Extra
+                                        )
+                                    })
+                                }
+                            }
+
+                            if (!fromDetailScreen) {
+                                Spacer(Modifier.height(MaterialTheme.spacing.large))
+                                ApplyButton(text = stringResource(Res.string.log_out), action = {
+//                                Todo: Shakya - Implement Alert Dialog
+                                    viewModel.onEvent(ProfileEvents.PerformSignOut {
+                                        if (it != null) {
+                                            researchHubLog(
+                                                ResearchLogLevel.ERROR,
+                                                "ProfileScreen $it"
+                                            )
+//                                        Todo: Handle Error
+                                            return@PerformSignOut
+                                        }
+                                        runBlocking(Dispatchers.Main) {
+                                            navHostController.navigate(
+                                                ResearchHubNavigation.LogInScreen.route
+                                            ) {
+                                                popUpTo(ResearchHubNavigation.MainScreen.route) {
+                                                    inclusive = true
+                                                }
                                             }
                                         }
-                                    }
+                                    })
                                 })
-                            })
+                            }
                         }
                     }
                 },

@@ -1,3 +1,5 @@
+package com.atech.research.ui.compose.student.home.compose
+
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,30 +46,42 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.atech.research.common.MainContainer
 import com.atech.research.common.ProgressBar
 import com.atech.research.common.ResearchItem
 import com.atech.research.core.ktor.model.ResearchModel
+import com.atech.research.ui.compose.profile.compose.ProfileScreen
 import com.atech.research.ui.compose.student.home.StudentHomeEvents
 import com.atech.research.ui.compose.student.home.StudentHomeViewModel
-import com.atech.research.ui.compose.student.home.compose.DetailScreen
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.BackHandler
 import com.atech.research.utils.DataState
-import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.koinViewModel
-import com.atech.research.utils.researchHubLog
+import org.jetbrains.compose.resources.stringResource
+import researchhub.composeapp.generated.resources.Res
+import researchhub.composeapp.generated.resources.resume
+
+private enum class ListScreenType {
+    RESUME, LIST
+}
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun StudentHomeScreen(
     modifier: Modifier = Modifier,
+    navHostController: NavController,
     canShowAppBar: (Boolean) -> Unit
 ) {
     val viewModel = koinViewModel<StudentHomeViewModel>()
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
     val allResearch by viewModel.allResearch
     val currentResearch by viewModel.selectedResearch
+
+
+    var listScreenType by rememberSaveable { mutableStateOf(ListScreenType.LIST) }
+
+
     BackHandler(navigator.canNavigateBack()) {
         navigator.navigateBack()
     }
@@ -78,27 +92,47 @@ fun StudentHomeScreen(
         directive = navigator.scaffoldDirective,
         value = navigator.scaffoldValue,
         listPane = {
-            AnimatedPane {
-                ListScreen(
-                    items = allResearch,
-                    onItemClicked = {
+            if (listScreenType == ListScreenType.LIST) {
+                AnimatedPane {
+                    ListScreen(items = allResearch, onItemClicked = {
                         viewModel.onEvent(StudentHomeEvents.OnResearchClick(it))
+                        listScreenType = ListScreenType.LIST
                         navigator.navigateTo(pane = ListDetailPaneScaffoldRole.Detail, content = it)
-                    }
-                )
+                    })
+                }
+            }
+            if (listScreenType == ListScreenType.RESUME) {
+                AnimatedPane {
+                    ProfileScreen(
+                        title = stringResource(Res.string.resume),
+                        navHostController = navHostController,
+                        isTeacher = false,
+                        fromDetailScreen = true,
+                        onNavigateBack = {
+                            listScreenType = ListScreenType.LIST
+                        }
+                    )
+                }
+                return@ListDetailPaneScaffold
             }
         },
         detailPane = {
-            AnimatedPane {
-                DetailScreen(
-                    researchModel = currentResearch,
-                    onNavigationClick = {
+            if (listScreenType != ListScreenType.RESUME) {
+                AnimatedPane {
+                    DetailScreen(researchModel = currentResearch, onNavigationClick = {
                         viewModel.onEvent(StudentHomeEvents.OnResearchClick(null))
                         navigator.navigateBack()
-                    }
-                )
+                    }, onApplyClick = {
+                        listScreenType = ListScreenType.RESUME
+                    })
+                }
+                return@ListDetailPaneScaffold
             }
-        })
+
+        },
+        extraPane = {
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -203,12 +237,9 @@ private fun ListScreen(
             }
             if (items is DataState.Success) {
                 items(items = items.data) { research ->
-                    ResearchItem(
-                        model = research,
-                        onClick = {
-                            onItemClicked(research)
-                        }
-                    )
+                    ResearchItem(model = research, onClick = {
+                        onItemClicked(research)
+                    })
                 }
             }
         }
