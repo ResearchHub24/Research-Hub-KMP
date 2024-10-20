@@ -104,7 +104,7 @@ fun ProfileScreen(
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
     dataLoader.registerLifecycleOwner(lifecycleOwner)
     dataLoader.setTask { viewModel.onEvent(ProfileEvents.LoadData) }
-    BackHandler(!navigator.canNavigateBack()) {
+    BackHandler(!navigator.canNavigateBack() && fromDetailScreen) {
         onNavigateBack()
     }
     BackHandler(navigator.canNavigateBack()) {
@@ -455,7 +455,6 @@ fun ProfileScreen(
                         }
 
                         AnimatedVisibility(screenType == ScreenType.QUESTION) {
-                            researchHubLog(ResearchLogLevel.DEBUG, "ProfileScreen $questionList")
                             QuestionScreen(
                                 questionList = questionList,
                             ) { answerList ->

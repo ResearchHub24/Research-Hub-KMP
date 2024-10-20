@@ -36,6 +36,7 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldScope
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -127,11 +128,20 @@ fun StudentHomeScreen(
         listPane = {
             if (listScreenType == ListScreenType.LIST) {
                 AnimatedPane {
-                    ListScreen(items = allResearch, onItemClicked = {
-                        viewModel.onEvent(StudentHomeEvents.OnResearchClick(it))
-                        listScreenType = ListScreenType.LIST
-                        navigator.navigateTo(pane = ListDetailPaneScaffoldRole.Detail, content = it)
-                    })
+                    ListScreen(
+                        items = allResearch,
+                        onItemClicked = {
+                            viewModel.onEvent(StudentHomeEvents.OnResearchClick(it))
+                            listScreenType = ListScreenType.LIST
+                            navigator.navigateTo(
+                                pane = ListDetailPaneScaffoldRole.Detail,
+                                content = it
+                            )
+                        },
+                        onRefresh = {
+                            viewModel.onEvent(StudentHomeEvents.LoadData)
+                        }
+                    )
                 }
             }
             if (listScreenType == ListScreenType.RESUME && isBiggerDisplay()) {
@@ -179,13 +189,18 @@ private fun ThreePaneScaffoldScope.profileSection(
 private fun ListScreen(
     modifier: Modifier = Modifier,
     items: DataState<List<ResearchModel>> = DataState.Loading,
-    onItemClicked: (ResearchModel) -> Unit = {}
+    onItemClicked: (ResearchModel) -> Unit = {},
+    onRefresh: () -> Unit = {}
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val pullToRefreshState = rememberPullToRefreshState()
     MainContainer(
         title = "Home",
         scrollBehavior = scrollBehavior,
+        state = pullToRefreshState,
+        isRefreshing = items is DataState.Loading,
+        onRefresh = onRefresh,
         enableTopBar = true,
         customTopBar = {
             Row(
