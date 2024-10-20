@@ -4,6 +4,7 @@ import com.atech.research.core.ktor.ResearchHubClient
 import com.atech.research.core.ktor.ResearchHubClientImp
 import com.atech.research.core.ktor.httpClientEngineFactory
 import com.atech.research.core.usecase.AddTagUseCase
+import com.atech.research.core.usecase.ApplyResearchUseCase
 import com.atech.research.core.usecase.DeleteResearchUseCase
 import com.atech.research.core.usecase.DeleteTagUseCase
 import com.atech.research.core.usecase.GetAllResearch
@@ -48,6 +49,7 @@ val commonModule = module {
     single { UserUseCases(get(), get(), get()) }
 
     single { GetAllResearch(get()) }
-    single { StudentResearchUseCases(get()) }
+    single { ApplyResearchUseCase(get()) }
+    single { StudentResearchUseCases(get(), get()) }
 
 }

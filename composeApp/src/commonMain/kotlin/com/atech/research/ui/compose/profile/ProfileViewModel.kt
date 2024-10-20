@@ -2,10 +2,12 @@ package com.atech.research.ui.compose.profile
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import com.atech.research.core.ktor.model.ApplicationModel
 import com.atech.research.core.ktor.model.EducationDetails
 import com.atech.research.core.ktor.model.LinkModel
 import com.atech.research.core.ktor.model.UserModel
 import com.atech.research.core.ktor.model.UserUpdateQueryHelper
+import com.atech.research.core.usecase.ApplyResearchUseCase
 import com.atech.research.core.usecase.UserUseCases
 import com.atech.research.utils.DataState
 import com.atech.research.utils.PrefManager
@@ -18,7 +20,8 @@ import kotlinx.coroutines.launch
 class ProfileViewModel(
     private val useCases: UserUseCases,
     private val pref: PrefManager,
-    private val signOutHelper: SignOutHelper
+    private val signOutHelper: SignOutHelper,
+    private val applyResearchUseCase: ApplyResearchUseCase
 ) : ResearchHubViewModel() {
 
     private val _user = mutableStateOf<DataState<UserModel>>(DataState.Loading)
@@ -118,6 +121,21 @@ class ProfileViewModel(
                 )
                 updateEducationDetails(skillList = updatedList, onError = event.onComplete)
             }
+
+            is ProfileEvents.ApplyResearch -> {
+                researchHubLog(
+                    ResearchLogLevel.DEBUG, "Apply Research: ${event.researchId}, ${event.answerModelList}"
+                )
+                val userDetails = _user.value as? DataState.Success ?: return
+                val applicationModel = ApplicationModel(
+                    researchId = event.researchId,
+                    answers = event.answerModelList,
+                    userUid = userDetails.data.uid!!,
+                    userName = userDetails.data.displayName!!,
+                    userProfile = userDetails.data.photoUrl!!,
+                )
+                applyResearch(applicationModel, event.onComplete)
+            }
         }
     }
 
@@ -157,6 +175,23 @@ class ProfileViewModel(
         scope.launch {
             val dataState = useCases.getAllSkills()
             _skillList.value = dataState
+        }
+    }
+
+    private fun applyResearch(
+
+        applicationModel: ApplicationModel,
+        onError: (String?) -> Unit = {}
+    ) {
+        scope.launch {
+            val dataState = applyResearchUseCase(applicationModel.researchId, applicationModel)
+            if (dataState is DataState.Success) {
+                loadUser()
+                onError(null)
+            }
+            if (dataState is DataState.Error) {
+                onError(dataState.exception.message)
+            }
         }
     }
 }

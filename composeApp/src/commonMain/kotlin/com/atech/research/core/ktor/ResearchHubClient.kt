@@ -1,5 +1,6 @@
 package com.atech.research.core.ktor
 
+import com.atech.research.core.ktor.model.ApplicationModel
 import com.atech.research.core.ktor.model.LoginResponse
 import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.core.ktor.model.SuccessResponse
@@ -40,6 +41,11 @@ interface ResearchHubClient {
     suspend fun deleteTag(tagModel: TagModel): DataState<String>
 
     suspend fun getAllSkills(): DataState<List<String>>
+
+    suspend fun postAppliedResearch(
+        researchId: String,
+        researchModel: ApplicationModel
+    ): DataState<SuccessResponse>
 
 
     companion object {

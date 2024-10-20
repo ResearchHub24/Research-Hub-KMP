@@ -89,6 +89,7 @@ fun ProfileScreen(
     navHostController: NavController,
     fromDetailScreen: Boolean = false,
     questionList: List<String> = emptyList(),
+    researchPath: String = "",
     onNavigateBack: (() -> Unit) = {}
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
@@ -458,7 +459,19 @@ fun ProfileScreen(
                             QuestionScreen(
                                 questionList = questionList,
                             ) { answerList ->
-                                researchHubLog(ResearchLogLevel.DEBUG, "ProfileScreen $answerList")
+                                viewModel.onEvent(
+                                    ProfileEvents.ApplyResearch(
+                                        researchId = researchPath,
+                                        answerModelList = answerList,
+                                    ) {
+                                        if (it != null) {
+                                            researchHubLog(
+                                                ResearchLogLevel.ERROR, "ProfileScreen $it"
+                                            )
+                                        }
+                                        navigator.navigateBack()
+                                    }
+                                )
                             }
                         }
                     }

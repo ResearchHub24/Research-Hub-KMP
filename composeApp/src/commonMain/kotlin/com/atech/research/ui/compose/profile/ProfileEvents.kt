@@ -1,5 +1,6 @@
 package com.atech.research.ui.compose.profile
 
+import com.atech.research.core.ktor.model.AnswerModel
 import com.atech.research.core.ktor.model.EducationDetails
 import com.atech.research.core.ktor.model.LinkModel
 
@@ -48,6 +49,12 @@ sealed interface ProfileEvents {
 
     data class OnAddSkillClick(
         val skillList: List<String>,
+        val onComplete: (String?) -> Unit = {},
+    ) : ProfileEvents
+
+    data class ApplyResearch(
+        val researchId: String,
+        val answerModelList: List<AnswerModel>,
         val onComplete: (String?) -> Unit = {},
     ) : ProfileEvents
 }

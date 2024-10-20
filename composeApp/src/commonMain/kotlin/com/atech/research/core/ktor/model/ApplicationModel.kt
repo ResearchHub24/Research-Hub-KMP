@@ -1,9 +1,11 @@
 package com.atech.research.core.ktor.model
 
 import androidx.annotation.Keep
+import kotlinx.serialization.Serializable
 
 @Keep
-data class ResearchApplyModel(
+@Serializable
+data class ApplicationModel(
     val userName: String,
     val userUid: String,
     val userProfile: String,
@@ -13,6 +15,7 @@ data class ResearchApplyModel(
 )
 
 @Keep
+@Serializable
 data class AnswerModel(
     val question: String,
     val answer: String,

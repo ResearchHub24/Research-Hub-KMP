@@ -113,7 +113,8 @@ fun StudentHomeScreen(
                         listScreenType = ListScreenType.LIST
 //                   navigator.navigateTo(pane = ListDetailPaneScaffoldRole.List, content = Unit)
                     },
-                    questionList = currentResearch?.questions ?: emptyList()
+                    questionList = currentResearch?.questions ?: emptyList(),
+                    researchPath = currentResearch?.path ?: ""
                 )
             }
         } else {
@@ -138,7 +139,8 @@ fun StudentHomeScreen(
                     navHostController, {
                         listScreenType = ListScreenType.LIST
                     },
-                    questionList = currentResearch?.questions ?: return@ListDetailPaneScaffold
+                    questionList = currentResearch?.questions ?: return@ListDetailPaneScaffold,
+                    researchPath = currentResearch?.path ?: ""
                 )
                 return@ListDetailPaneScaffold
             }
@@ -155,6 +157,7 @@ private fun ThreePaneScaffoldScope.profileSection(
     navHostController: NavController,
     onNavigateBack: () -> Unit,
     questionList: List<String> = emptyList(),
+    researchPath: String
 ) {
     AnimatedPane {
         ProfileScreen(
@@ -165,7 +168,8 @@ private fun ThreePaneScaffoldScope.profileSection(
             questionList = questionList,
             onNavigateBack = {
                 onNavigateBack()
-            }
+            },
+            researchPath = researchPath
         )
     }
 }

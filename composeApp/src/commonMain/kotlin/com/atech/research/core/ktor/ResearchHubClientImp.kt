@@ -1,5 +1,6 @@
 package com.atech.research.core.ktor
 
+import com.atech.research.core.ktor.model.ApplicationModel
 import com.atech.research.core.ktor.model.ErrorResponse
 import com.atech.research.core.ktor.model.LoginResponse
 import com.atech.research.core.ktor.model.ResearchModel
@@ -194,6 +195,24 @@ class ResearchHubClientImp(
                     url(ResearchHubClient.SKILLS)
                     contentType(ContentType.Application.Json)
                 }.body()
+            )
+        } catch (e: Exception) {
+            researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
+            DataState.Error(e)
+        }
+    }
+
+    override suspend fun postAppliedResearch(
+        researchId: String,
+        researchModel: ApplicationModel
+    ): DataState<SuccessResponse> {
+        return try {
+            checkError<SuccessResponse, ErrorResponse>(
+                client.post {
+                    url("${ResearchHubClient.RESEARCH}/$researchId/apply")
+                    contentType(ContentType.Application.Json)
+                    setBody(researchModel)
+                }
             )
         } catch (e: Exception) {
             researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
