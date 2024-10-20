@@ -108,10 +108,13 @@ fun StudentHomeScreen(
             }
         } else if (listScreenType == ListScreenType.RESUME && !isBiggerDisplay()) {
             {
-                profileSection(navHostController, {
-                    listScreenType = ListScreenType.LIST
-//                    navigator.navigateTo(pane = ListDetailPaneScaffoldRole.List, content = Unit)
-                })
+                profileSection(
+                    navHostController, {
+                        listScreenType = ListScreenType.LIST
+//                   navigator.navigateTo(pane = ListDetailPaneScaffoldRole.List, content = Unit)
+                    },
+                    questionList = currentResearch?.questions ?: emptyList()
+                )
             }
         } else {
             {}
@@ -131,9 +134,12 @@ fun StudentHomeScreen(
                 }
             }
             if (listScreenType == ListScreenType.RESUME && isBiggerDisplay()) {
-                profileSection(navHostController, {
-                    listScreenType = ListScreenType.LIST
-                })
+                profileSection(
+                    navHostController, {
+                        listScreenType = ListScreenType.LIST
+                    },
+                    questionList = currentResearch?.questions ?: return@ListDetailPaneScaffold
+                )
                 return@ListDetailPaneScaffold
             }
         },
@@ -148,6 +154,7 @@ fun StudentHomeScreen(
 private fun ThreePaneScaffoldScope.profileSection(
     navHostController: NavController,
     onNavigateBack: () -> Unit,
+    questionList: List<String> = emptyList(),
 ) {
     AnimatedPane {
         ProfileScreen(
@@ -155,6 +162,7 @@ private fun ThreePaneScaffoldScope.profileSection(
             navHostController = navHostController,
             isTeacher = false,
             fromDetailScreen = true,
+            questionList = questionList,
             onNavigateBack = {
                 onNavigateBack()
             }

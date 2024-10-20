@@ -77,7 +77,7 @@ import researchhub.composeapp.generated.resources.skill
 
 
 private enum class ScreenType {
-    EDUCATION, LINK, SKILL
+    EDUCATION, LINK, SKILL, QUESTION
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
@@ -88,6 +88,7 @@ fun ProfileScreen(
     isTeacher: Boolean = true,
     navHostController: NavController,
     fromDetailScreen: Boolean = false,
+    questionList: List<String> = emptyList(),
     onNavigateBack: (() -> Unit) = {}
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
@@ -369,7 +370,10 @@ fun ProfileScreen(
                                     horizontalPadding = MaterialTheme.spacing.medium,
                                     text = stringResource(Res.string.apply),
                                     action = {
-                                        onNavigateBack()
+                                        screenType = ScreenType.QUESTION
+                                        navigator.navigateTo(
+                                            pane = ListDetailPaneScaffoldRole.Extra
+                                        )
                                     }
                                 )
                             }
@@ -446,6 +450,15 @@ fun ProfileScreen(
                                         )
                                     }
                                 )
+                            }
+                        }
+
+                        AnimatedVisibility(screenType == ScreenType.QUESTION) {
+                            researchHubLog(ResearchLogLevel.DEBUG, "ProfileScreen $questionList")
+                            QuestionScreen(
+                                questionList = questionList,
+                            ) { answerList ->
+                                researchHubLog(ResearchLogLevel.DEBUG, "ProfileScreen $answerList")
                             }
                         }
                     }
