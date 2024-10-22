@@ -99,12 +99,24 @@ fun StudentHomeScreen(
         if (listScreenType != ListScreenType.RESUME) {
             {
                 AnimatedPane {
-                    DetailScreen(researchModel = currentResearch, onNavigationClick = {
-                        viewModel.onEvent(StudentHomeEvents.OnResearchClick(null))
-                        navigator.navigateBack()
-                    }, onApplyClick = {
-                        listScreenType = ListScreenType.RESUME
-                    })
+                    DetailScreen(
+                        researchModel = currentResearch,
+                        onNavigationClick = {
+                            viewModel.onEvent(StudentHomeEvents.OnResearchClick(null))
+                            navigator.navigateBack()
+                        },
+                        onApplyClick = {
+                            listScreenType = ListScreenType.RESUME
+                        },
+                        onViewProfileClick = {
+                            viewModel.onEvent(
+                                StudentHomeEvents.LoadUserProfile(
+                                    currentResearch?.authorUid ?: ""
+                                )
+                            )
+                            navigator.navigateTo(pane = ListDetailPaneScaffoldRole.Extra)
+                        }
+                    )
                 }
             }
         } else if (listScreenType == ListScreenType.RESUME && !isBiggerDisplay()) {
@@ -157,6 +169,14 @@ fun StudentHomeScreen(
         },
         detailPane = detailPain,
         extraPane = {
+            val userProfile by viewModel.userProfile
+            ViewProfile(
+                modifier = Modifier,
+                user = userProfile,
+                onNavigationClick = {
+                    navigator.navigateBack()
+                }
+            )
         }
     )
 }

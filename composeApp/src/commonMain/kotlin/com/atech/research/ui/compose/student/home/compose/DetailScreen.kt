@@ -48,7 +48,8 @@ internal fun DetailScreen(
     modifier: Modifier = Modifier,
     researchModel: ResearchModel?,
     onNavigationClick: (() -> Unit)? = null,
-    onApplyClick: (() -> Unit) = {}
+    onApplyClick: (() -> Unit) = {},
+    onViewProfileClick: (() -> Unit) = {}
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val scrollState = rememberScrollState()
@@ -119,7 +120,9 @@ internal fun DetailScreen(
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             Surface(
                 modifier = Modifier
-                    .clickable {}
+                    .clickable {
+                        onViewProfileClick()
+                    }
                     .fillMaxWidth()
                     .padding(bottom = MaterialTheme.spacing.medium)
             ) {
@@ -159,7 +162,9 @@ internal fun DetailScreen(
                     TextButton(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        onClick = {}
+                        onClick = {
+                            onViewProfileClick()
+                        }
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.AccountCircle,
