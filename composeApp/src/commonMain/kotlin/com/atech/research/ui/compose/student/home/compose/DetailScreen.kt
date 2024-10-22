@@ -47,6 +47,7 @@ import com.atech.research.utils.removeExtraSpacesPreserveLineBreaks
 internal fun DetailScreen(
     modifier: Modifier = Modifier,
     researchModel: ResearchModel?,
+    isApplied: Boolean = false,
     onNavigationClick: (() -> Unit)? = null,
     onApplyClick: (() -> Unit) = {},
     onViewProfileClick: (() -> Unit) = {}
@@ -105,14 +106,15 @@ internal fun DetailScreen(
             TextButton(
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClick = onApplyClick
+                onClick = onApplyClick,
+                enabled = !isApplied
             ) {
                 Icon(
                     imageVector = Icons.Rounded.AppRegistration,
                     contentDescription = null,
                     modifier = Modifier.padding(end = MaterialTheme.spacing.small)
                 )
-                Text("Apply Now")
+                Text(if (!isApplied) "Apply Now" else "Applied")
             }
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))

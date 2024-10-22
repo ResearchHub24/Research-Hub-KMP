@@ -47,6 +47,11 @@ interface ResearchHubClient {
         researchModel: ApplicationModel
     ): DataState<SuccessResponse>
 
+    suspend fun isAppliedToResearch(
+        researchId: String,
+        userId: String
+    ): DataState<Boolean>
+
 
     companion object {
         private const val BASE_URL = "http://192.168.29.205:9090/api/v1"

@@ -220,5 +220,22 @@ class ResearchHubClientImp(
         }
     }
 
+    override suspend fun isAppliedToResearch(
+        researchId: String,
+        userId: String
+    ): DataState<Boolean> {
+        return try {
+            checkError<Boolean, ErrorResponse>(
+                client.getWithFallback {
+                    url("${ResearchHubClient.RESEARCH}/$researchId/apply?userId=$userId")
+                    contentType(ContentType.Application.Json)
+                }.body()
+            )
+        } catch (e: Exception) {
+            researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
+            DataState.Error(e)
+        }
+    }
+
 
 }

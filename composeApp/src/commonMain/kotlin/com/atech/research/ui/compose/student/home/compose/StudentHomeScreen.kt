@@ -115,7 +115,8 @@ fun StudentHomeScreen(
                                 )
                             )
                             navigator.navigateTo(pane = ListDetailPaneScaffoldRole.Extra)
-                        }
+                        },
+                        isApplied = viewModel.isApplied.value
                     )
                 }
             }

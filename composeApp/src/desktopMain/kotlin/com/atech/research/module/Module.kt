@@ -36,10 +36,10 @@ val viewModelModule = module {
     }.bind(PrefManager::class)
     single { HomeScreenViewModel(get(), get()) }
     single { generateImageLoader() }
-    single { ProfileViewModel(get(), get(), get(),get()) }
+    single { ProfileViewModel(get(), get(), get(), get()) }
     single { LinkHelper() }
     single { SignOutHelper() }
-    single { StudentHomeViewModel(get(),get()) }
+    single { StudentHomeViewModel(get(), get(), get()) }
 
 
 }
