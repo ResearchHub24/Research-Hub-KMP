@@ -13,6 +13,7 @@ import com.atech.research.ui.compose.login.compose.util.LogInWithGoogleStudent
 import com.atech.research.ui.compose.login.compose.util.SignOutUseCase
 import com.atech.research.ui.compose.profile.ProfileViewModel
 import com.atech.research.ui.compose.profile.SignOutHelper
+import com.atech.research.ui.compose.student.faculties.FacultiesViewModel
 import com.atech.research.ui.compose.student.home.StudentHomeViewModel
 import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
 import com.atech.research.utils.LinkHelper
@@ -71,4 +72,5 @@ val viewModelModule = module {
     }
     viewModel { ProfileViewModel(get(), get(), get(), get()) }
     viewModel { StudentHomeViewModel(get(), get(), get()) }
+    viewModel { FacultiesViewModel(get()) }
 }

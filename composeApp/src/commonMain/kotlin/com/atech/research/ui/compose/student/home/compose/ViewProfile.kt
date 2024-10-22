@@ -1,6 +1,7 @@
 package com.atech.research.ui.compose.student.home.compose
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,6 +36,8 @@ import researchhub.composeapp.generated.resources.skill
 internal fun ViewProfile(
     modifier: Modifier = Modifier,
     user: DataState<UserModel>,
+    paddingValues: PaddingValues?= null,
+    enableTopBar: Boolean = true,
     onNavigationClick: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -42,11 +45,12 @@ internal fun ViewProfile(
         modifier = modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         scrollBehavior = scrollBehavior,
-        enableTopBar = true,
+        enableTopBar = enableTopBar,
         onNavigationClick = onNavigationClick
     ) { paddingValue ->
+        val innerPadding = paddingValues ?: paddingValue
         if (user is DataState.Loading) {
-            ProgressBar(paddingValues = paddingValue)
+            ProgressBar(paddingValues = innerPadding)
             return@MainContainer
         }
         if (user is DataState.Error) {
@@ -60,7 +64,7 @@ internal fun ViewProfile(
                 modifier = modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(paddingValue)
+                    .padding(innerPadding)
                     .padding(MaterialTheme.spacing.medium)
             ) {
                 CardSection(

@@ -10,6 +10,7 @@ import com.atech.research.ui.compose.login.compose.login.LogInViewModelImp
 import com.atech.research.ui.compose.login.compose.setup.SetUpViewModel
 import com.atech.research.ui.compose.profile.ProfileViewModel
 import com.atech.research.ui.compose.profile.SignOutHelper
+import com.atech.research.ui.compose.student.faculties.FacultiesViewModel
 import com.atech.research.ui.compose.student.home.StudentHomeViewModel
 import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
 import com.atech.research.utils.LinkHelper
@@ -40,6 +41,7 @@ val viewModelModule = module {
     single { LinkHelper() }
     single { SignOutHelper() }
     single { StudentHomeViewModel(get(), get(), get()) }
+    single { FacultiesViewModel(get()) }
 
 
 }

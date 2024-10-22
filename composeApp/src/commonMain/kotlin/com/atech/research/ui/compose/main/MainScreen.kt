@@ -1,6 +1,5 @@
 package com.atech.research.ui.compose.main
 
-import com.atech.research.ui.compose.student.home.compose.StudentHomeScreen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
@@ -29,6 +28,8 @@ import androidx.window.core.layout.WindowWidthSizeClass
 import com.atech.research.LocalDataStore
 import com.atech.research.core.ktor.model.UserType
 import com.atech.research.ui.compose.profile.compose.ProfileScreen
+import com.atech.research.ui.compose.student.faculties.compose.FacultiesScreen
+import com.atech.research.ui.compose.student.home.compose.StudentHomeScreen
 import com.atech.research.ui.compose.teacher.home.compose.HomeScreen
 import com.atech.research.utils.Prefs
 
@@ -109,8 +110,9 @@ fun MainScreen(
                 navHostController = navHostController,
                 isTeacher = isTeacher
             )
-            TeacherAppDestinations.Faculty -> Column {
-                Text("Faculty")
+
+            TeacherAppDestinations.Faculty -> FacultiesScreen{
+                showNavigation = it
             }
 
             TeacherAppDestinations.FillResearch -> Column {
