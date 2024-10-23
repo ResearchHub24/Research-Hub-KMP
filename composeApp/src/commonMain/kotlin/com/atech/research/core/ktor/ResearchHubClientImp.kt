@@ -251,5 +251,19 @@ class ResearchHubClientImp(
         }
     }
 
+    override suspend fun getAppliedResearch(userId: String): DataState<List<ApplicationModel>> {
+        return try {
+            checkError<List<ApplicationModel>, ErrorResponse>(
+                client.getWithFallback {
+                    url("${ResearchHubClient.USER}/{$userId}/applications")
+                    contentType(ContentType.Application.Json)
+                }.body()
+            )
+        } catch (e: Exception) {
+            researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
+            DataState.Error(e)
+        }
+    }
+
 
 }

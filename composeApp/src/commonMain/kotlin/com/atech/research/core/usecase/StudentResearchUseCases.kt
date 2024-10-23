@@ -31,3 +31,10 @@ data class IsAppliedToResearchUseCase(
     suspend operator fun invoke(researchId: String, userId: String) =
         client.isAppliedToResearch(researchId, userId)
 }
+
+
+data class AllApplicationsUseCases(
+    private val client: ResearchHubClient
+){
+    suspend operator fun invoke(userId: String) = client.getAppliedResearch(userId)
+}

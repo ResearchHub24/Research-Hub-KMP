@@ -16,13 +16,11 @@ interface ResearchHubClient {
 
 
     suspend fun updateUserData(
-        uid: String,
-        vararg varargs: UserUpdateQueryHelper<Any>
+        uid: String, vararg varargs: UserUpdateQueryHelper<Any>
     ): DataState<SuccessResponse>
 
     suspend fun logInUser(
-        email: String,
-        password: String
+        email: String, password: String
     ): DataState<LoginResponse>
 
 
@@ -43,16 +41,16 @@ interface ResearchHubClient {
     suspend fun getAllSkills(): DataState<List<String>>
 
     suspend fun postAppliedResearch(
-        researchId: String,
-        researchModel: ApplicationModel
+        researchId: String, researchModel: ApplicationModel
     ): DataState<SuccessResponse>
 
     suspend fun isAppliedToResearch(
-        researchId: String,
-        userId: String
+        researchId: String, userId: String
     ): DataState<Boolean>
 
     suspend fun getAllFaculties(): DataState<List<UserModel>>
+
+    suspend fun getAppliedResearch(userId: String): DataState<List<ApplicationModel>>
 
     companion object {
         private const val BASE_URL = "http://192.168.29.205:9090/api/v1"
