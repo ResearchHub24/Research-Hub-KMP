@@ -28,6 +28,7 @@ import androidx.window.core.layout.WindowWidthSizeClass
 import com.atech.research.LocalDataStore
 import com.atech.research.core.ktor.model.UserType
 import com.atech.research.ui.compose.profile.compose.ProfileScreen
+import com.atech.research.ui.compose.student.application.compose.ApplicationScreen
 import com.atech.research.ui.compose.student.faculties.compose.FacultiesScreen
 import com.atech.research.ui.compose.student.home.compose.StudentHomeScreen
 import com.atech.research.ui.compose.teacher.home.compose.HomeScreen
@@ -115,8 +116,8 @@ fun MainScreen(
                 showNavigation = it
             }
 
-            TeacherAppDestinations.FillResearch -> Column {
-                Text("Fill Research")
+            TeacherAppDestinations.FillResearch -> ApplicationScreen{
+                showNavigation = it
             }
         }
     }

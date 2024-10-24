@@ -22,6 +22,11 @@ class ApplicationViewModel(
     private val _selectedApplication = mutableStateOf<ApplicationModel?>(null)
     val selectedApplication: State<ApplicationModel?> get() = _selectedApplication
 
+
+    init {
+        onEvent(ApplicationEvents.LoadApplication)
+    }
+
     fun onEvent(event: ApplicationEvents) {
         when (event) {
             is ApplicationEvents.LoadApplication -> loadApplications()
@@ -32,6 +37,7 @@ class ApplicationViewModel(
     }
 
     private fun loadApplications() = scope.launch {
-        _allApplications.value =getAllApplications.invoke(prefManager.getString(Prefs.USER_ID.name))
+        _allApplications.value =
+            getAllApplications.invoke(prefManager.getString(Prefs.USER_ID.name))
     }
 }
