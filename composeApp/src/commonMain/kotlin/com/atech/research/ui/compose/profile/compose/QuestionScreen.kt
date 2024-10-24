@@ -2,7 +2,6 @@ package com.atech.research.ui.compose.profile.compose
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,6 +18,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +26,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import com.atech.research.common.AppAlertDialog
@@ -56,9 +55,7 @@ fun QuestionScreen(
     var isDialogVisible by remember {
         mutableStateOf(false)
     }
-    Scaffold(modifier = modifier
-        .fillMaxSize()
-        , bottomBar = {
+    Scaffold(modifier = modifier.fillMaxSize(), bottomBar = {
         ApplyButton(
             text = stringResource(Res.string.apply),
             horizontalPadding = MaterialTheme.spacing.medium,
@@ -93,9 +90,8 @@ fun QuestionScreen(
             }
         }
         LazyColumn(
-            modifier = modifier.fillMaxSize()
-                .padding(horizontal = MaterialTheme.spacing.medium)
-            , contentPadding = innerPadding
+            modifier = modifier.fillMaxSize().padding(horizontal = MaterialTheme.spacing.medium),
+            contentPadding = innerPadding
         ) {
             items(questionList.size) { pos ->
                 QuestionItem(modifier = modifier.padding(bottom = MaterialTheme.spacing.medium),
@@ -163,6 +159,7 @@ fun QuestionItem(
     modifier: Modifier = Modifier,
     question: String,
     answer: String = "",
+    readOnly: Boolean = false,
     onValueChange: (String) -> Unit = {},
     onClearClick: () -> Unit = {}
 ) {
@@ -170,12 +167,31 @@ fun QuestionItem(
         modifier = modifier.fillMaxWidth()
     ) {
         Text(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.spacing.medium),
+            modifier = Modifier.fillMaxWidth(),
             text = question,
             style = MaterialTheme.typography.titleMedium
         )
-        EditText(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = MaterialTheme.spacing.medium),
+        if (readOnly) {
+            EditText(
+                modifier = Modifier.fillMaxWidth(),
+                value = answer,
+                placeholder = "Answer",
+                supportingMessage = stringResource(Res.string.require),
+                onValueChange = onValueChange,
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    keyboardType = KeyboardType.Text
+                ),
+                clearIconClick = onClearClick,
+                enable = false,
+                trailingIcon = null,
+                colors = TextFieldDefaults.colors().copy(
+                        disabledContainerColor = MaterialTheme.colorScheme.surface,
+                        disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+            )
+        } else EditText(
+            modifier = Modifier.fillMaxWidth(),
             value = answer,
             placeholder = "Answer",
             supportingMessage = stringResource(Res.string.require),
@@ -183,8 +199,9 @@ fun QuestionItem(
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Sentences, keyboardType = KeyboardType.Text
             ),
-            clearIconClick = onClearClick
+            clearIconClick = onClearClick,
         )
+
     }
 }
 
