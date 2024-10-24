@@ -52,8 +52,11 @@ interface ResearchHubClient {
 
     suspend fun getAppliedResearch(userId: String): DataState<List<ApplicationModel>>
 
+
+    suspend fun getAllAppliedResearchApplication(researchId: String): DataState<List<ApplicationModel>>
+
     companion object {
-                private const val BASE_URL = "http://192.168.29.205:9090/api/v1"
+        private const val BASE_URL = "http://192.168.29.205:9090/api/v1"
 //        private const val BASE_URL = "http://192.168.227.65:9090/api/v1"
 
         const val USER = "$BASE_URL/users"

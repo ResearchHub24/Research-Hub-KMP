@@ -16,6 +16,7 @@ import com.atech.research.ui.compose.profile.SignOutHelper
 import com.atech.research.ui.compose.student.application.ApplicationViewModel
 import com.atech.research.ui.compose.student.faculties.FacultiesViewModel
 import com.atech.research.ui.compose.student.home.StudentHomeViewModel
+import com.atech.research.ui.compose.teacher.application.ResearchApplicationsViewModel
 import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
 import com.atech.research.utils.LinkHelper
 import com.atech.research.utils.PrefManager
@@ -75,5 +76,6 @@ val viewModelModule = module {
     viewModel { StudentHomeViewModel(get(), get(), get()) }
     viewModel { FacultiesViewModel(get()) }
     viewModel { ApplicationViewModel(get(), get()) }
+    viewModel { ResearchApplicationsViewModel(get())}
 
 }

@@ -124,16 +124,18 @@ class ProfileViewModel(
 
             is ProfileEvents.ApplyResearch -> {
                 researchHubLog(
-                    ResearchLogLevel.DEBUG, "Apply Research: ${event.researchId}, ${event.answerModelList}"
+                    ResearchLogLevel.DEBUG,
+                    "Apply Research: ${event.researchId}, ${event.answerModelList}"
                 )
                 val userDetails = _user.value as? DataState.Success ?: return
                 val applicationModel = ApplicationModel(
                     researchId = event.researchId,
                     answers = event.answerModelList,
                     userUid = userDetails.data.uid!!,
-                    userName = userDetails.data.displayName!!,
-                    userProfile = userDetails.data.photoUrl!!,
-                    researchTitle = event.researchTitle
+                    userName = userDetails.data.displayName ?: "No Name",
+                    userProfile = userDetails.data.photoUrl ?: "",
+                    researchTitle = event.researchTitle,
+                    userEmail = userDetails.data.email ?: "No Email",
                 )
                 applyResearch(applicationModel, event.onComplete)
             }

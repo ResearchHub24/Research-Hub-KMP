@@ -27,6 +27,7 @@ import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -47,6 +48,7 @@ import com.atech.research.common.ProgressBar
 import com.atech.research.common.ResearchTeacherItem
 import com.atech.research.common.bottomPaddingLazy
 import com.atech.research.core.ktor.model.ResearchModel
+import com.atech.research.ui.compose.teacher.application.compose.ApplicationScreen
 import com.atech.research.ui.compose.teacher.home.HomeScreenEvents
 import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
 import com.atech.research.ui.theme.spacing
@@ -67,11 +69,14 @@ enum class TerritoryScreen {
     ViewMarkdown, EditTag
 }
 
+enum class DetailsScreenType {
+    EDIT, VIEW_APPLICATION
+}
+
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
-    canShowAppBar: (Boolean) -> Unit
+    modifier: Modifier = Modifier, canShowAppBar: (Boolean) -> Unit
 ) {
     val appBarBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val uid = LocalDataStore.current.getString(Prefs.USER_ID.name)
@@ -87,6 +92,7 @@ fun HomeScreen(
 
     val allTags by viewModel.allTags
     var territoryScreen by rememberSaveable { mutableStateOf(TerritoryScreen.ViewMarkdown) }
+    var detailsScreenType by rememberSaveable { mutableStateOf(DetailsScreenType.EDIT) }
     val navigator = rememberListDetailPaneScaffoldNavigator<ResearchModel>()
     LaunchedEffect(navigator.currentDestination?.pane) {
         canShowAppBar(navigator.currentDestination?.pane == ThreePaneScaffoldRole.Secondary)
@@ -107,6 +113,7 @@ fun HomeScreen(
         }
     }
     val editScreenScrollState = rememberScrollState()
+    val pullToRefreshState = rememberPullToRefreshState()
     if (isAndroid()) LaunchedEffect(navigator.currentDestination) {
         if (navigator.currentDestination?.pane == ListDetailPaneScaffoldRole.List) {
             editScreenScrollState.animateScrollTo(0)
@@ -118,6 +125,11 @@ fun HomeScreen(
         scrollBehavior = appBarBehavior,
         title = title,
         enableTopBar = true,
+        state = pullToRefreshState,
+        isRefreshing = allResearch is DataState.Loading,
+        onRefresh = {
+            viewModel.onEvent(HomeScreenEvents.RefreshData)
+        },
         onNavigationClick = if (navigator.canNavigateBack()) {
             {
                 navigator.navigateBack()
@@ -177,8 +189,7 @@ fun HomeScreen(
                     }) {
                         AnimatedVisibility(isDialogVisible && currentDeletedResearch != null) {
                             AppAlertDialog(dialogTitle = stringResource(
-                                Res.string.delete,
-                                Res.string.research.key
+                                Res.string.delete, Res.string.research.key
                             ),
                                 dialogText = "Are you sure you want to delete this research?\nThis action cannot be undone.",
                                 icon = Icons.Outlined.Warning,
@@ -188,7 +199,8 @@ fun HomeScreen(
                                 },
                                 onConfirmation = {
                                     viewModel.onEvent(
-                                        HomeScreenEvents.DeleteResearch(currentDeletedResearch!!,
+                                        HomeScreenEvents.DeleteResearch(
+                                            currentDeletedResearch!!,
                                             onDone = {
                                                 isDialogVisible = false
                                                 currentDeletedResearch = null
@@ -204,6 +216,7 @@ fun HomeScreen(
                                 ResearchTeacherItem(model = research,
                                     isDeleteButtonVisible = true,
                                     onClick = {
+                                        detailsScreenType = DetailsScreenType.EDIT
                                         viewModel.onEvent(HomeScreenEvents.SetResearch(research))
                                         navigator.navigateTo(
                                             pane = ListDetailPaneScaffoldRole.Detail,
@@ -213,7 +226,16 @@ fun HomeScreen(
                                     onDeleted = {
                                         isDialogVisible = true
                                         currentDeletedResearch = research
-                                    })
+                                    },
+                                    onViApplication = {
+                                        detailsScreenType = DetailsScreenType.VIEW_APPLICATION
+                                        viewModel.onEvent(HomeScreenEvents.SetResearch(research))
+                                        navigator.navigateTo(
+                                            pane = ListDetailPaneScaffoldRole.Detail,
+                                            content = research,
+                                        )
+                                    }
+                                )
                             }
                             bottomPaddingLazy("pad1")
                             bottomPaddingLazy("pad2")
@@ -222,55 +244,63 @@ fun HomeScreen(
                 }
             },
             detailPane = {
-                AnimatedPane {
-                    if (currentResearch == null) {
-                        EmptyWelcomeScreen()
-                        return@AnimatedPane
-                    }
-                    EditScreen(model = currentResearch!!,
-                        scrollState = editScreenScrollState,
-                        isSaveButtonVisible = navigator.currentDestination?.pane == ListDetailPaneScaffoldRole.Detail,
-                        onTitleChange = {
-                            viewModel.onEvent(
-                                HomeScreenEvents.OnEdit(
-                                    currentResearch!!.copy(
-                                        title = it
+                if (detailsScreenType != DetailsScreenType.VIEW_APPLICATION) {
+                    AnimatedPane {
+                        if (currentResearch == null) {
+                            EmptyWelcomeScreen()
+                            return@AnimatedPane
+                        }
+                        EditScreen(model = currentResearch!!,
+                            scrollState = editScreenScrollState,
+                            isSaveButtonVisible = navigator.currentDestination?.pane == ListDetailPaneScaffoldRole.Detail,
+                            onTitleChange = {
+                                viewModel.onEvent(
+                                    HomeScreenEvents.OnEdit(
+                                        currentResearch!!.copy(
+                                            title = it
+                                        )
                                     )
                                 )
-                            )
-                        },
-                        onDescriptionChange = {
-                            viewModel.onEvent(
-                                HomeScreenEvents.OnEdit(
-                                    currentResearch!!.copy(description = it)
+                            },
+                            onDescriptionChange = {
+                                viewModel.onEvent(
+                                    HomeScreenEvents.OnEdit(
+                                        currentResearch!!.copy(description = it)
+                                    )
                                 )
-                            )
-                        },
-                        onQuestionChange = {
-                            viewModel.onEvent(
-                                HomeScreenEvents.OnEdit(
-                                    currentResearch!!.copy(questions = it)
+                            },
+                            onQuestionChange = {
+                                viewModel.onEvent(
+                                    HomeScreenEvents.OnEdit(
+                                        currentResearch!!.copy(questions = it)
+                                    )
                                 )
-                            )
-                        },
-                        onSaveClick = {
-                            viewModel.onEvent(HomeScreenEvents.SaveChanges {
-                                navigator.navigateBack()
-                                viewModel.onEvent(HomeScreenEvents.SetResearch(null))
+                            },
+                            onSaveClick = {
+                                viewModel.onEvent(HomeScreenEvents.SaveChanges {
+                                    navigator.navigateBack()
+                                    viewModel.onEvent(HomeScreenEvents.SetResearch(null))
+                                })
+                            },
+                            onViewMarkdownClick = {
+                                territoryScreen = TerritoryScreen.ViewMarkdown
+                                navigator.navigateTo(
+                                    pane = ThreePaneScaffoldRole.Tertiary, content = currentResearch
+                                )
+                            },
+                            onAddTagClick = {
+                                territoryScreen = TerritoryScreen.EditTag
+                                navigator.navigateTo(
+                                    pane = ThreePaneScaffoldRole.Tertiary, content = currentResearch
+                                )
                             })
-                        },
-                        onViewMarkdownClick = {
-                            territoryScreen = TerritoryScreen.ViewMarkdown
-                            navigator.navigateTo(
-                                pane = ThreePaneScaffoldRole.Tertiary, content = currentResearch
-                            )
-                        },
-                        onAddTagClick = {
-                            territoryScreen = TerritoryScreen.EditTag
-                            navigator.navigateTo(
-                                pane = ThreePaneScaffoldRole.Tertiary, content = currentResearch
-                            )
-                        })
+                    }
+                } else {
+                    AnimatedPane {
+                        ApplicationScreen(
+                            researchId = currentResearch?.path ?: ""
+                        )
+                    }
                 }
             },
             extraPane = {

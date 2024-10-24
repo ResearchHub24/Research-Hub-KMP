@@ -9,6 +9,7 @@ data class ApplicationModel(
     val userName: String,
     val userUid: String,
     val userProfile: String,
+    val userEmail: String,
     val researchId: String,
     var researchTitle: String,
     val answers: List<AnswerModel>,
@@ -22,3 +23,9 @@ data class AnswerModel(
     val question: String,
     val answer: String,
 )
+
+
+@Keep
+enum class Action {
+    SELECTED, UNSELECTED
+}
