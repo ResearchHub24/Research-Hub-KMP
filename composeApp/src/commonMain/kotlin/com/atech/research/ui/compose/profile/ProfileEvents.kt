@@ -54,6 +54,7 @@ sealed interface ProfileEvents {
 
     data class ApplyResearch(
         val researchId: String,
+        val researchTitle: String,
         val answerModelList: List<AnswerModel>,
         val onComplete: (String?) -> Unit = {},
     ) : ProfileEvents

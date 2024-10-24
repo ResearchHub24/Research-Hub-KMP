@@ -133,6 +133,7 @@ class ProfileViewModel(
                     userUid = userDetails.data.uid!!,
                     userName = userDetails.data.displayName!!,
                     userProfile = userDetails.data.photoUrl!!,
+                    researchTitle = event.researchTitle
                 )
                 applyResearch(applicationModel, event.onComplete)
             }

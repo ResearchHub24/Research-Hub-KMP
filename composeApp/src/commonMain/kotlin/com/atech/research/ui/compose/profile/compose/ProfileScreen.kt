@@ -90,6 +90,7 @@ fun ProfileScreen(
     fromDetailScreen: Boolean = false,
     questionList: List<String> = emptyList(),
     researchPath: String = "",
+    researchTitle : String = "",
     onNavigateBack: (() -> Unit) = {}
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
@@ -462,6 +463,7 @@ fun ProfileScreen(
                                     ProfileEvents.ApplyResearch(
                                         researchId = researchPath,
                                         answerModelList = answerList,
+                                        researchTitle = researchTitle
                                     ) {
                                         if (it != null) {
                                             researchHubLog(
