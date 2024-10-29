@@ -227,7 +227,7 @@ class ResearchHubClientImp(
         return try {
             checkError<Boolean, ErrorResponse>(
                 client.getWithFallback {
-                    url("${ResearchHubClient.RESEARCH}/$researchId/apply?userId=$userId")
+                    url("${ResearchHubClient.RESEARCH}/$researchId/applied?userId=$userId")
                     contentType(ContentType.Application.Json)
                 }.body()
             )
