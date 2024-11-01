@@ -22,6 +22,7 @@ import com.atech.research.utils.LinkHelper
 import com.atech.research.utils.PrefManager
 import com.atech.research.utils.PrefManager.Companion.PREF_NAME
 import com.atech.research.utils.PrefManagerImp
+import com.atech.research.utils.Toast
 import com.atech.research.utils.generateImageLoader
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -61,6 +62,7 @@ val appModule = module {
     single { LinkHelper(get()) }
 
     single { SignOutHelper(get(), get()) }
+    single { Toast(get()) }
 }
 
 val viewModelModule = module {
@@ -70,12 +72,12 @@ val viewModelModule = module {
         SetUpViewModel(get())
     }
     viewModel {
-        HomeScreenViewModel(get(), get(),get())
+        HomeScreenViewModel(get(), get(), get())
     }
     viewModel { ProfileViewModel(get(), get(), get(), get()) }
     viewModel { StudentHomeViewModel(get(), get(), get()) }
     viewModel { FacultiesViewModel(get()) }
     viewModel { ApplicationViewModel(get(), get()) }
-    viewModel { ResearchApplicationsViewModel(get())}
+    viewModel { ResearchApplicationsViewModel(get()) }
 
 }

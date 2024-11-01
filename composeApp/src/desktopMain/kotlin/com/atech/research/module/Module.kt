@@ -19,6 +19,7 @@ import com.atech.research.utils.LinkHelper
 import com.atech.research.utils.PrefManager
 import com.atech.research.utils.PrefManager.Companion.PREF_NAME
 import com.atech.research.utils.PrefManagerImp
+import com.atech.research.utils.Toast
 import com.atech.research.utils.generateImageLoader
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -46,6 +47,7 @@ val viewModelModule = module {
     single { FacultiesViewModel(get()) }
     single { ApplicationViewModel(get(), get()) }
     single { ResearchApplicationsViewModel(get()) }
+    single { Toast() }
 
 
 }

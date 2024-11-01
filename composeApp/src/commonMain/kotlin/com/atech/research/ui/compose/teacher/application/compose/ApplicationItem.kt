@@ -52,14 +52,16 @@ fun ApplicationItem(
     onClick: () -> Unit = {},
     action: Action = Action.PENDING,
     onViewProfileClick: () -> Unit = {},
-    onActionClick: (Action) -> Unit = { _ -> }
+    onActionClick: (Action) -> Unit = { _ -> },
 ) {
     var isDialogVisible by rememberSaveable { mutableStateOf(false) }
     AnimatedVisibility(isDialogVisible) {
         ActionDialog(
             action = action,
             onActionClick = onActionClick,
-            onDismissRequest = { isDialogVisible = false }
+            onDismissRequest = {
+                isDialogVisible = false
+            }
         )
     }
     Surface(modifier = modifier
@@ -195,7 +197,7 @@ private fun ActionDialog(
     modifier: Modifier = Modifier,
     action: Action = Action.PENDING,
     onActionClick: (Action) -> Unit = { _ -> },
-    onDismissRequest: () -> Unit = {}
+    onDismissRequest: () -> Unit = {},
 ) {
     var clickedAction by rememberSaveable { mutableStateOf(action) }
     AppCustomAlertDialog(

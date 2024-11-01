@@ -58,9 +58,12 @@ import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.BackHandler
 import com.atech.research.utils.DataState
 import com.atech.research.utils.Prefs
+import com.atech.research.utils.Toast
+import com.atech.research.utils.ToastDuration
 import com.atech.research.utils.isAndroid
 import com.atech.research.utils.koinViewModel
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.compose_research
 import researchhub.composeapp.generated.resources.delete

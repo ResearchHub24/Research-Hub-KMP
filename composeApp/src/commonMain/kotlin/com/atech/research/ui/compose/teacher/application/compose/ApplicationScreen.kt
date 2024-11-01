@@ -9,11 +9,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.atech.research.common.ProgressBar
-import com.atech.research.core.ktor.model.Action
 import com.atech.research.ui.compose.teacher.application.ApplicationEvents
 import com.atech.research.ui.compose.teacher.application.ResearchApplicationsViewModel
 import com.atech.research.utils.DataState
+import com.atech.research.utils.Toast
+import com.atech.research.utils.ToastDuration
 import com.atech.research.utils.koinViewModel
+import org.koin.compose.koinInject
 
 
 @Composable
@@ -21,7 +23,6 @@ fun ApplicationScreen(
     modifier: Modifier = Modifier,
     researchId: String,
     onViewProfileClick: (String) -> Unit = {},
-    onActionClick: (Action) -> Unit = {}
 ) {
     val viewModel: ResearchApplicationsViewModel = koinViewModel()
     LaunchedEffect(true) {
@@ -33,6 +34,7 @@ fun ApplicationScreen(
         return
     }
     val data = (allApplication as? DataState.Success)?.data ?: return
+    val toast = koinInject<Toast>()
     LazyColumn(
         modifier = modifier.fillMaxSize()
     ) {
@@ -42,8 +44,22 @@ fun ApplicationScreen(
                 onViewProfileClick = {
                     onViewProfileClick.invoke(application.userUid)
                 },
-                onActionClick = onActionClick,
-                action = application.action
+                onActionClick = {
+                    viewModel.onEvent(
+                        ApplicationEvents.OnStatusChange(
+                            researchId,
+                            application.userUid,
+                            it,
+                            onComplete = { message ->
+                                toast.show(
+                                    message ?: "Action Completed",
+                                    ToastDuration.LONG
+                                )
+                            }
+                        )
+                    )
+                },
+                action = application.action,
             )
         }
     }

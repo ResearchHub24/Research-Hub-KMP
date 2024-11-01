@@ -1,5 +1,6 @@
 package com.atech.research.core.ktor
 
+import com.atech.research.core.ktor.model.Action
 import com.atech.research.core.ktor.model.ApplicationModel
 import com.atech.research.core.ktor.model.ErrorResponse
 import com.atech.research.core.ktor.model.LoginResponse
@@ -270,6 +271,24 @@ class ResearchHubClientImp(
             checkError<List<ApplicationModel>, ErrorResponse>(
                 client.getWithFallback {
                     url("${ResearchHubClient.RESEARCH}/$researchId/applications")
+                    contentType(ContentType.Application.Json)
+                }.body()
+            )
+        } catch (e: Exception) {
+            researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
+            DataState.Error(e)
+        }
+    }
+
+    override suspend fun changeApplicationStatus(
+        researchId: String,
+        userUid: String,
+        action: Action
+    ): DataState<SuccessResponse> {
+        return try {
+            checkError<SuccessResponse, ErrorResponse>(
+                client.put {
+                    url("${ResearchHubClient.RESEARCH}/$researchId/status?userUid=$userUid&action=${action.name}")
                     contentType(ContentType.Application.Json)
                 }.body()
             )

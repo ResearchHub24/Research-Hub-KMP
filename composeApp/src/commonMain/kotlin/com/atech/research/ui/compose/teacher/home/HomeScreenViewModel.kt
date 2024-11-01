@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.core.ktor.model.TagModel
 import com.atech.research.core.ktor.model.UserModel
+import com.atech.research.core.usecase.ChangeStatusUseCases
 import com.atech.research.core.usecase.GetUseDetailUseCase
 import com.atech.research.core.usecase.ResearchUseCase
 import com.atech.research.core.usecase.TagUseCase

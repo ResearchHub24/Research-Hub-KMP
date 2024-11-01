@@ -27,6 +27,7 @@ data class AnswerModel(
 
 
 @Keep
+@Serializable
 enum class Action {
     PENDING, SELECTED, REJECTED
 }

@@ -1,5 +1,6 @@
 package com.atech.research.core.ktor
 
+import com.atech.research.core.ktor.model.Action
 import com.atech.research.core.ktor.model.ApplicationModel
 import com.atech.research.core.ktor.model.LoginResponse
 import com.atech.research.core.ktor.model.ResearchModel
@@ -52,8 +53,12 @@ interface ResearchHubClient {
 
     suspend fun getAppliedResearch(userId: String): DataState<List<ApplicationModel>>
 
-
     suspend fun getAllAppliedResearchApplication(researchId: String): DataState<List<ApplicationModel>>
+
+    suspend fun changeApplicationStatus(
+        researchId: String, userUid: String, action: Action
+    ): DataState<SuccessResponse>
+
 
     companion object {
 //        private const val BASE_URL = "http://192.168.29.205:9090/api/v1"

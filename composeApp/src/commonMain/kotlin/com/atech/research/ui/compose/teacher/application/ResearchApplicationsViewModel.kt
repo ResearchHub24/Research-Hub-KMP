@@ -23,6 +23,19 @@ class ResearchApplicationsViewModel(
     ) {
         when (event) {
             is ApplicationEvents.LoadData -> loadData(researchId = event.researchId)
+            is ApplicationEvents.OnStatusChange -> scope.launch {
+                val dataState = useCases.changeStatusUseCases.invoke(
+                    event.researchId,
+                    event.userUid,
+                    event.action
+                )
+                if (dataState is DataState.Error) {
+                    event.onComplete(dataState.exception.message)
+                    return@launch
+                }
+                event.onComplete(null)
+                loadData(researchId = event.researchId)
+            }
         }
     }
 
