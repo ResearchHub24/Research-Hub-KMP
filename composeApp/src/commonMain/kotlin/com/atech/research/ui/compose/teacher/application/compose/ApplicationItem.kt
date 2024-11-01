@@ -50,7 +50,7 @@ fun ApplicationItem(
     modifier: Modifier = Modifier,
     model: ApplicationModel,
     onClick: () -> Unit = {},
-    action: Action = Action.UNSELECTED,
+    action: Action = Action.PENDING,
     onViewProfileClick: () -> Unit = {},
     onActionClick: (Action) -> Unit = { _ -> }
 ) {
@@ -193,7 +193,7 @@ private fun questionItemTextFieldColor() = TextFieldDefaults.colors(
 @Composable
 private fun ActionDialog(
     modifier: Modifier = Modifier,
-    action: Action = Action.UNSELECTED,
+    action: Action = Action.PENDING,
     onActionClick: (Action) -> Unit = { _ -> },
     onDismissRequest: () -> Unit = {}
 ) {

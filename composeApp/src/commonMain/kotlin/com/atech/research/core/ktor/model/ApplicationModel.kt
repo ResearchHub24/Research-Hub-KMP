@@ -14,6 +14,7 @@ data class ApplicationModel(
     var researchTitle: String,
     val answers: List<AnswerModel>,
     val selected: Boolean = false,
+    val action: Action = Action.PENDING,
     val created: Long = System.currentTimeMillis()
 )
 
@@ -27,5 +28,5 @@ data class AnswerModel(
 
 @Keep
 enum class Action {
-    SELECTED, UNSELECTED
+    PENDING, SELECTED, REJECTED
 }

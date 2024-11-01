@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.atech.research.common.ProgressBar
+import com.atech.research.core.ktor.model.Action
 import com.atech.research.ui.compose.teacher.application.ApplicationEvents
 import com.atech.research.ui.compose.teacher.application.ResearchApplicationsViewModel
 import com.atech.research.utils.DataState
@@ -19,7 +20,8 @@ import com.atech.research.utils.koinViewModel
 fun ApplicationScreen(
     modifier: Modifier = Modifier,
     researchId: String,
-    onViewProfileClick: (String) -> Unit = {}
+    onViewProfileClick: (String) -> Unit = {},
+    onActionClick: (Action) -> Unit = {}
 ) {
     val viewModel: ResearchApplicationsViewModel = koinViewModel()
     LaunchedEffect(true) {
@@ -39,7 +41,9 @@ fun ApplicationScreen(
                 model = application,
                 onViewProfileClick = {
                     onViewProfileClick.invoke(application.userUid)
-                }
+                },
+                onActionClick = onActionClick,
+                action = application.action
             )
         }
     }
