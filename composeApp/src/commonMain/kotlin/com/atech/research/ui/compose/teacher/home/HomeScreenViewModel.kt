@@ -4,6 +4,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.core.ktor.model.TagModel
+import com.atech.research.core.ktor.model.UserModel
+import com.atech.research.core.usecase.GetUseDetailUseCase
 import com.atech.research.core.usecase.ResearchUseCase
 import com.atech.research.core.usecase.TagUseCase
 import com.atech.research.utils.DataState
@@ -12,6 +14,7 @@ import kotlinx.coroutines.launch
 
 class HomeScreenViewModel(
     private val researchUseCase: ResearchUseCase,
+    private val getUseDetailUseCase: GetUseDetailUseCase,
     private val tagUseCase: TagUseCase,
 ) : ResearchHubViewModel() {
 
@@ -24,6 +27,10 @@ class HomeScreenViewModel(
 
     private val _allTags = mutableStateOf<DataState<List<TagModel>>>(DataState.Loading)
     val allTags: State<DataState<List<TagModel>>> get() = _allTags
+
+
+    private val _userProfile = mutableStateOf<DataState<UserModel>>(DataState.Loading)
+    val userProfile: State<DataState<UserModel>> get() = _userProfile
 
     init {
         onEvent(HomeScreenEvents.LoadTags)
@@ -60,15 +67,21 @@ class HomeScreenViewModel(
                 }
             }
 
-            is HomeScreenEvents.DeleteResearch -> {
+            is HomeScreenEvents.DeleteResearch ->
                 scope.launch {
                     val dataState = researchUseCase.deleteResearch.invoke(event.model.path)
                     if (dataState is DataState.Error) event.onDone(dataState.exception)
                     if (dataState is DataState.Success) event.onDone(null)
                     loadData()
                 }
-            }
+
+
+            is HomeScreenEvents.LoadStudentProfile -> loadUserProfile(event.userId)
         }
+    }
+
+    private fun loadUserProfile(uid: String) = scope.launch {
+        _userProfile.value = getUseDetailUseCase.invoke(uid)
     }
 
     private fun loadTags() = scope.launch {

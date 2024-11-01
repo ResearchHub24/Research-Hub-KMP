@@ -37,7 +37,7 @@ val viewModelModule = module {
     single {
         PrefManagerImp(get())
     }.bind(PrefManager::class)
-    single { HomeScreenViewModel(get(), get()) }
+    single { HomeScreenViewModel(get(), get(), get()) }
     single { generateImageLoader() }
     single { ProfileViewModel(get(), get(), get(), get()) }
     single { LinkHelper() }

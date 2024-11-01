@@ -52,6 +52,7 @@ import androidx.navigation.NavController
 import com.atech.research.common.MainContainer
 import com.atech.research.common.ProgressBar
 import com.atech.research.common.ResearchItem
+import com.atech.research.common.ViewProfile
 import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.ui.compose.profile.compose.ProfileScreen
 import com.atech.research.ui.compose.student.home.StudentHomeEvents

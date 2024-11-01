@@ -26,7 +26,7 @@ import com.atech.research.common.ProgressBar
 import com.atech.research.core.ktor.model.UserModel
 import com.atech.research.ui.compose.student.faculties.FacultiesEvent
 import com.atech.research.ui.compose.student.faculties.FacultiesViewModel
-import com.atech.research.ui.compose.student.home.compose.ViewProfile
+import com.atech.research.common.ViewProfile
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.BackHandler
 import com.atech.research.utils.DataState

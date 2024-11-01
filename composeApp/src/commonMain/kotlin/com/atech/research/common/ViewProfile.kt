@@ -1,4 +1,4 @@
-package com.atech.research.ui.compose.student.home.compose
+package com.atech.research.common
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,10 +15,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import com.atech.research.common.CardSection
-import com.atech.research.common.EducationDetailsItems
-import com.atech.research.common.MainContainer
-import com.atech.research.common.ProgressBar
 import com.atech.research.core.ktor.model.UserModel
 import com.atech.research.ui.compose.profile.compose.TopLayout
 import com.atech.research.ui.theme.spacing

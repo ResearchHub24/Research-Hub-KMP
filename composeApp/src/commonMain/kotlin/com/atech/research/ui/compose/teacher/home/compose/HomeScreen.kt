@@ -3,6 +3,7 @@ package com.atech.research.ui.compose.teacher.home.compose
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -38,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
 import com.atech.research.LocalDataStore
 import com.atech.research.common.AppAlertDialog
 import com.atech.research.common.BottomPadding
@@ -46,6 +48,7 @@ import com.atech.research.common.MainContainer
 import com.atech.research.common.MarkdownViewer
 import com.atech.research.common.ProgressBar
 import com.atech.research.common.ResearchTeacherItem
+import com.atech.research.common.ViewProfile
 import com.atech.research.common.bottomPaddingLazy
 import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.ui.compose.teacher.application.compose.ApplicationScreen
@@ -64,9 +67,10 @@ import researchhub.composeapp.generated.resources.delete
 import researchhub.composeapp.generated.resources.detail
 import researchhub.composeapp.generated.resources.posted_research
 import researchhub.composeapp.generated.resources.research
+import researchhub.composeapp.generated.resources.view_all_applications
 
 enum class TerritoryScreen {
-    ViewMarkdown, EditTag
+    ViewMarkdown, EditTag, VIEW_PROFILE
 }
 
 enum class DetailsScreenType {
@@ -89,6 +93,7 @@ fun HomeScreen(
     }
     val allResearch by viewModel.allResearch
     val currentResearch by viewModel.currentResearchModel
+    val userProfile by viewModel.userProfile
 
     val allTags by viewModel.allTags
     var territoryScreen by rememberSaveable { mutableStateOf(TerritoryScreen.ViewMarkdown) }
@@ -104,7 +109,8 @@ fun HomeScreen(
         ThreePaneScaffoldRole.Secondary -> stringResource(Res.string.posted_research)
         ThreePaneScaffoldRole.Primary -> when {
             currentResearch?.title.isNullOrBlank() -> stringResource(Res.string.compose_research)
-            else -> stringResource(Res.string.detail)
+            else -> if (detailsScreenType == DetailsScreenType.VIEW_APPLICATION) stringResource(Res.string.view_all_applications)
+            else stringResource(Res.string.detail)
         }
 
         ThreePaneScaffoldRole.Tertiary -> ""
@@ -298,7 +304,15 @@ fun HomeScreen(
                 } else {
                     AnimatedPane {
                         ApplicationScreen(
-                            researchId = currentResearch?.path ?: ""
+                            researchId = currentResearch?.path ?: "",
+                            onViewProfileClick = {
+                                viewModel.onEvent(HomeScreenEvents.LoadStudentProfile(it))
+                                territoryScreen = TerritoryScreen.VIEW_PROFILE
+                                navigator.navigateTo(
+                                    pane = ListDetailPaneScaffoldRole.Extra,
+                                    content = currentResearch,
+                                )
+                            }
                         )
                     }
                 }
@@ -347,6 +361,17 @@ fun HomeScreen(
                             )
                             BottomPadding()
                         }
+                    }
+
+                    AnimatedVisibility(territoryScreen == TerritoryScreen.VIEW_PROFILE) {
+                        ViewProfile(
+                            user = userProfile,
+                            paddingValues = PaddingValues(0.dp),
+                            enableTopBar = false,
+                            onNavigationClick = {
+                                navigator.navigateBack()
+                            }
+                        )
                     }
                 }
             })

@@ -70,7 +70,7 @@ val viewModelModule = module {
         SetUpViewModel(get())
     }
     viewModel {
-        HomeScreenViewModel(get(), get())
+        HomeScreenViewModel(get(), get(),get())
     }
     viewModel { ProfileViewModel(get(), get(), get(), get()) }
     viewModel { StudentHomeViewModel(get(), get(), get()) }

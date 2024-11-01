@@ -18,7 +18,8 @@ import com.atech.research.utils.koinViewModel
 @Composable
 fun ApplicationScreen(
     modifier: Modifier = Modifier,
-    researchId: String
+    researchId: String,
+    onViewProfileClick: (String) -> Unit = {}
 ) {
     val viewModel: ResearchApplicationsViewModel = koinViewModel()
     LaunchedEffect(true) {
@@ -35,7 +36,10 @@ fun ApplicationScreen(
     ) {
         items(data) { application ->
             ApplicationItem(
-                model = application
+                model = application,
+                onViewProfileClick = {
+                    onViewProfileClick.invoke(application.userUid)
+                }
             )
         }
     }
