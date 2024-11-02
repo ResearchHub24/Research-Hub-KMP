@@ -97,6 +97,8 @@ kotlin {
             api(libs.image.loader.extension.compose.resources)
 
             implementation(libs.kotlinx.datetime)
+
+            implementation(libs.kottie)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

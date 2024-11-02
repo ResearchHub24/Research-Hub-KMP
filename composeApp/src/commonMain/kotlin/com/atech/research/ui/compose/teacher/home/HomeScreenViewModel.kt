@@ -37,6 +37,9 @@ class HomeScreenViewModel(
     private val _userProfile = mutableStateOf<DataState<UserModel>>(DataState.Loading)
     val userProfile: State<DataState<UserModel>> get() = _userProfile
 
+    private val _titleAndUrl = mutableStateOf<Pair<String, String?>>(Pair("", null))
+    val titleAndUrl: State<Pair<String, String?>> get() = _titleAndUrl
+
     init {
         onEvent(HomeScreenEvents.LoadTags)
     }
@@ -84,7 +87,12 @@ class HomeScreenViewModel(
             is HomeScreenEvents.SendNotification -> scope.launch {
                 val dataState = researchUseCase.sendNotificationUseCase.invoke(
                     topic = Topics.ResearchPosted.name,
-                    model = createNotification(event.title, event.researchId, event.imageLink)
+                    model = createNotification(
+                        event.title,
+                        event.researchId,
+                        event.imageLink,
+                        created = event.created
+                    )
                 )
                 if (dataState is DataState.Error) {
                     event.onDone.invoke(dataState.exception.message)
@@ -92,17 +100,24 @@ class HomeScreenViewModel(
                 }
                 event.onDone.invoke(null)
             }
+
+            is HomeScreenEvents.OnTitleAndImageUrlChange -> {
+                _titleAndUrl.value = event.title to event.imageLink
+            }
         }
     }
 
     private fun createNotification(
-        title: String, researchId: String, imageUrl: String?
+        title: String,
+        researchId: String,
+        imageUrl: String?,
+        created: Long
     ) = NotificationModel(
         message = Message(
             topic = "no_topic", notification = Notification(
                 title = "New Research Opportunity", body = title
             ), data = Data(
-                key = researchId, created = System.currentTimeMillis().toString(), image = imageUrl
+                key = researchId, created = created.toString(), image = imageUrl
             )
         )
     )

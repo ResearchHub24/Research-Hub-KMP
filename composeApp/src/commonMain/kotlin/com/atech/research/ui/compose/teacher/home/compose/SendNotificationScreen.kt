@@ -29,16 +29,15 @@ import com.atech.research.utils.BackHandler
 @Composable
 fun SendNotificationScreen(
     modifier: Modifier = Modifier,
-    title: String,
-    imageLink: String? = null,
+    titleWithUrl: Pair<String, String?>,
     researchId: String,
+    created: Long,
     onEvent: (HomeScreenEvents) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
     var canGoBack by rememberSaveable { mutableStateOf(true) }
 
-    var editedTitle by rememberSaveable { mutableStateOf(title) }
-    var editedImageLink: String? by rememberSaveable { mutableStateOf(imageLink) }
+
 
     BackHandler(enabled = canGoBack) {
         onBackClick()
@@ -54,19 +53,19 @@ fun SendNotificationScreen(
         }
         EditTextEnhance(
             modifier = Modifier.fillMaxWidth(),
-            value = editedTitle,
-            isError = title.isEmpty(),
+            value = titleWithUrl.first,
+            isError = titleWithUrl.first.isEmpty(),
             onValueChange = {
-                editedTitle = it
+                onEvent(HomeScreenEvents.OnTitleAndImageUrlChange(it, titleWithUrl.second))
             },
             clearIconClick = {
-                editedTitle = ""
+                onEvent(HomeScreenEvents.OnTitleAndImageUrlChange("", titleWithUrl.second))
             },
             supportingText = {
                 Text(
-                    if (title.isEmpty()) "Body can't be empty"
+                    if (titleWithUrl.first.isEmpty()) "Body can't be empty"
                     //else if (title.length > 50) "Body must be less than 50 characters"
-                    else "${title.length}/50"
+                    else "${titleWithUrl.first.length}/50"
                 )
             },
             placeholder = "Title"
@@ -74,27 +73,28 @@ fun SendNotificationScreen(
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         EditTextEnhance(
             modifier = Modifier.fillMaxWidth(),
-            value = editedImageLink ?: "",
+            value = titleWithUrl.second ?: "",
             onValueChange = {
-                editedImageLink = it
+                onEvent(HomeScreenEvents.OnTitleAndImageUrlChange(titleWithUrl.first, it))
             },
             clearIconClick = {
-                editedImageLink = ""
+                onEvent(HomeScreenEvents.OnTitleAndImageUrlChange(titleWithUrl.first, ""))
             },
             placeholder = "Image Url"
         )
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         ApplyButton(
-            enable = title.isNotBlank() /*&& title.length <= 50*/,
+            enable = titleWithUrl.first.isNotBlank() /*&& title.length <= 50*/,
             text = "Send",
             horizontalPadding = MaterialTheme.spacing.default
         ) {
             canGoBack = false
             onEvent.invoke(
                 HomeScreenEvents.SendNotification(
-                    title = editedTitle,
-                    imageLink = editedImageLink,
+                    title = titleWithUrl.first,
+                    imageLink = titleWithUrl.second,
                     researchId = researchId,
+                    created = created,
                     onDone = {
                         canGoBack = true
                         onBackClick.invoke()

@@ -42,6 +42,7 @@ class NotificationService : FirebaseMessagingService() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
         val key = message.data["created"]?.toLong()?.convertToInt() ?: Random.nextInt()
         val researchPath = message.data["key"] // Todo : Open research detail page
+        Log.d("AAA", "$researchPath , $key, ${message.from}")
         val managerCompat = NotificationManagerCompat.from(this)
         if (ActivityCompat.checkSelfPermission(
                 this, Manifest.permission.POST_NOTIFICATIONS

@@ -16,6 +16,7 @@ kotlin = "2.0.20"
 kotlinx-coroutines = "1.8.1"
 
 kotlinxDatetime = "0.6.0"
+kottie = "2.0.1"
 ktor = "3.0.0-beta-2"
 
 koin = "3.6.0-alpha3"
@@ -54,6 +55,7 @@ accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-
 
 
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+kottie = { module = "io.github.ismai117:kottie", version.ref = "kottie" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-json = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }

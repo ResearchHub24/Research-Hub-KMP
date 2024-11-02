@@ -243,6 +243,11 @@ fun HomeScreen(
                                     },
                                     onNotify = {
                                         detailsScreenType = DetailsScreenType.SEND_NOTIFICATION
+                                        viewModel.onEvent(
+                                            HomeScreenEvents.OnTitleAndImageUrlChange(
+                                                title = research.title
+                                            )
+                                        )
                                         viewModel.onEvent(HomeScreenEvents.SetResearch(research))
                                         navigator.navigateTo(
                                             pane = ListDetailPaneScaffoldRole.Detail,
@@ -331,14 +336,18 @@ fun HomeScreen(
                     }
 
                     DetailsScreenType.SEND_NOTIFICATION -> {
-                        SendNotificationScreen(
-                            title = currentResearch?.title ?: "",
-                            onBackClick = {
-                                navigator.navigateBack()
-                            },
-                            researchId = currentResearch?.path ?: return@ListDetailPaneScaffold,
-                            onEvent = viewModel::onEvent
-                        )
+                        AnimatedPane {
+                            val titleWithUrl by viewModel.titleAndUrl
+                            SendNotificationScreen(
+                                titleWithUrl = titleWithUrl,
+                                onBackClick = {
+                                    navigator.navigateBack()
+                                },
+                                researchId = currentResearch?.path ?: return@AnimatedPane,
+                                created = currentResearch?.created ?: return@AnimatedPane,
+                                onEvent = viewModel::onEvent
+                            )
+                        }
                     }
                 }
             },
