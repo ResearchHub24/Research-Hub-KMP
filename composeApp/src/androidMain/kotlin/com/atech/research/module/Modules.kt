@@ -29,6 +29,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.messaging
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -41,6 +43,7 @@ val appModule = module {
     single<FirebaseFirestore> {
         Firebase.firestore
     }
+    single<FirebaseMessaging> { Firebase.messaging }
     single { HasUserUseCase(get()) }
     single { LogInUseCase(get(), get()) }
     single { LogInWithGoogleStudent(get(), get()) }

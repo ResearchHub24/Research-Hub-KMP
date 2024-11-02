@@ -20,7 +20,7 @@ actual class LinkHelper(
 
             context.startActivity(browserIntent)
         } catch (e: Exception) {
-            Log.d("AAA", "${e.message}")
+            Log.d(ResearchLogLevel.ERROR.name, "${e.message}")
             Toast.makeText(context, e.message ?: "Error opening link", Toast.LENGTH_SHORT).show()
         }
     }

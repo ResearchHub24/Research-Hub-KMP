@@ -31,6 +31,6 @@ data class Requirements(
 @Serializable
 data class TagModel(
     val created: Long = System.currentTimeMillis(),
-    val createdBy: String,
+    val createdBy: String = "",
     val name: String,
 )

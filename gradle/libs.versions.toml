@@ -83,6 +83,7 @@ firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }
+firebase-message = { group = "com.google.firebase", name = "firebase-messaging" }
 
 play-service-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-service-auth" }
 
@@ -122,4 +123,5 @@ firebase = [
     #    "firebase-crashlytics",
     "firebase-auth",
     "firebase-firestore",
+    "firebase-message"
 ]
