@@ -12,9 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.rounded.Cancel
+import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.AlertDialogDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -33,6 +37,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.atech.research.common.AppCustomAlertDialog
 import com.atech.research.common.ApplyButton
@@ -50,93 +55,162 @@ fun ApplicationItem(
     modifier: Modifier = Modifier,
     model: ApplicationModel,
     onClick: () -> Unit = {},
-    action: Action = Action.PENDING,
     onViewProfileClick: () -> Unit = {},
     onActionClick: (Action) -> Unit = { _ -> },
 ) {
     var isDialogVisible by rememberSaveable { mutableStateOf(false) }
+
     AnimatedVisibility(isDialogVisible) {
         ActionDialog(
-            action = action,
+            action = model.action,
             onActionClick = onActionClick,
             onDismissRequest = {
                 isDialogVisible = false
             }
         )
     }
-    Surface(modifier = modifier
-        .fillMaxWidth()
-        .clickable { onClick.invoke() }) {
+
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick.invoke() }
+    ) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(MaterialTheme.spacing.medium)
+                .padding(MaterialTheme.spacing.medium),
+            colors = CardDefaults.cardColors(
+                containerColor = when (model.action) {
+                    Action.SELECTED -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)
+                    Action.REJECTED -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.1f)
+                    Action.PENDING -> MaterialTheme.colorScheme.surface
+                }
+            )
         ) {
             Column(
                 modifier = Modifier.padding(MaterialTheme.spacing.medium)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    AsyncImage(
-                        modifier = Modifier.size(80.dp),
-                        isLoadCircular = true,
-                        url = model.userProfile
-                    )
-                    Spacer(Modifier.width(MaterialTheme.spacing.medium))
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(.8f)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(
-                            text = model.userName,
-                            maxLines = 1,
+                        AsyncImage(
                             modifier = Modifier
-                                .padding(MaterialTheme.spacing.small)
-                                .basicMarquee()
+                                .size(80.dp)
+                                .clip(CircleShape),
+                            isLoadCircular = true,
+                            url = model.userProfile
                         )
-                        Text(
-                            maxLines = 1,
-                            text = model.userName,
-                            modifier = Modifier
-                                .padding(MaterialTheme.spacing.small)
-                                .basicMarquee()
-                        )
+                        Spacer(Modifier.width(MaterialTheme.spacing.medium))
+                        Column {
+                            Text(
+                                text = model.userName,
+                                maxLines = 1,
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier
+                                    .padding(MaterialTheme.spacing.small)
+                                    .basicMarquee()
+                            )
+                            Text(
+                                text = model.userEmail,
+                                maxLines = 1,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier
+                                    .padding(MaterialTheme.spacing.small)
+                                    .basicMarquee()
+                            )
+                        }
                     }
 
+                    // Status Icon
+                    when (model.action) {
+                        Action.SELECTED -> Icon(
+                            imageVector = Icons.Rounded.CheckCircle,
+                            contentDescription = "Selected",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+
+                        Action.REJECTED -> Icon(
+                            imageVector = Icons.Rounded.Cancel,
+                            contentDescription = "Rejected",
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier.size(24.dp)
+                        )
+
+                        Action.PENDING -> Icon(
+                            imageVector = Icons.Rounded.Schedule,
+                            contentDescription = "Pending",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
+
                 Spacer(Modifier.height(MaterialTheme.spacing.medium))
                 HorizontalDivider()
+
+                // Research Title
+                Text(
+                    text = model.researchTitle,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.padding(vertical = MaterialTheme.spacing.small)
+                )
+
                 ExpandableCard(title = "Response") {
                     model.answers.forEach {
                         Spacer(Modifier.height(MaterialTheme.spacing.medium))
-                        QuestionsItem(
-                            model = it
-                        )
+                        QuestionsItem(model = it)
                     }
                 }
+
                 Spacer(Modifier.height(MaterialTheme.spacing.medium))
                 HorizontalDivider()
-                Text(
-                    text = "Filled Date : ${model.created.convertToDateFormat()}",
+
+                Row(
                     modifier = Modifier
-                        .padding(MaterialTheme.spacing.small)
-                        .basicMarquee(),
-                    style = MaterialTheme.typography.labelSmall
-                )
+                        .fillMaxWidth()
+                        .padding(top = MaterialTheme.spacing.small),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Applied on ${model.created.convertToDateFormat()}",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Text(
+                        text = when (model.action) {
+                            Action.SELECTED -> "Selected"
+                            Action.REJECTED -> "Rejected"
+                            Action.PENDING -> "Pending Review"
+                        },
+                        style = MaterialTheme.typography.labelMedium,
+                        color = when (model.action) {
+                            Action.SELECTED -> MaterialTheme.colorScheme.primary
+                            Action.REJECTED -> MaterialTheme.colorScheme.error
+                            Action.PENDING -> MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                    )
+                }
+
+                Spacer(Modifier.height(MaterialTheme.spacing.medium))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                 ) {
                     ApplyButton(
                         modifier = Modifier.weight(.5f),
-                        text = "Action",
-                        action = {
-                            isDialogVisible = true
-                        }
+                        text = if (model.action == Action.PENDING) "Take Action" else "Change Status",
+                        enable = true,
+                        action = { isDialogVisible = true }
                     )
                     ApplyButton(
                         modifier = Modifier.weight(.5f),

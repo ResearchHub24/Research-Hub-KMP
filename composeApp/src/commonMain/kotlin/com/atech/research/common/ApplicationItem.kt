@@ -1,6 +1,5 @@
 package com.atech.research.common
 
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material.icons.rounded.Schedule
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.atech.research.core.ktor.model.Action
 import com.atech.research.core.ktor.model.ApplicationModel
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.convertToDateFormat
@@ -38,14 +40,14 @@ fun ResearchApplicationItem(
             .fillMaxWidth()
             .clickable { onClick() }
     ) {
-        val isSelected = model.selected
         OutlinedCard(
-            modifier = modifier
-                .fillMaxWidth(),
+            modifier = modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
-                containerColor = if (isSelected)
-                    MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)
-                else MaterialTheme.colorScheme.surface
+                containerColor = when (model.action) {
+                    Action.SELECTED -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f)
+                    Action.REJECTED -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.1f)
+                    Action.PENDING -> MaterialTheme.colorScheme.surface
+                }
             ),
         ) {
             Row(
@@ -55,7 +57,7 @@ fun ResearchApplicationItem(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
             ) {
-                // Left section: Title
+                // Left section: Title and Status
                 Column(
                     modifier = Modifier.weight(1f, fill = false),
                     verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.small)
@@ -66,17 +68,32 @@ fun ResearchApplicationItem(
                         maxLines = 4,
                         overflow = TextOverflow.Ellipsis
                     )
+
+                    // Application Status
+                    Text(
+                        text = when (model.action) {
+                            Action.SELECTED -> "Selected"
+                            Action.REJECTED -> "Not Selected"
+                            Action.PENDING -> "Under Review"
+                        },
+                        style = MaterialTheme.typography.labelSmall,
+                        color = when (model.action) {
+                            Action.SELECTED -> MaterialTheme.colorScheme.primary
+                            Action.REJECTED -> MaterialTheme.colorScheme.error
+                            Action.PENDING -> MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                    )
                 }
 
-                // Right section: Status and Dates
+                // Right section: Status Icon and Dates
                 Row(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .padding(start = MaterialTheme.spacing.medium)
-                        .defaultMinSize(minWidth = 160.dp)  // Slightly increased for new text
+                        .defaultMinSize(minWidth = 160.dp)
                 ) {
-                    // Dates Column
+                    // Dates
                     Text(
                         text = "Applied on ${model.created.convertToDateFormat()}",
                         style = MaterialTheme.typography.labelSmall,
@@ -84,11 +101,30 @@ fun ResearchApplicationItem(
                         modifier = Modifier.padding(end = MaterialTheme.spacing.small)
                     )
 
-                    if (isSelected) {
-                        Icon(
+                    // Status Icon
+                    when (model.action) {
+                        Action.SELECTED -> Icon(
                             imageVector = Icons.Rounded.CheckCircle,
                             contentDescription = "Selected",
                             tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .padding(start = MaterialTheme.spacing.medium)
+                                .size(24.dp)
+                        )
+
+                        Action.REJECTED -> Icon(
+                            imageVector = Icons.Rounded.Cancel,
+                            contentDescription = "Not Selected",
+                            tint = MaterialTheme.colorScheme.error,
+                            modifier = Modifier
+                                .padding(start = MaterialTheme.spacing.medium)
+                                .size(24.dp)
+                        )
+
+                        Action.PENDING -> Icon(
+                            imageVector = Icons.Rounded.Schedule,
+                            contentDescription = "Under Review",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier
                                 .padding(start = MaterialTheme.spacing.medium)
                                 .size(24.dp)

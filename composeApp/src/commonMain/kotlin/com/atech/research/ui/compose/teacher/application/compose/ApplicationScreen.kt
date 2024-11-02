@@ -58,8 +58,7 @@ fun ApplicationScreen(
                             }
                         )
                     )
-                },
-                action = application.action,
+                }
             )
         }
     }

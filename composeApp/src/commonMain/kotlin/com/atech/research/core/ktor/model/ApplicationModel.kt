@@ -13,7 +13,6 @@ data class ApplicationModel(
     val researchId: String,
     var researchTitle: String,
     val answers: List<AnswerModel>,
-    val selected: Boolean = false,
     val action: Action = Action.PENDING,
     val created: Long = System.currentTimeMillis()
 )
