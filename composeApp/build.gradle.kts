@@ -174,7 +174,6 @@ compose.desktop {
                 "--add-opens=java.base/java.nio=ALL-UNNAMED",
                 "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
             )
-            javaHome = "C:\\Users\\ROOT\\.jdks\\jbr-17.0.11"
             nativeDistributions {
                 windows {
                     menuGroup = "Research Hub"
