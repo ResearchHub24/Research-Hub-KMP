@@ -9,6 +9,7 @@ import com.atech.research.core.ktor.model.SuccessResponse
 import com.atech.research.core.ktor.model.TagModel
 import com.atech.research.core.ktor.model.UserModel
 import com.atech.research.core.ktor.model.UserUpdateQueryHelper
+import com.atech.research.core.notification.NotificationModel
 import com.atech.research.utils.DataState
 import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.checkError
@@ -42,29 +43,23 @@ class ResearchHubClientImp(
     override suspend fun updateUserData(
         uid: String, vararg varargs: UserUpdateQueryHelper<Any>
     ): DataState<SuccessResponse> = try {
-        checkError<SuccessResponse, ErrorResponse>(
-            client.post {
-                val query = varargs.joinToString("&") {
-                    when (it) {
-                        is UserUpdateQueryHelper.UpdateUserEducationDetails ->
-                            "${it.queryType}=${it.value.toJson()}"
+        checkError<SuccessResponse, ErrorResponse>(client.post {
+            val query = varargs.joinToString("&") {
+                when (it) {
+                    is UserUpdateQueryHelper.UpdateUserEducationDetails -> "${it.queryType}=${it.value.toJson()}"
 
-                        is UserUpdateQueryHelper.UpdateUserFilledForm ->
-                            "${it.queryType}=${it.value.toJson()}"
+                    is UserUpdateQueryHelper.UpdateUserFilledForm -> "${it.queryType}=${it.value.toJson()}"
 
-                        is UserUpdateQueryHelper.UpdateUserLinks ->
-                            "${it.queryType}=${it.value.toJson()}"
+                    is UserUpdateQueryHelper.UpdateUserLinks -> "${it.queryType}=${it.value.toJson()}"
 
-                        is UserUpdateQueryHelper.UpdateUserSkillList ->
-                            "${it.queryType}=${it.value.toJson()}"
+                    is UserUpdateQueryHelper.UpdateUserSkillList -> "${it.queryType}=${it.value.toJson()}"
 
-                        else -> "${it.queryType}=${it.value}"
-                    }
+                    else -> "${it.queryType}=${it.value}"
                 }
-                url("${ResearchHubClient.USER}/$uid/update?$query")
-                contentType(ContentType.Application.Json)
             }
-        )
+            url("${ResearchHubClient.USER}/$uid/update?$query")
+            contentType(ContentType.Application.Json)
+        })
     } catch (
         e: Exception
     ) {
@@ -74,11 +69,9 @@ class ResearchHubClientImp(
 
     override suspend fun logInUser(email: String, password: String): DataState<LoginResponse> =
         try {
-            checkError<LoginResponse, ErrorResponse>(
-                client.post {
-                    url("${ResearchHubClient.LOGIN}?email=$email&password=$password")
-                }
-            )
+            checkError<LoginResponse, ErrorResponse>(client.post {
+                url("${ResearchHubClient.LOGIN}?email=$email&password=$password")
+            })
         } catch (e: ResponseException) {
             when (e.response.status.value) {
                 400 -> DataState.Error(Exception("Bad request"))
@@ -119,13 +112,11 @@ class ResearchHubClientImp(
 
     override suspend fun postResearch(researchModel: ResearchModel): DataState<SuccessResponse> {
         return try {
-            checkError<SuccessResponse, ErrorResponse>(
-                client.post {
-                    url(ResearchHubClient.RESEARCH_POST)
-                    contentType(ContentType.Application.Json)
-                    setBody(researchModel)
-                }
-            )
+            checkError<SuccessResponse, ErrorResponse>(client.post {
+                url(ResearchHubClient.RESEARCH_POST)
+                contentType(ContentType.Application.Json)
+                setBody(researchModel)
+            })
         } catch (e: Exception) {
             researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
             DataState.Error(e)
@@ -160,19 +151,16 @@ class ResearchHubClientImp(
         }
     }
 
-    override suspend fun addTag(tagModel: TagModel): DataState<String> =
-        try {
-            checkError<String, String>(
-                client.post {
-                    url(ResearchHubClient.TAGS)
-                    contentType(ContentType.Application.Json)
-                    setBody(tagModel)
-                }
-            )
-        } catch (e: Exception) {
-            researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
-            DataState.Error(e)
-        }
+    override suspend fun addTag(tagModel: TagModel): DataState<String> = try {
+        checkError<String, String>(client.post {
+            url(ResearchHubClient.TAGS)
+            contentType(ContentType.Application.Json)
+            setBody(tagModel)
+        })
+    } catch (e: Exception) {
+        researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
+        DataState.Error(e)
+    }
 
 
     override suspend fun deleteTag(tagModel: TagModel): DataState<String> {
@@ -204,17 +192,14 @@ class ResearchHubClientImp(
     }
 
     override suspend fun postAppliedResearch(
-        researchId: String,
-        researchModel: ApplicationModel
+        researchId: String, researchModel: ApplicationModel
     ): DataState<SuccessResponse> {
         return try {
-            checkError<SuccessResponse, ErrorResponse>(
-                client.post {
-                    url("${ResearchHubClient.RESEARCH}/$researchId/apply")
-                    contentType(ContentType.Application.Json)
-                    setBody(researchModel)
-                }
-            )
+            checkError<SuccessResponse, ErrorResponse>(client.post {
+                url("${ResearchHubClient.RESEARCH}/$researchId/apply")
+                contentType(ContentType.Application.Json)
+                setBody(researchModel)
+            })
         } catch (e: Exception) {
             researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
             DataState.Error(e)
@@ -222,8 +207,7 @@ class ResearchHubClientImp(
     }
 
     override suspend fun isAppliedToResearch(
-        researchId: String,
-        userId: String
+        researchId: String, userId: String
     ): DataState<Boolean> {
         return try {
             checkError<Boolean, ErrorResponse>(
@@ -281,9 +265,7 @@ class ResearchHubClientImp(
     }
 
     override suspend fun changeApplicationStatus(
-        researchId: String,
-        userUid: String,
-        action: Action
+        researchId: String, userUid: String, action: Action
     ): DataState<SuccessResponse> {
         return try {
             checkError<SuccessResponse, ErrorResponse>(
@@ -292,6 +274,21 @@ class ResearchHubClientImp(
                     contentType(ContentType.Application.Json)
                 }.body()
             )
+        } catch (e: Exception) {
+            researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
+            DataState.Error(e)
+        }
+    }
+
+    override suspend fun sendNotificationToTopic(
+        model: NotificationModel, topic: String
+    ): DataState<SuccessResponse> {
+        return try {
+            checkError<SuccessResponse, ErrorResponse>(client.post {
+                url("${ResearchHubClient.TOPIC}/$topic")
+                contentType(ContentType.Application.Json)
+                setBody(model)
+            })
         } catch (e: Exception) {
             researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
             DataState.Error(e)

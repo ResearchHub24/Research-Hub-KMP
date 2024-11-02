@@ -100,6 +100,7 @@ kotlin {
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
+
             implementation(libs.kotlinx.coroutines.swing)
 //            Ktor
             implementation(libs.ktor.client.okhttp)
@@ -156,6 +157,16 @@ android {
     }
     dependencies {
         debugImplementation(compose.uiTooling)
+    }
+    buildTypes {
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
     }
 }
 

@@ -6,9 +6,6 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 
-enum class Topics {
-    ResearchPosted
-}
 
 interface NotificationModel {
     val notificationChannelId: String

@@ -19,6 +19,7 @@ import com.atech.research.core.usecase.GetPostedResearchUseCase
 import com.atech.research.core.usecase.GetUseDetailUseCase
 import com.atech.research.core.usecase.IsAppliedToResearchUseCase
 import com.atech.research.core.usecase.ResearchUseCase
+import com.atech.research.core.usecase.SendNotificationUseCase
 import com.atech.research.core.usecase.StudentResearchUseCases
 import com.atech.research.core.usecase.TagUseCase
 import com.atech.research.core.usecase.UpdateOrPostResearchUseCase
@@ -41,7 +42,7 @@ val commonModule = module {
         DeleteResearchUseCase(get())
     }
     single {
-        ResearchUseCase(get(), get(), get())
+        ResearchUseCase(get(), get(), get(), get())
     }
 
     single { GetAllTagsUseCase(get()) }
@@ -63,6 +64,7 @@ val commonModule = module {
     single { GetALlApplicationsUseCase(get()) }
     single { ApplicationUseCases(get(), get()) }
     single { ChangeStatusUseCases(get()) }
+    single { SendNotificationUseCase(get()) }
 
 
 }

@@ -5,12 +5,16 @@ import androidx.compose.runtime.mutableStateOf
 import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.core.ktor.model.TagModel
 import com.atech.research.core.ktor.model.UserModel
-import com.atech.research.core.usecase.ChangeStatusUseCases
+import com.atech.research.core.notification.Data
+import com.atech.research.core.notification.Message
+import com.atech.research.core.notification.Notification
+import com.atech.research.core.notification.NotificationModel
 import com.atech.research.core.usecase.GetUseDetailUseCase
 import com.atech.research.core.usecase.ResearchUseCase
 import com.atech.research.core.usecase.TagUseCase
 import com.atech.research.utils.DataState
 import com.atech.research.utils.ResearchHubViewModel
+import com.atech.research.utils.Topics
 import kotlinx.coroutines.launch
 
 class HomeScreenViewModel(
@@ -68,18 +72,40 @@ class HomeScreenViewModel(
                 }
             }
 
-            is HomeScreenEvents.DeleteResearch ->
-                scope.launch {
-                    val dataState = researchUseCase.deleteResearch.invoke(event.model.path)
-                    if (dataState is DataState.Error) event.onDone(dataState.exception)
-                    if (dataState is DataState.Success) event.onDone(null)
-                    loadData()
-                }
+            is HomeScreenEvents.DeleteResearch -> scope.launch {
+                val dataState = researchUseCase.deleteResearch.invoke(event.model.path)
+                if (dataState is DataState.Error) event.onDone(dataState.exception)
+                if (dataState is DataState.Success) event.onDone(null)
+                loadData()
+            }
 
 
             is HomeScreenEvents.LoadStudentProfile -> loadUserProfile(event.userId)
+            is HomeScreenEvents.SendNotification -> scope.launch {
+                val dataState = researchUseCase.sendNotificationUseCase.invoke(
+                    topic = Topics.ResearchPosted.name,
+                    model = createNotification(event.title, event.researchId, event.imageLink)
+                )
+                if (dataState is DataState.Error) {
+                    event.onDone.invoke(dataState.exception.message)
+                    return@launch
+                }
+                event.onDone.invoke(null)
+            }
         }
     }
+
+    private fun createNotification(
+        title: String, researchId: String, imageUrl: String?
+    ) = NotificationModel(
+        message = Message(
+            topic = "no_topic", notification = Notification(
+                title = "New Research Opportunity", body = title
+            ), data = Data(
+                key = researchId, created = System.currentTimeMillis().toString(), image = imageUrl
+            )
+        )
+    )
 
     private fun loadUserProfile(uid: String) = scope.launch {
         _userProfile.value = getUseDetailUseCase.invoke(uid)

@@ -8,6 +8,7 @@ import com.atech.research.core.ktor.model.SuccessResponse
 import com.atech.research.core.ktor.model.TagModel
 import com.atech.research.core.ktor.model.UserModel
 import com.atech.research.core.ktor.model.UserUpdateQueryHelper
+import com.atech.research.core.notification.NotificationModel
 import com.atech.research.utils.DataState
 
 
@@ -60,8 +61,14 @@ interface ResearchHubClient {
     ): DataState<SuccessResponse>
 
 
+    suspend fun sendNotificationToTopic(
+        model: NotificationModel,
+        topic: String
+    ): DataState<SuccessResponse>
+
+
     companion object {
-//        private const val BASE_URL = "http://192.168.29.205:9090/api/v1"
+        //        private const val BASE_URL = "http://192.168.29.205:9090/api/v1"
         private const val BASE_URL = "http://192.168.58.65:9090/api/v1"
 
         const val USER = "$BASE_URL/users"
@@ -71,5 +78,7 @@ interface ResearchHubClient {
         const val DELETE_RESEARCH = "$RESEARCH/delete"
         const val TAGS = "$RESEARCH/tags"
         const val SKILLS = "$RESEARCH/skills"
+        private const val SEND_NOTIFICATION = "$BASE_URL/notification"
+        const val TOPIC = "$SEND_NOTIFICATION/topics"
     }
 }

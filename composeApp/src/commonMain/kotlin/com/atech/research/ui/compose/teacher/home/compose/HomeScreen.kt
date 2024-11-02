@@ -58,12 +58,9 @@ import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.BackHandler
 import com.atech.research.utils.DataState
 import com.atech.research.utils.Prefs
-import com.atech.research.utils.Toast
-import com.atech.research.utils.ToastDuration
 import com.atech.research.utils.isAndroid
 import com.atech.research.utils.koinViewModel
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.compose_research
 import researchhub.composeapp.generated.resources.delete
@@ -77,7 +74,7 @@ enum class TerritoryScreen {
 }
 
 enum class DetailsScreenType {
-    EDIT, VIEW_APPLICATION
+    EDIT, VIEW_APPLICATION, SEND_NOTIFICATION
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
@@ -243,6 +240,14 @@ fun HomeScreen(
                                             pane = ListDetailPaneScaffoldRole.Detail,
                                             content = research,
                                         )
+                                    },
+                                    onNotify = {
+                                        detailsScreenType = DetailsScreenType.SEND_NOTIFICATION
+                                        viewModel.onEvent(HomeScreenEvents.SetResearch(research))
+                                        navigator.navigateTo(
+                                            pane = ListDetailPaneScaffoldRole.Detail,
+                                            content = research,
+                                        )
                                     }
                                 )
                             }
@@ -253,69 +258,86 @@ fun HomeScreen(
                 }
             },
             detailPane = {
-                if (detailsScreenType != DetailsScreenType.VIEW_APPLICATION) {
-                    AnimatedPane {
-                        if (currentResearch == null) {
-                            EmptyWelcomeScreen()
-                            return@AnimatedPane
-                        }
-                        EditScreen(model = currentResearch!!,
-                            scrollState = editScreenScrollState,
-                            isSaveButtonVisible = navigator.currentDestination?.pane == ListDetailPaneScaffoldRole.Detail,
-                            onTitleChange = {
-                                viewModel.onEvent(
-                                    HomeScreenEvents.OnEdit(
-                                        currentResearch!!.copy(
-                                            title = it
+                when (detailsScreenType) {
+                    DetailsScreenType.EDIT -> {
+                        AnimatedPane {
+                            if (currentResearch == null) {
+                                EmptyWelcomeScreen()
+                                return@AnimatedPane
+                            }
+                            EditScreen(model = currentResearch!!,
+                                scrollState = editScreenScrollState,
+                                isSaveButtonVisible = navigator.currentDestination?.pane == ListDetailPaneScaffoldRole.Detail,
+                                onTitleChange = {
+                                    viewModel.onEvent(
+                                        HomeScreenEvents.OnEdit(
+                                            currentResearch!!.copy(
+                                                title = it
+                                            )
                                         )
                                     )
-                                )
-                            },
-                            onDescriptionChange = {
-                                viewModel.onEvent(
-                                    HomeScreenEvents.OnEdit(
-                                        currentResearch!!.copy(description = it)
+                                },
+                                onDescriptionChange = {
+                                    viewModel.onEvent(
+                                        HomeScreenEvents.OnEdit(
+                                            currentResearch!!.copy(description = it)
+                                        )
                                     )
-                                )
-                            },
-                            onQuestionChange = {
-                                viewModel.onEvent(
-                                    HomeScreenEvents.OnEdit(
-                                        currentResearch!!.copy(questions = it)
+                                },
+                                onQuestionChange = {
+                                    viewModel.onEvent(
+                                        HomeScreenEvents.OnEdit(
+                                            currentResearch!!.copy(questions = it)
+                                        )
                                     )
-                                )
-                            },
-                            onSaveClick = {
-                                viewModel.onEvent(HomeScreenEvents.SaveChanges {
-                                    navigator.navigateBack()
-                                    viewModel.onEvent(HomeScreenEvents.SetResearch(null))
+                                },
+                                onSaveClick = {
+                                    viewModel.onEvent(HomeScreenEvents.SaveChanges {
+                                        navigator.navigateBack()
+                                        viewModel.onEvent(HomeScreenEvents.SetResearch(null))
+                                    })
+                                },
+                                onViewMarkdownClick = {
+                                    territoryScreen = TerritoryScreen.ViewMarkdown
+                                    navigator.navigateTo(
+                                        pane = ThreePaneScaffoldRole.Tertiary,
+                                        content = currentResearch
+                                    )
+                                },
+                                onAddTagClick = {
+                                    territoryScreen = TerritoryScreen.EditTag
+                                    navigator.navigateTo(
+                                        pane = ThreePaneScaffoldRole.Tertiary,
+                                        content = currentResearch
+                                    )
                                 })
-                            },
-                            onViewMarkdownClick = {
-                                territoryScreen = TerritoryScreen.ViewMarkdown
-                                navigator.navigateTo(
-                                    pane = ThreePaneScaffoldRole.Tertiary, content = currentResearch
-                                )
-                            },
-                            onAddTagClick = {
-                                territoryScreen = TerritoryScreen.EditTag
-                                navigator.navigateTo(
-                                    pane = ThreePaneScaffoldRole.Tertiary, content = currentResearch
-                                )
-                            })
+                        }
                     }
-                } else {
-                    AnimatedPane {
-                        ApplicationScreen(
-                            researchId = currentResearch?.path ?: "",
-                            onViewProfileClick = {
-                                viewModel.onEvent(HomeScreenEvents.LoadStudentProfile(it))
-                                territoryScreen = TerritoryScreen.VIEW_PROFILE
-                                navigator.navigateTo(
-                                    pane = ListDetailPaneScaffoldRole.Extra,
-                                    content = currentResearch,
-                                )
-                            }
+
+                    DetailsScreenType.VIEW_APPLICATION -> {
+                        AnimatedPane {
+                            ApplicationScreen(
+                                researchId = currentResearch?.path ?: "",
+                                onViewProfileClick = {
+                                    viewModel.onEvent(HomeScreenEvents.LoadStudentProfile(it))
+                                    territoryScreen = TerritoryScreen.VIEW_PROFILE
+                                    navigator.navigateTo(
+                                        pane = ListDetailPaneScaffoldRole.Extra,
+                                        content = currentResearch,
+                                    )
+                                }
+                            )
+                        }
+                    }
+
+                    DetailsScreenType.SEND_NOTIFICATION -> {
+                        SendNotificationScreen(
+                            title = currentResearch?.title ?: "",
+                            onBackClick = {
+                                navigator.navigateBack()
+                            },
+                            researchId = currentResearch?.path ?: return@ListDetailPaneScaffold,
+                            onEvent = viewModel::onEvent
                         )
                     }
                 }

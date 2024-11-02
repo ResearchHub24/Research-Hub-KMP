@@ -15,4 +15,11 @@ sealed interface HomeScreenEvents {
         HomeScreenEvents
 
     data class LoadStudentProfile(val userId: String) : HomeScreenEvents
+
+    data class SendNotification(
+        val title: String,
+        val researchId: String,
+        val imageLink: String? = null,
+        val onDone: (String?) -> Unit = {}
+    ) : HomeScreenEvents
 }

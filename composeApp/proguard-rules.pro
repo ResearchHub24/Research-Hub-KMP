@@ -1,0 +1,1 @@
+-dontwarn io.ktor.client.network.sockets.SocketTimeoutException

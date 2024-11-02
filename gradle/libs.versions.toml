@@ -34,6 +34,7 @@ googleAndroidLibrariesMapsplatformSecretsGradlePlugin = "2.0.1"
 
 datastore = "1.1.1"
 navigationCommonKtx = "2.8.3"
+compottie="2.0.0-rc02"
 
 #room = "2.7.0-alpha08"
 #ksp = "2.0.20-1.0.25"
