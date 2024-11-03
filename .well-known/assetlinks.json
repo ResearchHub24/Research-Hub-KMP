@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.atech.research",
+      "sha256_cert_fingerprints": [
+        "D6:CA:BE:20:D3:F9:37:CF:A0:51:5F:BE:F7:4A:75:33:71:A6:0F:B9:A3:AC:78:63:28:6C:42:00:FA:58:C0:D6"
+      ]
+    }
+  }
+]
