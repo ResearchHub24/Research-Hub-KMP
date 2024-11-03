@@ -24,7 +24,7 @@ fun NavGraphBuilder.mainScreenGraph(navController: NavController) {
         route = ResearchHubNavigation.MainScreen.route
     ) {
         fadeThroughComposable(
-            route = MainScreenScreenRoutes.HomeScreen.route + "?researchPath={researchPath}",
+            route = MainScreenScreenRoutes.HomeScreen.route,
             arguments = listOf(navArgument("researchPath") {
                 nullable = true
                 defaultValue = null
