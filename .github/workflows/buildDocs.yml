@@ -1,0 +1,52 @@
+name: Deploy MkDocs to GitHub Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      deploy_message:
+        description: 'Enter a message for this deployment'
+        required: true
+        default: 'Manual deployment of documentation'
+        type: string
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs-material
+          pip install mkdocs-simple-hooks
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Navigate and Build
+        run: |
+          cd docs
+          ls -la
+          mkdocs gh-deploy --force --message "${{ github.event.inputs.deploy_message }}"
