@@ -2,8 +2,10 @@ package com.atech.research.ui.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.atech.research.ui.compose.main.MainScreen
+import com.atech.research.utils.DeepLink
 import com.atech.research.utils.fadeThroughComposable
 
 sealed class MainScreenScreenRoutes(
@@ -18,7 +20,13 @@ fun NavGraphBuilder.mainScreenGraph(navController: NavController) {
         route = ResearchHubNavigation.MainScreen.route
     ) {
         fadeThroughComposable(
-            route = MainScreenScreenRoutes.HomeScreen.route
+            route = MainScreenScreenRoutes.HomeScreen.route,
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = DeepLink.OpenResearch().researchPath
+                    action = "android.intent.action.VIEW"
+                }
+            )
         ) {
             MainScreen(
                 navHostController = navController
