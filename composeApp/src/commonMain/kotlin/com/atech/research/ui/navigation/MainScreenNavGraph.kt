@@ -35,12 +35,14 @@ fun NavGraphBuilder.mainScreenGraph(navController: NavController) {
                 action = "android.intent.action.VIEW"
             })
         ) {
-            val researchPath = it.arguments?.getString("researchPath") ?: ""
-            if (researchPath.isNotBlank()) researchHubLog(
-                ResearchLogLevel.INFO, "ResearchPath: $researchPath"
+            val researchPath = it.arguments?.getString("researchPath")
+            researchHubLog(
+                ResearchLogLevel.INFO,
+                researchPath ?: ""
             )
             MainScreen(
-                navHostController = navController
+                navHostController = navController,
+                researchPath = researchPath
             )
         }
     }

@@ -4,17 +4,21 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.core.ktor.model.UserModel
+import com.atech.research.core.usecase.GetResearchById
 import com.atech.research.core.usecase.GetUseDetailUseCase
 import com.atech.research.core.usecase.StudentResearchUseCases
 import com.atech.research.utils.DataState
 import com.atech.research.utils.PrefManager
 import com.atech.research.utils.Prefs
 import com.atech.research.utils.ResearchHubViewModel
+import com.atech.research.utils.ResearchLogLevel
+import com.atech.research.utils.researchHubLog
 import kotlinx.coroutines.launch
 
 class StudentHomeViewModel(
     private val useCases: StudentResearchUseCases,
     private val getUseDetailUseCase: GetUseDetailUseCase,
+    private val getResearchById: GetResearchById,
     private val pref: PrefManager,
 ) : ResearchHubViewModel() {
     private val _researchModel = mutableStateOf<DataState<List<ResearchModel>>>(DataState.Loading)
@@ -44,6 +48,19 @@ class StudentHomeViewModel(
             }
 
             is StudentHomeEvents.LoadUserProfile -> loadUserProfile(event.userId)
+            is StudentHomeEvents.SetResearchFromDeepLink -> scope.launch {
+                val dataState = getResearchById.invoke(event.researchPath)
+                if (dataState is DataState.Error) {
+                    researchHubLog(ResearchLogLevel.ERROR, "Error")
+                    event.onComplete(true)
+                    return@launch
+                }
+                if (dataState is DataState.Success) {
+                    _currentModel.value = dataState.data
+                    event.onComplete(false)
+                    return@launch
+                }
+            }
         }
     }
 

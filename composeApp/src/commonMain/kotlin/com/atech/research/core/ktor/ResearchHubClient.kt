@@ -28,6 +28,8 @@ interface ResearchHubClient {
 
     suspend fun getPostedResearch(userId: String? = null): DataState<List<ResearchModel>>
 
+    suspend fun getResearchById(researchPath: String): DataState<ResearchModel>
+
     suspend fun updateResearch(researchModel: ResearchModel): DataState<SuccessResponse>
 
     suspend fun postResearch(researchModel: ResearchModel): DataState<SuccessResponse>

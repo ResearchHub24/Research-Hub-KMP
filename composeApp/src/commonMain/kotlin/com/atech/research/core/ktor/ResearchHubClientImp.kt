@@ -95,6 +95,20 @@ class ResearchHubClientImp(
         DataState.Error(e)
     }
 
+    override suspend fun getResearchById(researchPath: String): DataState<ResearchModel> {
+        return try {
+            checkError<ResearchModel, ErrorResponse>(
+                client.getWithFallback {
+                    url("${ResearchHubClient.RESEARCH}/$researchPath")
+                    contentType(ContentType.Application.Json)
+                }.body()
+            )
+        } catch (e: Exception) {
+            researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
+            DataState.Error(e)
+        }
+    }
+
     override suspend fun updateResearch(researchModel: ResearchModel): DataState<SuccessResponse> =
         try {
             checkError<SuccessResponse, ErrorResponse>(

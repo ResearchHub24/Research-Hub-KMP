@@ -9,7 +9,8 @@ import kottieComposition.animateKottieCompositionAsState
 import kottieComposition.rememberKottieComposition
 
 enum class LottieAnimationLinks(val link: String) {
-    SendNotification("https://lottie.host/c17856bb-c9e4-4fde-a66e-a8bd91a161ab/RHerAdvPqS.json")
+    SendNotification("https://lottie.host/c17856bb-c9e4-4fde-a66e-a8bd91a161ab/RHerAdvPqS.json"),
+    NoteFound("https://lottie.host/9dcbe616-4bd5-450d-8637-868944d9218b/1ADhLhOw0L.json")
 }
 
 @Composable

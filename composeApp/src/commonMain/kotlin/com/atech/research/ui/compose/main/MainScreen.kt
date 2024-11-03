@@ -52,7 +52,8 @@ enum class TeacherAppDestinations(
 
 @Composable
 fun MainScreen(
-    navHostController: NavController
+    navHostController: NavController,
+    researchPath: String? = null
 ) {
     val isTeacher = IsUser()
     var currentDestination by rememberSaveable { mutableStateOf(TeacherAppDestinations.Home) }
@@ -99,7 +100,8 @@ fun MainScreen(
             },
                 studentComposable = {
                     StudentHomeScreen(
-                        navHostController = navHostController
+                        navHostController = navHostController,
+                        researchPath = researchPath
                     ) {
                         showNavigation = it
                     }

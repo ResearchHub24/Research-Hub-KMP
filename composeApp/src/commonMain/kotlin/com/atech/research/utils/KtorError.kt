@@ -18,6 +18,9 @@ suspend inline fun <reified T, reified R> checkError(
         HttpStatusCode.InternalServerError ->
             DataState.Error(createException(httpResponse.body<R>()))
 
+        HttpStatusCode.NotFound ->
+            DataState.Error(createException(httpResponse.body<R>()))
+
         else -> DataState.Error(createException(httpResponse.body<R>()))
     }
 

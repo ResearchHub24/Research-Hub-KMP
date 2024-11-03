@@ -16,6 +16,7 @@ import com.atech.research.core.usecase.GetAllResearch
 import com.atech.research.core.usecase.GetAllSkillsUseCase
 import com.atech.research.core.usecase.GetAllTagsUseCase
 import com.atech.research.core.usecase.GetPostedResearchUseCase
+import com.atech.research.core.usecase.GetResearchById
 import com.atech.research.core.usecase.GetUseDetailUseCase
 import com.atech.research.core.usecase.IsAppliedToResearchUseCase
 import com.atech.research.core.usecase.ResearchUseCase
@@ -42,7 +43,7 @@ val commonModule = module {
         DeleteResearchUseCase(get())
     }
     single {
-        ResearchUseCase(get(), get(), get(), get())
+        ResearchUseCase(get(), get(), get(), get(), get())
     }
 
     single { GetAllTagsUseCase(get()) }
@@ -65,6 +66,7 @@ val commonModule = module {
     single { ApplicationUseCases(get(), get()) }
     single { ChangeStatusUseCases(get()) }
     single { SendNotificationUseCase(get()) }
+    single { GetResearchById(get()) }
 
 
 }

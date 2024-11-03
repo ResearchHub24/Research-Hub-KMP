@@ -3,9 +3,13 @@ package com.atech.research.ui.compose.student.home.compose
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -41,14 +45,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.atech.research.common.LottieAnim
+import com.atech.research.common.LottieAnimationLinks
 import com.atech.research.common.MainContainer
 import com.atech.research.common.ProgressBar
 import com.atech.research.common.ResearchItem
@@ -71,6 +79,7 @@ private enum class ListScreenType {
     RESUME, LIST
 }
 
+
 @Composable
 fun isBiggerDisplay(): Boolean = getDisplayType() != DeviceType.MOBILE
 
@@ -78,6 +87,7 @@ fun isBiggerDisplay(): Boolean = getDisplayType() != DeviceType.MOBILE
 @Composable
 fun StudentHomeScreen(
     modifier: Modifier = Modifier,
+    researchPath: String? = null,
     navHostController: NavController,
     canShowAppBar: (Boolean) -> Unit
 ) {
@@ -88,6 +98,19 @@ fun StudentHomeScreen(
 
 
     var listScreenType by rememberSaveable { mutableStateOf(ListScreenType.LIST) }
+
+    var hasErrorLoadingFromDeepLink by remember { mutableStateOf(false) }
+
+    if (researchPath != null) {
+        listScreenType = ListScreenType.LIST
+        navigator.navigateTo(
+            pane = ListDetailPaneScaffoldRole.Detail,
+            content = currentResearch
+        )
+        viewModel.onEvent(StudentHomeEvents.SetResearchFromDeepLink(researchPath, onComplete = {
+            hasErrorLoadingFromDeepLink = it
+        }))
+    }
 
 
     BackHandler(navigator.canNavigateBack()) {
@@ -100,6 +123,19 @@ fun StudentHomeScreen(
         if (listScreenType != ListScreenType.RESUME) {
             {
                 AnimatedPane {
+                    if (currentResearch == null &&
+                        researchPath != null &&
+                        !hasErrorLoadingFromDeepLink
+                    ) {
+                        ProgressBar(
+                            paddingValues = PaddingValues(0.dp)
+                        )
+                        return@AnimatedPane
+                    }
+                    if (researchPath != null && hasErrorLoadingFromDeepLink) {
+                        NotFound()
+                        return@AnimatedPane
+                    }
                     DetailScreen(
                         researchModel = currentResearch,
                         onNavigationClick = {
@@ -343,6 +379,27 @@ private fun WelcomeSection() {
             "Connect, Collaborate, and grow in academic research.",
             style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight(400)
+        )
+    }
+}
+
+@Composable
+private fun NotFound(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxSize()
+            .padding(MaterialTheme.spacing.medium),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        LottieAnim(
+            modifier = modifier.fillMaxHeight(.5f),
+            link = LottieAnimationLinks.NoteFound.link
+        )
+        Text(
+            "No research found",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight(700),
+            modifier = Modifier.padding(top = MaterialTheme.spacing.large)
         )
     }
 }

@@ -9,7 +9,8 @@ data class ResearchUseCase(
     val getAllPosts: GetPostedResearchUseCase,
     val updateOrPostResearch: UpdateOrPostResearchUseCase,
     val deleteResearch: DeleteResearchUseCase,
-    val sendNotificationUseCase: SendNotificationUseCase
+    val sendNotificationUseCase: SendNotificationUseCase,
+    val getResearchById: GetResearchById
 )
 
 
@@ -48,9 +49,17 @@ data class SendNotificationUseCase(
 ) {
     suspend operator fun invoke(
         topic: String,
-        model : NotificationModel
+        model: NotificationModel
     ) = client.sendNotificationToTopic(
         topic = topic,
         model = model
     )
+}
+
+data class GetResearchById(
+    private val client: ResearchHubClient
+) {
+    suspend operator fun invoke(
+        researchPath: String
+    ) = client.getResearchById(researchPath)
 }

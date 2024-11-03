@@ -43,7 +43,7 @@ val viewModelModule = module {
     single { ProfileViewModel(get(), get(), get(), get()) }
     single { LinkHelper() }
     single { SignOutHelper() }
-    single { StudentHomeViewModel(get(), get(), get()) }
+    single { StudentHomeViewModel(get(), get(), get(), get()) }
     single { FacultiesViewModel(get()) }
     single { ApplicationViewModel(get(), get()) }
     single { ResearchApplicationsViewModel(get()) }
