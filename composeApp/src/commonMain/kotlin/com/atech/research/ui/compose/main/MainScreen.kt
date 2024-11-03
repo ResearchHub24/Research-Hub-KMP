@@ -1,6 +1,5 @@
 package com.atech.research.ui.compose.main
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.AppRegistration
@@ -8,7 +7,6 @@ import androidx.compose.material.icons.rounded.Dashboard
 import androidx.compose.material.icons.rounded.Groups2
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -112,11 +110,11 @@ fun MainScreen(
                 isTeacher = isTeacher
             )
 
-            TeacherAppDestinations.Faculty -> FacultiesScreen{
+            TeacherAppDestinations.Faculty -> FacultiesScreen {
                 showNavigation = it
             }
 
-            TeacherAppDestinations.FillResearch -> ApplicationScreen{
+            TeacherAppDestinations.FillResearch -> ApplicationScreen {
                 showNavigation = it
             }
         }

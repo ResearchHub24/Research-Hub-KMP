@@ -1,0 +1,34 @@
+site_name: Research Hub
+theme:
+  logo: assets/logo.png
+  favicon: assets/logo.png
+  name: material
+  icon:
+    repo: fontawesome/brands/git-alt
+  language: en
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+      primary: black
+      accent: green
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+      primary: black
+      accent: green
+
+repo_url: https://github.com/ResearchHub24/Research-Hub-KMP
+repo_name: Research-Hub
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ResearchHub24/Research-Hub-KMP
