@@ -23,7 +23,7 @@ fun NavGraphBuilder.mainScreenGraph(navController: NavController) {
             route = MainScreenScreenRoutes.HomeScreen.route,
             deepLinks = listOf(
                 navDeepLink {
-                    uriPattern = DeepLink.OpenResearch().researchPath
+                    uriPattern = DeepLink.OpenResearch().route
                     action = "android.intent.action.VIEW"
                 }
             )
