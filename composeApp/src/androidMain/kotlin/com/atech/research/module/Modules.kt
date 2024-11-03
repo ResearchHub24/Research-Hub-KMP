@@ -18,6 +18,8 @@ import com.atech.research.ui.compose.student.faculties.FacultiesViewModel
 import com.atech.research.ui.compose.student.home.StudentHomeViewModel
 import com.atech.research.ui.compose.teacher.application.ResearchApplicationsViewModel
 import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
+import com.atech.research.utils.CloseApp
+import com.atech.research.utils.CloseAppImp
 import com.atech.research.utils.LinkHelper
 import com.atech.research.utils.PrefManager
 import com.atech.research.utils.PrefManager.Companion.PREF_NAME
@@ -68,6 +70,7 @@ val appModule = module {
     single { Toast(get()) }
 }
 
+
 val viewModelModule = module {
     viewModel { LogInViewModelImp(get()) }
         .bind(LogInViewModel::class)
@@ -78,7 +81,7 @@ val viewModelModule = module {
         HomeScreenViewModel(get(), get(), get())
     }
     viewModel { ProfileViewModel(get(), get(), get(), get()) }
-    viewModel { StudentHomeViewModel(get(), get(), get(),get()) }
+    viewModel { StudentHomeViewModel(get(), get(), get(), get()) }
     viewModel { FacultiesViewModel(get()) }
     viewModel { ApplicationViewModel(get(), get()) }
     viewModel { ResearchApplicationsViewModel(get()) }

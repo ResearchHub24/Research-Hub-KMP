@@ -51,7 +51,6 @@ class StudentHomeViewModel(
             is StudentHomeEvents.SetResearchFromDeepLink -> scope.launch {
                 val dataState = getResearchById.invoke(event.researchPath)
                 if (dataState is DataState.Error) {
-                    researchHubLog(ResearchLogLevel.ERROR, "Error")
                     event.onComplete(true)
                     return@launch
                 }

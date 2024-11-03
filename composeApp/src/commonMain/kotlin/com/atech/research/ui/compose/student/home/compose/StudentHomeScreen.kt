@@ -69,6 +69,7 @@ import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.BackHandler
 import com.atech.research.utils.DataState
 import com.atech.research.utils.DeviceType
+import com.atech.research.utils.closeApp
 import com.atech.research.utils.getDisplayType
 import com.atech.research.utils.koinViewModel
 import org.jetbrains.compose.resources.stringResource
@@ -100,20 +101,23 @@ fun StudentHomeScreen(
     var listScreenType by rememberSaveable { mutableStateOf(ListScreenType.LIST) }
 
     var hasErrorLoadingFromDeepLink by remember { mutableStateOf(false) }
+    var reqMadOnes by remember { mutableStateOf(false) }
 
-    if (researchPath != null) {
+    if (researchPath != null && !reqMadOnes) {
         listScreenType = ListScreenType.LIST
         navigator.navigateTo(
-            pane = ListDetailPaneScaffoldRole.Detail,
-            content = currentResearch
+            pane = ListDetailPaneScaffoldRole.Detail, content = currentResearch
         )
         viewModel.onEvent(StudentHomeEvents.SetResearchFromDeepLink(researchPath, onComplete = {
+            reqMadOnes = true
             hasErrorLoadingFromDeepLink = it
         }))
     }
 
-
-    BackHandler(navigator.canNavigateBack()) {
+    val closeApp = closeApp()
+    BackHandler(navigator.canNavigateBack() || researchPath != null) {
+        if (researchPath != null || !navigator.canNavigateBack())
+            closeApp.closeApp()
         navigator.navigateBack()
     }
     LaunchedEffect(navigator.currentDestination?.pane) {
@@ -123,10 +127,7 @@ fun StudentHomeScreen(
         if (listScreenType != ListScreenType.RESUME) {
             {
                 AnimatedPane {
-                    if (currentResearch == null &&
-                        researchPath != null &&
-                        !hasErrorLoadingFromDeepLink
-                    ) {
+                    if (currentResearch == null && researchPath != null && !hasErrorLoadingFromDeepLink) {
                         ProgressBar(
                             paddingValues = PaddingValues(0.dp)
                         )
@@ -136,31 +137,27 @@ fun StudentHomeScreen(
                         NotFound()
                         return@AnimatedPane
                     }
-                    DetailScreen(
-                        researchModel = currentResearch,
-                        onNavigationClick = {
-                            viewModel.onEvent(StudentHomeEvents.OnResearchClick(null))
-                            navigator.navigateBack()
-                        },
-                        onApplyClick = {
-                            listScreenType = ListScreenType.RESUME
-                        },
-                        onViewProfileClick = {
-                            viewModel.onEvent(
-                                StudentHomeEvents.LoadUserProfile(
-                                    currentResearch?.authorUid ?: ""
-                                )
+                    DetailScreen(researchModel = currentResearch, onNavigationClick = {
+                        viewModel.onEvent(StudentHomeEvents.OnResearchClick(null))
+                        navigator.navigateBack()
+                    }, onApplyClick = {
+                        listScreenType = ListScreenType.RESUME
+                    }, onViewProfileClick = {
+                        viewModel.onEvent(
+                            StudentHomeEvents.LoadUserProfile(
+                                currentResearch?.authorUid ?: ""
                             )
-                            navigator.navigateTo(pane = ListDetailPaneScaffoldRole.Extra)
-                        },
-                        isApplied = viewModel.isApplied.value
+                        )
+                        navigator.navigateTo(pane = ListDetailPaneScaffoldRole.Extra)
+                    }, isApplied = viewModel.isApplied.value
                     )
                 }
             }
         } else if (listScreenType == ListScreenType.RESUME && !isBiggerDisplay()) {
             {
                 profileSection(
-                    navHostController, {
+                    navHostController,
+                    {
                         listScreenType = ListScreenType.LIST
 //                   navigator.navigateTo(pane = ListDetailPaneScaffoldRole.List, content = Unit)
                     },
@@ -179,25 +176,21 @@ fun StudentHomeScreen(
         listPane = {
             if (listScreenType == ListScreenType.LIST) {
                 AnimatedPane {
-                    ListScreen(
-                        items = allResearch,
-                        onItemClicked = {
-                            viewModel.onEvent(StudentHomeEvents.OnResearchClick(it))
-                            listScreenType = ListScreenType.LIST
-                            navigator.navigateTo(
-                                pane = ListDetailPaneScaffoldRole.Detail,
-                                content = it
-                            )
-                        },
-                        onRefresh = {
-                            viewModel.onEvent(StudentHomeEvents.LoadData)
-                        }
-                    )
+                    ListScreen(items = allResearch, onItemClicked = {
+                        viewModel.onEvent(StudentHomeEvents.OnResearchClick(it))
+                        listScreenType = ListScreenType.LIST
+                        navigator.navigateTo(
+                            pane = ListDetailPaneScaffoldRole.Detail, content = it
+                        )
+                    }, onRefresh = {
+                        viewModel.onEvent(StudentHomeEvents.LoadData)
+                    })
                 }
             }
             if (listScreenType == ListScreenType.RESUME && isBiggerDisplay()) {
                 profileSection(
-                    navHostController, {
+                    navHostController,
+                    {
                         listScreenType = ListScreenType.LIST
                     },
                     questionList = currentResearch?.questions ?: return@ListDetailPaneScaffold,
@@ -210,15 +203,10 @@ fun StudentHomeScreen(
         detailPane = detailPain,
         extraPane = {
             val userProfile by viewModel.userProfile
-            ViewProfile(
-                modifier = Modifier,
-                user = userProfile,
-                onNavigationClick = {
-                    navigator.navigateBack()
-                }
-            )
-        }
-    )
+            ViewProfile(modifier = Modifier, user = userProfile, onNavigationClick = {
+                navigator.navigateBack()
+            })
+        })
 }
 
 @Composable
@@ -386,14 +374,12 @@ private fun WelcomeSection() {
 @Composable
 private fun NotFound(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.fillMaxSize()
-            .padding(MaterialTheme.spacing.medium),
+        modifier = modifier.fillMaxSize().padding(MaterialTheme.spacing.medium),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LottieAnim(
-            modifier = modifier.fillMaxHeight(.5f),
-            link = LottieAnimationLinks.NoteFound.link
+            modifier = modifier.fillMaxHeight(.5f), link = LottieAnimationLinks.NoteFound.link
         )
         Text(
             "No research found",

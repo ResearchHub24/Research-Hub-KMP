@@ -48,6 +48,6 @@ val viewModelModule = module {
     single { ApplicationViewModel(get(), get()) }
     single { ResearchApplicationsViewModel(get()) }
     single { Toast() }
-
+    single { AppCloserImp() }.bind(AppCloser::class)
 
 }
