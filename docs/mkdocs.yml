@@ -26,9 +26,23 @@ theme:
       primary: black
       accent: green
 
+plugins:
+  - search
+  - mkdocs-simple-hooks:
+      hooks:
+        on_post_build: "hooks:on_post_build"
+
 repo_url: https://github.com/ResearchHub24/Research-Hub-KMP
 repo_name: Research-Hub
 extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/ResearchHub24/Research-Hub-KMP
+
+# use_directory_urls: false
+# docs_dir: source
+# site_dir: site
+
+
+extra_files:
+ - .well-known/assetlinks.json
