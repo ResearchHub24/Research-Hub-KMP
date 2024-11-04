@@ -33,9 +33,14 @@ fun NavGraphBuilder.mainScreenGraph(navController: NavController) {
             deepLinks = listOf(navDeepLink {
                 uriPattern = DeepLink.OpenResearch().route
                 action = "android.intent.action.VIEW"
-            })
+            }
+            )
         ) {
             val researchPath = it.arguments?.getString("researchPath")
+            researchHubLog(
+                ResearchLogLevel.INFO,
+                researchPath ?: ""
+            )
             researchHubLog(
                 ResearchLogLevel.INFO,
                 researchPath ?: ""

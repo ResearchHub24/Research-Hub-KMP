@@ -5,6 +5,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.atech.research.ui.navigation.ResearchHubNavigation
 import com.atech.research.ui.navigation.ResearchNavigationGraph
@@ -22,7 +23,8 @@ val LocalDataStore = staticCompositionLocalOf<PrefManager> { error("No DataStore
 @Composable
 @Preview
 fun App(
-    pref: PrefManager
+    pref: PrefManager,
+    navHostController: NavHostController = rememberNavController()
 ) {
 //    setSingletonImageLoaderFactory { context ->
 //        getAsyncImageLoader(context)
@@ -34,7 +36,6 @@ fun App(
         CompositionLocalProvider(
             LocalDataStore provides pref,
             LocalImageLoader provides remember { imageLoad }) {
-            val navController = rememberNavController()
             val startDestination = if (pref.getString(Prefs.USER_ID.name)
                     .isNotBlank() && pref.getBoolean(Prefs.SET_PASSWORD_DONE.name)
             ) ResearchHubNavigation.MainScreen
@@ -42,7 +43,7 @@ fun App(
 
             ResearchNavigationGraph(
                 modifier = Modifier,
-                navHostController = navController,
+                navHostController = navHostController,
                 startDestination = startDestination,
             )
         }

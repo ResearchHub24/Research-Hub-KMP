@@ -71,7 +71,7 @@ interface ResearchHubClient {
 
     companion object {
         //        private const val BASE_URL = "http://192.168.29.205:9090/api/v1"
-        private const val BASE_URL = "http://192.168.58.65:9090/api/v1"
+        private const val BASE_URL = "http://192.168.153.65:9090/api/v1"
 
         const val USER = "$BASE_URL/users"
         const val LOGIN = "$BASE_URL/login"
