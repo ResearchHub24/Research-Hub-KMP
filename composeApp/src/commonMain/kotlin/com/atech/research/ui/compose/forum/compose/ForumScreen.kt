@@ -13,26 +13,82 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Chat
+import androidx.compose.material.icons.rounded.Forum
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
+import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldRole
+import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.atech.research.common.AsyncImage
+import com.atech.research.common.MainContainer
 import com.atech.research.core.ktor.model.ForumModel
 import com.atech.research.core.ktor.model.getFilteredForumModel
+import com.atech.research.ui.compose.main.IsUserTeacher
+import com.atech.research.utils.BackHandler
 import com.atech.research.utils.convertToDateFormat
 
+
+@OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ForumScreen(
     modifier: Modifier = Modifier,
+    isAdmin: Boolean = IsUserTeacher(),
+    canShowAppBar: (Boolean) -> Unit
+) {
+    val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
+    val scrollState = TopAppBarDefaults.pinnedScrollBehavior()
+    LaunchedEffect(navigator.currentDestination?.pane) {
+        canShowAppBar(navigator.currentDestination?.pane == ThreePaneScaffoldRole.Secondary)
+    }
+    BackHandler(navigator.canNavigateBack()) {
+        navigator.navigateBack()
+    }
+    MainContainer(
+        modifier = modifier.fillMaxSize()
+            .nestedScroll(scrollState.nestedScrollConnection),
+        enableTopBar = true,
+        scrollBehavior = scrollState,
+        title = "Forum",
+        onNavigationClick = if (navigator.canNavigateBack()) {
+            {
+                navigator.navigateBack()
+            }
+        } else null
+    ) { paddingValues ->
+        ListDetailPaneScaffold(modifier = modifier
+            .padding(paddingValues),
+            directive = navigator.scaffoldDirective,
+            value = navigator.scaffoldValue,
+            listPane = {
+                ForumScreenComposable(
+                    isAdmin = isAdmin,
+                    onChatClick = {}
+                )
+            },
+            detailPane = {}
+        )
+    }
+}
+
+
+@Composable
+private fun ForumScreenComposable(
+    modifier: Modifier = Modifier,
+    isAdmin: Boolean,
     chats: List<ForumModel> = emptyList(),
     onChatClick: (String) -> Unit,
 ) {
@@ -40,7 +96,10 @@ fun ForumScreen(
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
         if (chats.isEmpty()) {
-            EmptyForumView(modifier = Modifier.padding(paddingValues))
+            EmptyForumView(
+                modifier = Modifier.padding(paddingValues),
+                isAdmin = isAdmin
+            )
         } else {
             LazyColumn(
                 modifier = Modifier
@@ -60,7 +119,7 @@ fun ForumScreen(
 }
 
 @Composable
-fun AllForumItem(
+private fun AllForumItem(
     chat: ForumModel,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -159,14 +218,17 @@ fun AllForumItem(
 }
 
 @Composable
-private fun EmptyForumView(modifier: Modifier = Modifier) {
+private fun EmptyForumView(
+    modifier: Modifier = Modifier,
+    isAdmin: Boolean
+) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            imageVector = Icons.Rounded.Chat,
+            imageVector = Icons.Rounded.Forum,
             contentDescription = null,
             modifier = Modifier
                 .size(72.dp)
@@ -178,7 +240,7 @@ private fun EmptyForumView(modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.titleMedium
         )
         Text(
-            text = "Start a conversation with someone",
+            text = if (isAdmin) "Select student to initiate a conversation." else "Awaiting a faculty member to start the conversation.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

@@ -1,6 +1,5 @@
 package com.atech.research.ui.compose.main
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.rounded.AccountCircle
@@ -9,7 +8,6 @@ import androidx.compose.material.icons.rounded.Dashboard
 import androidx.compose.material.icons.rounded.Groups2
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -28,6 +26,7 @@ import androidx.navigation.NavController
 import androidx.window.core.layout.WindowWidthSizeClass
 import com.atech.research.LocalDataStore
 import com.atech.research.core.ktor.model.UserType
+import com.atech.research.ui.compose.forum.compose.ForumScreen
 import com.atech.research.ui.compose.profile.compose.ProfileScreen
 import com.atech.research.ui.compose.student.application.compose.ApplicationScreen
 import com.atech.research.ui.compose.student.faculties.compose.FacultiesScreen
@@ -63,7 +62,7 @@ fun MainScreen(
     navHostController: NavController,
     researchPath: String? = null
 ) {
-    val isTeacher = IsUser()
+    val isTeacher = IsUserTeacher()
     var currentDestination by rememberSaveable { mutableStateOf(TeacherAppDestinations.Home) }
     val adaptiveInfo = currentWindowAdaptiveInfo()
     var showNavigation by remember { mutableStateOf(true) }
@@ -128,8 +127,8 @@ fun MainScreen(
                 showNavigation = it
             }
 
-            TeacherAppDestinations.Forum -> Column {
-                Text("Forum")
+            TeacherAppDestinations.Forum -> ForumScreen {
+                showNavigation = it
             }
         }
     }
@@ -138,7 +137,7 @@ fun MainScreen(
 
 @Composable
 fun SetComposableAccordingToUser(
-    isTeacher: Boolean = IsUser(),
+    isTeacher: Boolean = IsUserTeacher(),
     teacherComposable: @Composable () -> Unit = {},
     studentComposable: @Composable () -> Unit = {}
 ) = if (isTeacher) teacherComposable()
@@ -151,7 +150,7 @@ else studentComposable()
 
 
 @Composable
-fun IsUser() = LocalDataStore.current.getString(Prefs.USER_TYPE.name) == UserType.TEACHER.name
+fun IsUserTeacher() = LocalDataStore.current.getString(Prefs.USER_TYPE.name) == UserType.TEACHER.name
 
 
 fun NavigationSuiteScope.navItemEntry(
