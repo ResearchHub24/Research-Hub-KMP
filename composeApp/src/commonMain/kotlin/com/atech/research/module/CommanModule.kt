@@ -8,10 +8,14 @@ import com.atech.research.core.usecase.AllApplicationsUseCases
 import com.atech.research.core.usecase.ApplicationUseCases
 import com.atech.research.core.usecase.ApplyResearchUseCase
 import com.atech.research.core.usecase.ChangeStatusUseCases
+import com.atech.research.core.usecase.CreateNewForum
 import com.atech.research.core.usecase.DeleteResearchUseCase
 import com.atech.research.core.usecase.DeleteTagUseCase
 import com.atech.research.core.usecase.FacultiesUseCases
+import com.atech.research.core.usecase.ForumUseCases
 import com.atech.research.core.usecase.GetALlApplicationsUseCase
+import com.atech.research.core.usecase.GetAllForum
+import com.atech.research.core.usecase.GetAllMessage
 import com.atech.research.core.usecase.GetAllResearch
 import com.atech.research.core.usecase.GetAllSkillsUseCase
 import com.atech.research.core.usecase.GetAllTagsUseCase
@@ -20,6 +24,7 @@ import com.atech.research.core.usecase.GetResearchById
 import com.atech.research.core.usecase.GetUseDetailUseCase
 import com.atech.research.core.usecase.IsAppliedToResearchUseCase
 import com.atech.research.core.usecase.ResearchUseCase
+import com.atech.research.core.usecase.SendMessage
 import com.atech.research.core.usecase.SendNotificationUseCase
 import com.atech.research.core.usecase.StudentResearchUseCases
 import com.atech.research.core.usecase.TagUseCase
@@ -67,6 +72,11 @@ val commonModule = module {
     single { ChangeStatusUseCases(get()) }
     single { SendNotificationUseCase(get()) }
     single { GetResearchById(get()) }
+    single { GetAllForum(get()) }
+    single { CreateNewForum(get()) }
+    single { GetAllMessage(get()) }
+    single { SendMessage(get()) }
+    single { ForumUseCases(get(), get(), get(), get()) }
 
 
 }

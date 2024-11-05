@@ -3,7 +3,10 @@ package com.atech.research.core.ktor
 import com.atech.research.core.ktor.model.Action
 import com.atech.research.core.ktor.model.ApplicationModel
 import com.atech.research.core.ktor.model.ErrorResponse
+import com.atech.research.core.ktor.model.ForumModel
+import com.atech.research.core.ktor.model.ForumRequest
 import com.atech.research.core.ktor.model.LoginResponse
+import com.atech.research.core.ktor.model.MessageModel
 import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.core.ktor.model.SuccessResponse
 import com.atech.research.core.ktor.model.TagModel
@@ -308,6 +311,63 @@ class ResearchHubClientImp(
             DataState.Error(e)
         }
     }
+
+    override suspend fun getAllForum(uid: String, isAdmin: Boolean): DataState<List<ForumModel>> =
+        try {
+            checkError<List<ForumModel>, ErrorResponse>(
+                client.getWithFallback {
+                    url("${ResearchHubClient.FORUM}/all?uid=$uid&isAdmin=$isAdmin")
+                    contentType(ContentType.Application.Json)
+                }.body()
+            )
+        } catch (e: Exception) {
+            DataState.Error(e)
+        }
+
+    override suspend fun createNewForum(
+        forumModel: ForumModel,
+        message: MessageModel?
+    ): DataState<SuccessResponse> =
+        try {
+            checkError<SuccessResponse, ErrorResponse>(client.post {
+                url("${ResearchHubClient.FORUM}/post")
+                contentType(ContentType.Application.Json)
+                setBody(
+                    ForumRequest(
+                        forumModel = forumModel,
+                        message = message
+                    )
+                )
+            })
+        } catch (e: Exception) {
+            DataState.Error(e)
+        }
+
+    override suspend fun getAllMessage(path: String): DataState<List<MessageModel>> =
+        try {
+            checkError<List<MessageModel>, ErrorResponse>(
+                client.getWithFallback {
+                    url("${ResearchHubClient.MESSAGES}/$path")
+                    contentType(ContentType.Application.Json)
+                }.body()
+            )
+        } catch (e: Exception) {
+            DataState.Error(e)
+        }
+
+    override suspend fun sendMessage(
+        path: String,
+        message: MessageModel
+    ): DataState<SuccessResponse> =
+        try {
+            checkError<SuccessResponse, ErrorResponse>(client.post {
+                url("${ResearchHubClient.MESSAGES}/$path")
+                contentType(ContentType.Application.Json)
+                setBody(message)
+            })
+        } catch (e: Exception) {
+            DataState.Error(e)
+        }
 
 
 }

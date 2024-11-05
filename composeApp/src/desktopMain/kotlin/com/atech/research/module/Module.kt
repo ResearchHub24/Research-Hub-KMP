@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.atech.research.core.pref.createDataStore
 import com.atech.research.getAppDataPath
+import com.atech.research.ui.compose.forum.ForumViewModel
 import com.atech.research.ui.compose.login.compose.login.LogInViewModel
 import com.atech.research.ui.compose.login.compose.login.LogInViewModelImp
 import com.atech.research.ui.compose.login.compose.setup.SetUpViewModel
@@ -48,5 +49,6 @@ val viewModelModule = module {
     single { ApplicationViewModel(get(), get()) }
     single { ResearchApplicationsViewModel(get()) }
     single { Toast() }
+    single { ForumViewModel(get(), get()) }
 
 }

@@ -2,7 +2,9 @@ package com.atech.research.core.ktor
 
 import com.atech.research.core.ktor.model.Action
 import com.atech.research.core.ktor.model.ApplicationModel
+import com.atech.research.core.ktor.model.ForumModel
 import com.atech.research.core.ktor.model.LoginResponse
+import com.atech.research.core.ktor.model.MessageModel
 import com.atech.research.core.ktor.model.ResearchModel
 import com.atech.research.core.ktor.model.SuccessResponse
 import com.atech.research.core.ktor.model.TagModel
@@ -68,6 +70,24 @@ interface ResearchHubClient {
         topic: String
     ): DataState<SuccessResponse>
 
+    suspend fun getAllForum(
+        uid: String,
+        isAdmin: Boolean = false
+    ): DataState<List<ForumModel>>
+
+    suspend fun createNewForum(
+        forumModel: ForumModel,
+        message: MessageModel? = null
+    ): DataState<SuccessResponse>
+
+    suspend fun getAllMessage(
+        path: String
+    ): DataState<List<MessageModel>>
+
+    suspend fun sendMessage(
+        path: String,
+        message: MessageModel
+    ): DataState<SuccessResponse>
 
     companion object {
         //        private const val BASE_URL = "http://192.168.29.205:9090/api/v1"
@@ -82,5 +102,7 @@ interface ResearchHubClient {
         const val SKILLS = "$RESEARCH/skills"
         private const val SEND_NOTIFICATION = "$BASE_URL/notification"
         const val TOPIC = "$SEND_NOTIFICATION/topics"
+        const val FORUM = "$BASE_URL/forum"
+        const val MESSAGES = "$FORUM/messages"
     }
 }

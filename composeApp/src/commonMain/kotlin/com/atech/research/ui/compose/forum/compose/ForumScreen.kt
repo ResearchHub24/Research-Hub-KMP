@@ -22,11 +22,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffold
+import androidx.compose.material3.adaptive.layout.ListDetailPaneScaffoldRole
 import androidx.compose.material3.adaptive.layout.ThreePaneScaffoldRole
 import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,11 +38,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.atech.research.common.AsyncImage
 import com.atech.research.common.MainContainer
+import com.atech.research.common.ProgressBar
+import com.atech.research.core.ktor.model.ChatMessage
 import com.atech.research.core.ktor.model.ForumModel
 import com.atech.research.core.ktor.model.getFilteredForumModel
+import com.atech.research.core.ktor.model.getPath
+import com.atech.research.ui.compose.forum.ForumEvents
+import com.atech.research.ui.compose.forum.ForumViewModel
 import com.atech.research.ui.compose.main.IsUserTeacher
 import com.atech.research.utils.BackHandler
+import com.atech.research.utils.DataState
 import com.atech.research.utils.convertToDateFormat
+import com.atech.research.utils.koinViewModel
 
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
@@ -51,6 +61,8 @@ fun ForumScreen(
 ) {
     val navigator = rememberListDetailPaneScaffoldNavigator<Any>()
     val scrollState = TopAppBarDefaults.pinnedScrollBehavior()
+    val viewModel = koinViewModel<ForumViewModel>()
+    val allForumDataState by viewModel.allForum
     LaunchedEffect(navigator.currentDestination?.pane) {
         canShowAppBar(navigator.currentDestination?.pane == ThreePaneScaffoldRole.Secondary)
     }
@@ -69,18 +81,58 @@ fun ForumScreen(
             }
         } else null
     ) { paddingValues ->
-        ListDetailPaneScaffold(modifier = modifier
-            .padding(paddingValues),
-            directive = navigator.scaffoldDirective,
-            value = navigator.scaffoldValue,
-            listPane = {
-                ForumScreenComposable(
-                    isAdmin = isAdmin,
-                    onChatClick = {}
-                )
-            },
-            detailPane = {}
-        )
+        if (allForumDataState is DataState.Loading) {
+            ProgressBar(paddingValues)
+            return@MainContainer
+        }
+        if (allForumDataState is DataState.Error) {
+//            todo: Handle error
+            return@MainContainer
+        }
+        if (allForumDataState is DataState.Success) {
+            val allForum = (allForumDataState as DataState.Success<List<ForumModel>>).data
+            ListDetailPaneScaffold(
+                modifier = modifier
+                    .padding(paddingValues),
+                directive = navigator.scaffoldDirective,
+                value = navigator.scaffoldValue,
+                listPane = {
+                    AnimatedPane {
+                        ForumScreenComposable(
+                            isAdmin = isAdmin,
+                            chats = allForum,
+                            onChatClick = { path ->
+                                viewModel.onEvent(ForumEvents.OnChatClick(path))
+                                navigator.navigateTo(
+                                    ListDetailPaneScaffoldRole.Detail
+                                )
+                            }
+                        )
+                    }
+                },
+                detailPane = {
+                    AnimatedPane {
+                        val messageDataState by viewModel.allMessage
+                        if (messageDataState is DataState.Loading) {
+                            ProgressBar(paddingValues)
+                            return@AnimatedPane
+                        }
+                        if (messageDataState is DataState.Error) {
+//                            TODO: handle error here
+                            return@AnimatedPane
+                        }
+                        if (messageDataState is DataState.Success) {
+                            val messages =
+                                (messageDataState as DataState.Success<List<ChatMessage>>).data
+                            ForumMessageScreen(
+                                messages = messages,
+                                onSendMessage = {}
+                            )
+                        }
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -110,7 +162,7 @@ private fun ForumScreenComposable(
                 items(chats) { chat ->
                     AllForumItem(
                         chat = chat,
-                        onClick = { onChatClick(chat.createdChatUid) }
+                        onClick = { onChatClick(chat.getPath()) }
                     )
                 }
             }

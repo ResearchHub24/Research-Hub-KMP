@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.atech.research.core.ktor.AndroidClientEngineFactory
 import com.atech.research.core.ktor.EngineFactory
+import com.atech.research.ui.compose.forum.ForumViewModel
 import com.atech.research.ui.compose.login.compose.login.LogInViewModel
 import com.atech.research.ui.compose.login.compose.login.LogInViewModelImp
 import com.atech.research.ui.compose.login.compose.setup.SetUpViewModel
@@ -18,8 +19,6 @@ import com.atech.research.ui.compose.student.faculties.FacultiesViewModel
 import com.atech.research.ui.compose.student.home.StudentHomeViewModel
 import com.atech.research.ui.compose.teacher.application.ResearchApplicationsViewModel
 import com.atech.research.ui.compose.teacher.home.HomeScreenViewModel
-import com.atech.research.utils.CloseApp
-import com.atech.research.utils.CloseAppImp
 import com.atech.research.utils.LinkHelper
 import com.atech.research.utils.PrefManager
 import com.atech.research.utils.PrefManager.Companion.PREF_NAME
@@ -85,5 +84,6 @@ val viewModelModule = module {
     viewModel { FacultiesViewModel(get()) }
     viewModel { ApplicationViewModel(get(), get()) }
     viewModel { ResearchApplicationsViewModel(get()) }
+    viewModel { ForumViewModel(get(), get()) }
 
 }

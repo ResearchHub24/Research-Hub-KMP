@@ -10,6 +10,9 @@ data class ForumRequest(
     val message: MessageModel?
 )
 
+fun ForumModel.getPath() =
+    "${this.createdChatUid}_${this.createdChatUserName}_${this.receiverChatUid}_${this.receiverChatUserName}"
+
 @Keep
 @Serializable
 data class ForumModel(
