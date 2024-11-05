@@ -1,12 +1,15 @@
 package com.atech.research.ui.compose.main
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.AppRegistration
 import androidx.compose.material.icons.rounded.Dashboard
 import androidx.compose.material.icons.rounded.Groups2
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -42,6 +45,11 @@ enum class TeacherAppDestinations(
         false
     ),
     FillResearch("Fill Research", Icons.Rounded.AppRegistration, false),
+    Forum(
+        "Forum",
+        Icons.Default.Forum,
+        true
+    ),
     Profile(
         "Profile",
         Icons.Rounded.AccountCircle,
@@ -118,6 +126,10 @@ fun MainScreen(
 
             TeacherAppDestinations.FillResearch -> ApplicationScreen {
                 showNavigation = it
+            }
+
+            TeacherAppDestinations.Forum -> Column {
+                Text("Forum")
             }
         }
     }

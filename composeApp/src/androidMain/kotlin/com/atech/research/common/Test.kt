@@ -1,42 +1,68 @@
 package com.atech.research.common
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.CheckCircle
-import androidx.compose.material.icons.rounded.PublishedWithChanges
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import android.content.res.Configuration
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.atech.research.core.ktor.model.ApplicationModel
+import com.atech.research.core.ktor.model.ForumModel
+import com.atech.research.ui.compose.forum.compose.ForumScreen
 import com.atech.research.ui.theme.ResearchHubTheme
-import com.atech.research.ui.theme.spacing
-import com.atech.research.utils.convertToDateFormat
 
 
-
-
-@Preview(showBackground = true)
+@Preview()
 @Composable
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 private fun TestPreview() {
     ResearchHubTheme {
+        val sampleChats = listOf(
+            ForumModel(
+                createdChatUid = "uid_001",
+                createdChatUserName = "Alice",
+                createdChatUserEmail = "alice@example.com",
+                createdChatProfileUrl = "https://example.com/profiles/alice.jpg",
+                createdUnreadMessageCount = 2,
 
+                receiverChatUid = "uid_002",
+                receiverChatUserName = "Bob",
+                receiverChatUserEmail = "bob@example.com",
+                receiverChatProfileUrl = "https://example.com/profiles/bob.jpg",
+                receiverUnreadMessageCount = 1,
+
+                path = "/forums/001"
+            ),
+            ForumModel(
+                createdChatUid = "uid_003",
+                createdChatUserName = "Charlie",
+                createdChatUserEmail = "charlie@example.com",
+                createdChatProfileUrl = "https://example.com/profiles/charlie.jpg",
+                createdUnreadMessageCount = 0,
+
+                receiverChatUid = "uid_004",
+                receiverChatUserName = "Daisy",
+                receiverChatUserEmail = "daisy@example.com",
+                receiverChatProfileUrl = "https://example.com/profiles/daisy.jpg",
+                receiverUnreadMessageCount = 3,
+
+                path = "/forums/002"
+            ),
+            ForumModel(
+                createdChatUid = "uid_005",
+                createdChatUserName = "Eve",
+                createdChatUserEmail = "eve@example.com",
+                createdChatProfileUrl = "https://example.com/profiles/eve.jpg",
+                createdUnreadMessageCount = 5,
+
+                receiverChatUid = "uid_006",
+                receiverChatUserName = "Frank",
+                receiverChatUserEmail = "frank@example.com",
+                receiverChatProfileUrl = "https://example.com/profiles/frank.jpg",
+                receiverUnreadMessageCount = 0,
+
+                path = "/forums/003"
+            )
+        )
+        ForumScreen(
+            chats = sampleChats,
+            onChatClick = {},
+        )
     }
 }

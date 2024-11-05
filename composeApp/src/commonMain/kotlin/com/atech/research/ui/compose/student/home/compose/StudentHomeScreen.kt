@@ -19,15 +19,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
@@ -278,10 +280,22 @@ private fun ListScreen(
                                 }
                             },
                             trailingIcon = {
-                                Icon(
-                                    if (expanded) Icons.Default.FilterAlt else Icons.Default.AccountCircle,
-                                    contentDescription = null
-                                )
+                                IconButton(
+                                    onClick = {
+                                        if (!expanded) {
+//                                            Todo:open chats
+                                        }
+                                    },
+                                    colors = IconButtonDefaults.iconButtonColors(
+                                        contentColor = if (!expanded) MaterialTheme.colorScheme.primary
+                                        else LocalContentColor.current
+                                    )
+                                ) {
+                                    Icon(
+                                        if (expanded) Icons.Default.FilterAlt else Icons.Default.Forum,
+                                        contentDescription = null
+                                    )
+                                }
                             },
                             query = "",
                             onQueryChange = { },
