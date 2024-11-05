@@ -36,6 +36,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.atech.research.common.AsyncImage
 import com.atech.research.common.MainContainer
 import com.atech.research.common.ProgressBar
@@ -47,9 +49,13 @@ import com.atech.research.ui.compose.forum.ForumEvents
 import com.atech.research.ui.compose.forum.ForumViewModel
 import com.atech.research.ui.compose.main.IsUserTeacher
 import com.atech.research.utils.BackHandler
+import com.atech.research.utils.DataLoader
+import com.atech.research.utils.DataLoaderImpl
 import com.atech.research.utils.DataState
+import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.convertToDateFormat
 import com.atech.research.utils.koinViewModel
+import com.atech.research.utils.researchHubLog
 
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
@@ -63,15 +69,18 @@ fun ForumScreen(
     val scrollState = TopAppBarDefaults.pinnedScrollBehavior()
     val viewModel = koinViewModel<ForumViewModel>()
     val allForumDataState by viewModel.allForum
+    val dataLoader: DataLoader by DataLoaderImpl()
+    val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+    dataLoader.registerLifecycleOwner(lifecycleOwner)
+    dataLoader.setTask { viewModel.onEvent(ForumEvents.LoadChat) }
     LaunchedEffect(navigator.currentDestination?.pane) {
         canShowAppBar(navigator.currentDestination?.pane == ThreePaneScaffoldRole.Secondary)
     }
     BackHandler(navigator.canNavigateBack()) {
         navigator.navigateBack()
     }
-    MainContainer(
-        modifier = modifier.fillMaxSize()
-            .nestedScroll(scrollState.nestedScrollConnection),
+    MainContainer(modifier = modifier.fillMaxSize()
+        .nestedScroll(scrollState.nestedScrollConnection),
         enableTopBar = true,
         scrollBehavior = scrollState,
         title = "Forum",
@@ -79,35 +88,35 @@ fun ForumScreen(
             {
                 navigator.navigateBack()
             }
-        } else null
-    ) { paddingValues ->
+        } else null) { paddingValues ->
         if (allForumDataState is DataState.Loading) {
             ProgressBar(paddingValues)
             return@MainContainer
         }
         if (allForumDataState is DataState.Error) {
+            researchHubLog(
+                ResearchLogLevel.ERROR,
+                "ForumScreen ${(allForumDataState as DataState.Error).exception}"
+            )
 //            todo: Handle error
             return@MainContainer
         }
         if (allForumDataState is DataState.Success) {
             val allForum = (allForumDataState as DataState.Success<List<ForumModel>>).data
-            ListDetailPaneScaffold(
-                modifier = modifier
-                    .padding(paddingValues),
+            ListDetailPaneScaffold(modifier = modifier
+                .padding(paddingValues),
                 directive = navigator.scaffoldDirective,
                 value = navigator.scaffoldValue,
                 listPane = {
                     AnimatedPane {
-                        ForumScreenComposable(
-                            isAdmin = isAdmin,
+                        ForumScreenComposable(isAdmin = isAdmin,
                             chats = allForum,
                             onChatClick = { path ->
                                 viewModel.onEvent(ForumEvents.OnChatClick(path))
                                 navigator.navigateTo(
                                     ListDetailPaneScaffoldRole.Detail
                                 )
-                            }
-                        )
+                            })
                     }
                 },
                 detailPane = {
@@ -118,20 +127,20 @@ fun ForumScreen(
                             return@AnimatedPane
                         }
                         if (messageDataState is DataState.Error) {
+                            researchHubLog(
+                                ResearchLogLevel.ERROR,
+                                "ForumScreen Message ${(messageDataState as DataState.Error).exception}"
+                            )
 //                            TODO: handle error here
                             return@AnimatedPane
                         }
                         if (messageDataState is DataState.Success) {
                             val messages =
                                 (messageDataState as DataState.Success<List<ChatMessage>>).data
-                            ForumMessageScreen(
-                                messages = messages,
-                                onSendMessage = {}
-                            )
+                            ForumMessageScreen(messages = messages, onSendMessage = {})
                         }
                     }
-                }
-            )
+                })
         }
     }
 }
@@ -149,21 +158,15 @@ private fun ForumScreenComposable(
     ) { paddingValues ->
         if (chats.isEmpty()) {
             EmptyForumView(
-                modifier = Modifier.padding(paddingValues),
-                isAdmin = isAdmin
+                modifier = Modifier.padding(paddingValues), isAdmin = isAdmin
             )
         } else {
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(1.dp)
             ) {
                 items(chats) { chat ->
-                    AllForumItem(
-                        chat = chat,
-                        onClick = { onChatClick(chat.getPath()) }
-                    )
+                    AllForumItem(chat = chat, onClick = { onChatClick(chat.getPath()) })
                 }
             }
         }
@@ -184,17 +187,13 @@ private fun AllForumItem(
         color = MaterialTheme.colorScheme.surface
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Profile Picture
             Box(
-                modifier = Modifier
-                    .size(56.dp)
-                    .clip(CircleShape)
+                modifier = Modifier.size(56.dp).clip(CircleShape)
                     .background(MaterialTheme.colorScheme.secondaryContainer),
                 contentAlignment = Alignment.Center
             ) {
@@ -210,8 +209,7 @@ private fun AllForumItem(
 
             // Chat Info
             Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -247,14 +245,9 @@ private fun AllForumItem(
 
                     if (model.unreadMessageCount > 0) {
                         Box(
-                            modifier = Modifier
-                                .padding(start = 8.dp)
-                                .size(24.dp)
-                                .background(
-                                    color = MaterialTheme.colorScheme.primary,
-                                    shape = CircleShape
-                                ),
-                            contentAlignment = Alignment.Center
+                            modifier = Modifier.padding(start = 8.dp).size(24.dp).background(
+                                color = MaterialTheme.colorScheme.primary, shape = CircleShape
+                            ), contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = model.unreadMessageCount.toString(),
@@ -271,8 +264,7 @@ private fun AllForumItem(
 
 @Composable
 private fun EmptyForumView(
-    modifier: Modifier = Modifier,
-    isAdmin: Boolean
+    modifier: Modifier = Modifier, isAdmin: Boolean
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -282,14 +274,11 @@ private fun EmptyForumView(
         Icon(
             imageVector = Icons.Rounded.Forum,
             contentDescription = null,
-            modifier = Modifier
-                .size(72.dp)
-                .padding(bottom = 16.dp),
+            modifier = Modifier.size(72.dp).padding(bottom = 16.dp),
             tint = MaterialTheme.colorScheme.primary
         )
         Text(
-            text = "No messages yet",
-            style = MaterialTheme.typography.titleMedium
+            text = "No messages yet", style = MaterialTheme.typography.titleMedium
         )
         Text(
             text = if (isAdmin) "Select student to initiate a conversation." else "Awaiting a faculty member to start the conversation.",

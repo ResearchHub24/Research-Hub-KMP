@@ -83,7 +83,7 @@ val viewModelModule = module {
     viewModel { StudentHomeViewModel(get(), get(), get(), get()) }
     viewModel { FacultiesViewModel(get()) }
     viewModel { ApplicationViewModel(get(), get()) }
-    viewModel { ResearchApplicationsViewModel(get()) }
+    viewModel { ResearchApplicationsViewModel(get(),get(),get()) }
     viewModel { ForumViewModel(get(), get()) }
 
 }

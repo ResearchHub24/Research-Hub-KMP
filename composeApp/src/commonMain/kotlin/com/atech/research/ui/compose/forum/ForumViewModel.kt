@@ -11,6 +11,8 @@ import com.atech.research.utils.DataState
 import com.atech.research.utils.PrefManager
 import com.atech.research.utils.Prefs
 import com.atech.research.utils.ResearchHubViewModel
+import com.atech.research.utils.ResearchLogLevel
+import com.atech.research.utils.researchHubLog
 import kotlinx.coroutines.launch
 
 class ForumViewModel(

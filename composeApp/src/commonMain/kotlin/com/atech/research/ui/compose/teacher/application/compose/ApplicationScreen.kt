@@ -48,7 +48,7 @@ fun ApplicationScreen(
                     viewModel.onEvent(
                         ApplicationEvents.OnStatusChange(
                             researchId,
-                            application.userUid,
+                            application,
                             it,
                             onComplete = { message ->
                                 toast.show(

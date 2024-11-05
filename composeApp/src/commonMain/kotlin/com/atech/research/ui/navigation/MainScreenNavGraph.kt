@@ -37,14 +37,14 @@ fun NavGraphBuilder.mainScreenGraph(navController: NavController) {
             )
         ) {
             val researchPath = it.arguments?.getString("researchPath")
-            researchHubLog(
-                ResearchLogLevel.INFO,
-                researchPath ?: ""
-            )
-            researchHubLog(
-                ResearchLogLevel.INFO,
-                researchPath ?: ""
-            )
+//            researchHubLog(
+//                ResearchLogLevel.INFO,
+//                researchPath ?: ""
+//            )
+//            researchHubLog(
+//                ResearchLogLevel.INFO,
+//                researchPath ?: ""
+//            )
             MainScreen(
                 navHostController = navController,
                 researchPath = researchPath
