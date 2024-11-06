@@ -71,8 +71,8 @@ fun ForumScreen(
     val allForumDataState by viewModel.allForum
     val dataLoader: DataLoader by DataLoaderImpl()
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
-    dataLoader.registerLifecycleOwner(lifecycleOwner)
     dataLoader.setTask { viewModel.onEvent(ForumEvents.LoadChat) }
+    dataLoader.registerLifecycleOwner(lifecycleOwner)
     LaunchedEffect(navigator.currentDestination?.pane) {
         canShowAppBar(navigator.currentDestination?.pane == ThreePaneScaffoldRole.Secondary)
     }

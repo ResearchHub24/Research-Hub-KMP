@@ -103,8 +103,8 @@ fun ProfileScreen(
     var deleteType by remember { mutableStateOf(ScreenType.EDUCATION) }
     val dataLoader: DataLoader by DataLoaderImpl()
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
-    dataLoader.registerLifecycleOwner(lifecycleOwner)
     dataLoader.setTask { viewModel.onEvent(ProfileEvents.LoadData) }
+    dataLoader.registerLifecycleOwner(lifecycleOwner)
     BackHandler(!navigator.canNavigateBack() && fromDetailScreen) {
         onNavigateBack()
     }

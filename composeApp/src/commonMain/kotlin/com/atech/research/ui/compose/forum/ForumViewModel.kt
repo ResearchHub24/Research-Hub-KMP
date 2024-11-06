@@ -26,10 +26,6 @@ class ForumViewModel(
     private val _allMessage = mutableStateOf<DataState<List<ChatMessage>>>(DataState.Loading)
     val allMessage: State<DataState<List<ChatMessage>>> get() = _allMessage
 
-    init {
-        onEvent(ForumEvents.LoadChat)
-    }
-
     fun onEvent(event: ForumEvents) {
         when (event) {
             ForumEvents.LoadChat -> loadData()

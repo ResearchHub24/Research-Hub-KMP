@@ -26,10 +26,8 @@ class DataLoaderImpl : DataLoader, LifecycleEventObserver {
 
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
-//        researchHubLog(ResearchLogLevel.INFO, "$event")
         when (event) {
             Lifecycle.Event.ON_START -> task?.invoke()
-            Lifecycle.Event.ON_RESUME -> task?.invoke()
             else -> {}
         }
     }

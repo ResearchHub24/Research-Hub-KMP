@@ -37,7 +37,7 @@ fun ForumItemUser(
     ) {
         Column(
             modifier = Modifier
-                .widthIn(max = 280.dp)
+                .fillMaxWidth(0.7f)
                 .clip(
                     RoundedCornerShape(
                         topStart = 16.dp,
