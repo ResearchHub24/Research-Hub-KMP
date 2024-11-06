@@ -35,7 +35,21 @@ import org.jetbrains.compose.resources.painterResource
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.ic_google_logo
 
-
+/**
+ * Google button
+ * Custom google button with google logo
+ * @param modifier Modifier
+ * @param text String text to display
+ * @param loadingText String loading text to display
+ * @param icon ImageVector? icon
+ * @param shape Shape
+ * @param borderColor Color
+ * @param backgroundColor Color
+ * @param progressIndicatorColor Color
+ * @param hasClick Boolean
+ * @param hasClickChange (Boolean) -> Unit
+ * @param onClicked () -> Unit
+ */
 @Composable
 fun GoogleButton(
     modifier: Modifier = Modifier,

@@ -23,6 +23,18 @@ import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.LinkHelper
 import org.koin.compose.koinInject
 
+/**
+ * Education details items
+ *
+ * @param modifier Modifier
+ * @param title String
+ * @param des String
+ * @param isLink Boolean
+ * @param canShowButtons Boolean
+ * @param canShowEditButton Boolean
+ * @param onEditClick () -> Unit
+ * @param onDeleteClick () -> Unit
+ */
 @Composable
 fun EducationDetailsItems(
     modifier: Modifier = Modifier,

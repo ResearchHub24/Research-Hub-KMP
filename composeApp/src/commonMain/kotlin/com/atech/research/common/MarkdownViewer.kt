@@ -17,6 +17,12 @@ import com.mikepenz.markdown.model.markdownExtendedSpans
 import dev.snipme.highlights.Highlights
 import dev.snipme.highlights.model.SyntaxThemes
 
+/**
+ * Markdown viewer composable
+ * This is a composable that is used to display markdown content
+ * @param modifier Modifier
+ * @param markdown String markdown content
+ */
 @Composable
 fun MarkdownViewer(
     modifier: Modifier = Modifier,

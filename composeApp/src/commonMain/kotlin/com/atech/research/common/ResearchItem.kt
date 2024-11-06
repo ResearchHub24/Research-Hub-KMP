@@ -45,6 +45,16 @@ import org.jetbrains.compose.resources.stringResource
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.selected
 
+/**
+ * Research item
+ * This is a research item that is used to display research details
+ * used in student research app
+ * @param modifier Modifier
+ * @param model ResearchModel
+ * @param isSelected Boolean
+ * @param onClick () -> Unit
+ * @see ResearchModel
+ */
 @Composable
 fun ResearchItem(
     modifier: Modifier = Modifier,
@@ -176,7 +186,18 @@ fun ResearchItem(
     }
 }
 
-
+/**
+ * Research teacher item
+ * This is a research teacher item that is used to display research details
+ * used in teacher research app
+ * @param modifier Modifier
+ * @param model ResearchModel
+ * @param isDeleteButtonVisible Boolean
+ * @param onClick () -> Unit
+ * @param onDeleted () -> Unit
+ * @param onViApplication () -> Unit
+ * @param onNotify () -> Unit
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ResearchTeacherItem(

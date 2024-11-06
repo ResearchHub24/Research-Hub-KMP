@@ -27,6 +27,17 @@ import researchhub.composeapp.generated.resources.personal_details
 import researchhub.composeapp.generated.resources.skill
 
 
+/**
+ * View profile
+ * View profile of the user
+ * @param modifier Modifier
+ * @param user DataState<UserModel>
+ * @param paddingValues PaddingValues?
+ * @param enableTopBar Boolean
+ * @param onNavigationClick () -> Unit
+ * @see DataState
+ * @see UserModel
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ViewProfile(

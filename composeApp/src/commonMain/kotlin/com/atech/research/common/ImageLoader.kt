@@ -15,6 +15,15 @@ import org.jetbrains.compose.resources.painterResource
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.ic_error
 
+/**
+ * Async image
+ * Load image asynchronously
+ *
+ * @param modifier Modifier
+ * @param isLoadCircular Boolean value to determine if the image should be circular
+ * @param url String image url
+ * @param errorImage Painter error image
+ */
 @Composable
 fun AsyncImage(
     modifier: Modifier = Modifier,

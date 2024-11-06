@@ -28,7 +28,15 @@ import com.atech.research.core.ktor.model.ApplicationModel
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.convertToDateFormat
 
-
+/**
+ * Research application item
+ * List item to show filled application.
+ * Used only in Student application list.
+ *
+ * @param modifier Modifier
+ * @param model ApplicationModel
+ * @param onClick () -> Unit
+ */
 @Composable
 fun ResearchApplicationItem(
     modifier: Modifier = Modifier,

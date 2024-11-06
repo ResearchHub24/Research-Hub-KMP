@@ -19,7 +19,17 @@ import androidx.compose.ui.Modifier
 import com.atech.research.core.ktor.model.TagModel
 import com.atech.research.ui.theme.spacing
 
-
+/**
+ * Tag item component
+ * This is a tag item component that is used to display a tag
+ * @param modifier Modifier
+ * @param tag TagModel
+ * @param isSelected Boolean
+ * @param onItemClicked (Boolean) -> Unit
+ * @param isDeleteEnable Boolean
+ * @param onDeleteTag () -> Unit
+ * @see TagModel
+ */
 @Composable
 fun TagItem(
     modifier: Modifier = Modifier,

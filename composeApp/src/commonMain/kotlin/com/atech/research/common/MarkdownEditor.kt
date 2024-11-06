@@ -48,6 +48,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.atech.research.ui.theme.spacing
 
+/**
+ * Control wrapper
+ * This is a wrapper for the control
+ * @param onClick () -> Unit action to perform when the control is clicked
+ * @param content @Composable () -> Unit content to display
+ */
 @Composable
 fun ControlWrapper(
     onClick: () -> Unit,
@@ -74,6 +80,11 @@ fun ControlWrapper(
     }
 }
 
+/**
+ * End with space
+ *
+ * @param other String
+ */
 fun String.endWithSpace(other: String) = this.run {
     if (this.isBlank())
         this + other
@@ -83,6 +94,11 @@ fun String.endWithSpace(other: String) = this.run {
     }
 }
 
+/**
+ * End with new line
+ *
+ * @param other String
+ */
 fun String.endWithNewLine(other: String) = this.run {
     if (this.isBlank())
         this + other
@@ -93,7 +109,15 @@ fun String.endWithNewLine(other: String) = this.run {
     }
 }
 
-
+/**
+ * Markdown editor
+ * This is a markdown editor
+ *
+ * @param modifier Modifier
+ * @param value String
+ * @param onValueChange (String) -> Unit
+ * @param viewInMarkdownClick () -> Unit
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun MarkdownEditor(

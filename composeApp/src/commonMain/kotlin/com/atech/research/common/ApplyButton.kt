@@ -12,6 +12,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import com.atech.research.ui.theme.spacing
 
+/**
+ * Apply button
+ * This is a button that is used to apply changes
+ *
+ * @param text Text to display
+ * @param modifier Modifier
+ * @param canFillWidth Boolean value to determine if the button should fill the width
+ * @param enable Boolean value to determine if the button should be enabled
+ * @param horizontalPadding Dp value to determine the horizontal padding
+ * @param action () -> Unit action to perform when the button is clicked
+ */
 @Composable
 fun ApplyButton(
     text: String,
