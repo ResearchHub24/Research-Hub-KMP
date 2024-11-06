@@ -30,6 +30,14 @@ import io.ktor.client.request.url
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 
+/**
+ * Research hub client imp
+ * This is an implementation of the [ResearchHubClient] interface
+ * @property client
+ * @constructor Create empty Research hub client imp
+ * @see ResearchHubClient
+ * @see HttpClient
+ */
 class ResearchHubClientImp(
     private val client: HttpClient
 ) : ResearchHubClient {
