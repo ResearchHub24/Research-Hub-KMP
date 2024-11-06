@@ -8,14 +8,13 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.atech.research.ui.compose.main.MainScreen
 import com.atech.research.utils.DeepLink
-import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.fadeThroughComposable
-import com.atech.research.utils.researchHubLog
 
 sealed class MainScreenScreenRoutes(
     val route: String
 ) {
     data object HomeScreen : MainScreenScreenRoutes("home_screen")
+    data object ChatScreen : MainScreenScreenRoutes("chat_screen")
 }
 
 fun NavGraphBuilder.mainScreenGraph(navController: NavController) {

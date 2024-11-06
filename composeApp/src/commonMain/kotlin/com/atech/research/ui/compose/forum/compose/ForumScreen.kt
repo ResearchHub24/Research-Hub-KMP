@@ -143,6 +143,7 @@ fun ForumScreen(
                                 (messageDataState as DataState.Success<List<ChatMessage>>).data
                             ForumMessageScreen(
                                 messages = messages,
+                                url = currentForumModel?.createdChatProfileUrl ?: "",
                                 onSendMessage = {
                                     researchHubLog(
                                         ResearchLogLevel.ERROR,

@@ -45,6 +45,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ForumMessageScreen(
     modifier: Modifier = Modifier,
+    url: String,
     messages: List<ChatMessage> = emptyList(),
     onSendMessage: (String) -> Unit
 ) {
@@ -78,6 +79,7 @@ fun ForumMessageScreen(
 
                         is ChatMessage.Response -> ForumItemResponse(
                             message = message.message,
+                            url = url,
                             time = message.created.convertToDateFormat()
                         )
                     }

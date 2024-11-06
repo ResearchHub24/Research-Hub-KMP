@@ -43,10 +43,10 @@ class ForumViewModel(
             "Called"
         )
         val messageModel = MessageModel(
-            senderName = forumModel.createdChatUserName,
-            senderUid = forumModel.createdChatUid,
-            receiverUid = forumModel.receiverChatUid,
-            receiverName = forumModel.receiverChatUserName,
+            senderName = if (isTeacher()) forumModel.createdChatUserName else forumModel.receiverChatUserName,
+            senderUid = if (isTeacher()) forumModel.createdChatUid else forumModel.receiverChatUid,
+            receiverUid = if (isTeacher()) forumModel.receiverChatUid else forumModel.createdChatUid,
+            receiverName = if (isTeacher()) forumModel.receiverChatUserName else forumModel.createdChatUserName,
             message = message
         )
         scope.launch {
@@ -67,7 +67,7 @@ class ForumViewModel(
     }
 
     private fun loadMessage(path: String) = scope.launch {
-        _allMessage.value = DataState.Loading
+//        _allMessage.value = DataState.Loading
         when (val mDataState = forumUseCases.getAllMessage.invoke(path)) {
             is DataState.Loading -> _allMessage.value = mDataState
             is DataState.Success -> _allMessage.value =
