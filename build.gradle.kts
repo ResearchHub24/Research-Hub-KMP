@@ -8,4 +8,5 @@ plugins {
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
     id("com.google.firebase.crashlytics") version "3.0.2" apply false
+    id("org.jetbrains.dokka") version "1.9.10"
 }

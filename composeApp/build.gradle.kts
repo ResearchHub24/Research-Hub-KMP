@@ -11,6 +11,7 @@ plugins {
     id("com.google.firebase.crashlytics")
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.googleAndroidLibrariesMapsplatformSecretsGradlePlugin)
+    id("org.jetbrains.dokka")
 //    alias(libs.plugins.ksp)
 //    alias(libs.plugins.room)
 }
