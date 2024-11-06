@@ -6,6 +6,13 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
 
+/**
+ * Get with fallback
+ * This function is used to get the data with fallback
+ * @receiver HttpClient
+ * @param block The block
+ * @return [String]
+ */
 suspend inline fun HttpClient.getWithFallback(
     crossinline block: HttpRequestBuilder.() -> Unit = {}
 ) =

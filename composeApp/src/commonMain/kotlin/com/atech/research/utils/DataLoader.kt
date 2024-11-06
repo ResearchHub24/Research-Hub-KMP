@@ -4,11 +4,32 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 
+/**
+ * Data loader interface
+ * This interface is used to load data when the lifecycle is in a specific state
+ * @see DataLoaderImpl
+ */
 interface DataLoader {
+    /**
+     * Register lifecycle owner
+     * This function is used to register the lifecycle owner
+     * @param owner [LifecycleOwner]
+     */
     fun registerLifecycleOwner(owner: LifecycleOwner)
+
+    /**
+     * Set task
+     * This function is used to set the task to be executed when the lifecycle is in a specific state
+     * @param task [() -> Unit]
+     */
     fun setTask(task: () -> Unit)
 }
 
+/**
+ * Data loader implementation
+ * This class is used to load data when the lifecycle is in a specific state
+ * @see DataLoader
+ */
 class DataLoaderImpl : DataLoader, LifecycleEventObserver {
 
     operator fun getValue(thisRef: Any?, property: Any?): DataLoader {

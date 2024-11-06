@@ -24,6 +24,15 @@ const val DURATION_ENTER = 400
 const val DURATION_EXIT = 200
 const val initialOffset = 0.10f
 
+/**
+ * Fade through composable
+ * This function is used to create a fade through composable
+ * @receiver NavGraphBuilder
+ * @param route The route
+ * @param arguments The arguments
+ * @param deepLinks The deep links
+ * @param content The content
+ */
 fun NavGraphBuilder.fadeThroughComposable(
     route: String,
     arguments: List<NamedNavArgument> = emptyList(),
@@ -56,6 +65,12 @@ fun NavGraphBuilder.fadeThroughComposable(
     content = content
 )
 
+/**
+ * Fade through composable enhanced
+ * This function is used to create a fade through composable enhanced
+ * @receiver NavGraphBuilder
+ * @param content The content
+ */
 inline fun <reified T : Any> NavGraphBuilder.fadeThroughComposableEnh(
     noinline content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
 ) {

@@ -1,5 +1,9 @@
 package com.atech.research.utils
 
+/**
+ * Convert markdown to plain text
+ * @return [String]
+ */
 fun String.markdownToPlainText(): String =
     this
         .replace(Regex("(?m)^#{1,6}\\s"), "") // Remove headers
@@ -17,7 +21,10 @@ fun String.markdownToPlainText(): String =
         .replace(Regex("(?m)^\\s*[-*_]{3,}\\s*$"), "") // Remove horizontal rules
         .trim()
 
-
+/**
+ * Remove extra spaces and preserve line breaks
+ * @return [String]
+ */
 fun String.removeExtraSpacesPreserveLineBreaks(): String =
     this.split("\n").joinToString("\n") { line ->
         line.trim().replace("\\s+".toRegex(), " ")
