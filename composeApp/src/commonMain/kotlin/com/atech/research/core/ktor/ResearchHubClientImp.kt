@@ -361,7 +361,7 @@ class ResearchHubClientImp(
     ): DataState<SuccessResponse> =
         try {
             checkError<SuccessResponse, ErrorResponse>(client.post {
-                url("${ResearchHubClient.MESSAGES}/$path")
+                url("${ResearchHubClient.MESSAGES}/post/$path")
                 contentType(ContentType.Application.Json)
                 setBody(message)
             })

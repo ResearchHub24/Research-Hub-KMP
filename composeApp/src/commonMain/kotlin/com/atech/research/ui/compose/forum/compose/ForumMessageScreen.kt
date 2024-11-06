@@ -66,7 +66,8 @@ fun ForumMessageScreen(
                     .weight(1f)
                     .fillMaxWidth(),
                 state = listState,
-                contentPadding = PaddingValues(vertical = 8.dp)
+                contentPadding = PaddingValues(vertical = 8.dp),
+                reverseLayout = true
             ) {
                 items(messages) { message ->
                     when (message) {

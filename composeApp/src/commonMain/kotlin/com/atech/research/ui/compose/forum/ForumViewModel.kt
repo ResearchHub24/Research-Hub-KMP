@@ -4,7 +4,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.atech.research.core.ktor.model.ChatMessage
 import com.atech.research.core.ktor.model.ForumModel
+import com.atech.research.core.ktor.model.MessageModel
 import com.atech.research.core.ktor.model.UserType
+import com.atech.research.core.ktor.model.getPath
 import com.atech.research.core.ktor.model.toChatMessage
 import com.atech.research.core.usecase.ForumUseCases
 import com.atech.research.utils.DataState
@@ -29,7 +31,38 @@ class ForumViewModel(
     fun onEvent(event: ForumEvents) {
         when (event) {
             ForumEvents.LoadChat -> loadData()
-            is ForumEvents.OnChatClick -> loadMessage(event.path)
+            is ForumEvents.OnChatClick -> loadMessage(event.forumModel.getPath())
+            is ForumEvents.OnMessageSend -> sendMessage(event.forumModel, event.message)
+        }
+    }
+
+
+    private fun sendMessage(forumModel: ForumModel, message: String) {
+        researchHubLog(
+            ResearchLogLevel.ERROR,
+            "Called"
+        )
+        val messageModel = MessageModel(
+            senderName = forumModel.createdChatUserName,
+            senderUid = forumModel.createdChatUid,
+            receiverUid = forumModel.receiverChatUid,
+            receiverName = forumModel.receiverChatUserName,
+            message = message
+        )
+        scope.launch {
+            when (val dataState =
+                forumUseCases.sendMessage.invoke(forumModel.getPath(), messageModel)) {
+                is DataState.Error -> {
+                    researchHubLog(
+                        ResearchLogLevel.ERROR,
+                        dataState.exception.message ?: "Error sending message"
+                    )
+                    _allMessage.value = dataState
+                }
+
+                DataState.Loading -> {}
+                is DataState.Success -> loadMessage(path = forumModel.getPath())
+            }
         }
     }
 

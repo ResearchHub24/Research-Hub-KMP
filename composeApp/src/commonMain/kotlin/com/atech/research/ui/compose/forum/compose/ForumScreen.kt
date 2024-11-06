@@ -30,6 +30,9 @@ import androidx.compose.material3.adaptive.navigation.rememberListDetailPaneScaf
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,7 +47,6 @@ import com.atech.research.common.ProgressBar
 import com.atech.research.core.ktor.model.ChatMessage
 import com.atech.research.core.ktor.model.ForumModel
 import com.atech.research.core.ktor.model.getFilteredForumModel
-import com.atech.research.core.ktor.model.getPath
 import com.atech.research.ui.compose.forum.ForumEvents
 import com.atech.research.ui.compose.forum.ForumViewModel
 import com.atech.research.ui.compose.main.IsUserTeacher
@@ -71,6 +73,7 @@ fun ForumScreen(
     val allForumDataState by viewModel.allForum
     val dataLoader: DataLoader by DataLoaderImpl()
     val lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current
+    var currentForumModel: ForumModel? by remember { mutableStateOf(null) }
     dataLoader.setTask { viewModel.onEvent(ForumEvents.LoadChat) }
     dataLoader.registerLifecycleOwner(lifecycleOwner)
     LaunchedEffect(navigator.currentDestination?.pane) {
@@ -111,8 +114,9 @@ fun ForumScreen(
                     AnimatedPane {
                         ForumScreenComposable(isAdmin = isAdmin,
                             chats = allForum,
-                            onChatClick = { path ->
-                                viewModel.onEvent(ForumEvents.OnChatClick(path))
+                            onChatClick = { model ->
+                                currentForumModel = model
+                                viewModel.onEvent(ForumEvents.OnChatClick(model))
                                 navigator.navigateTo(
                                     ListDetailPaneScaffoldRole.Detail
                                 )
@@ -137,7 +141,22 @@ fun ForumScreen(
                         if (messageDataState is DataState.Success) {
                             val messages =
                                 (messageDataState as DataState.Success<List<ChatMessage>>).data
-                            ForumMessageScreen(messages = messages, onSendMessage = {})
+                            ForumMessageScreen(
+                                messages = messages,
+                                onSendMessage = {
+                                    researchHubLog(
+                                        ResearchLogLevel.ERROR,
+                                        "$currentForumModel"
+                                    )
+                                    viewModel.onEvent(
+                                        ForumEvents.OnMessageSend(
+                                            forumModel = currentForumModel
+                                                ?: return@ForumMessageScreen,
+                                            message = it
+                                        )
+                                    )
+                                }
+                            )
                         }
                     }
                 })
@@ -151,7 +170,7 @@ private fun ForumScreenComposable(
     modifier: Modifier = Modifier,
     isAdmin: Boolean,
     chats: List<ForumModel> = emptyList(),
-    onChatClick: (String) -> Unit,
+    onChatClick: (ForumModel) -> Unit,
 ) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -166,7 +185,7 @@ private fun ForumScreenComposable(
                 verticalArrangement = Arrangement.spacedBy(1.dp)
             ) {
                 items(chats) { chat ->
-                    AllForumItem(chat = chat, onClick = { onChatClick(chat.getPath()) })
+                    AllForumItem(chat = chat, onClick = { onChatClick(chat) })
                 }
             }
         }
