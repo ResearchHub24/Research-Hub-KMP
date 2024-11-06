@@ -41,6 +41,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.atech.research.LocalDataStore
 import com.atech.research.common.AsyncImage
 import com.atech.research.common.MainContainer
 import com.atech.research.common.ProgressBar
@@ -54,6 +55,7 @@ import com.atech.research.utils.BackHandler
 import com.atech.research.utils.DataLoader
 import com.atech.research.utils.DataLoaderImpl
 import com.atech.research.utils.DataState
+import com.atech.research.utils.Prefs
 import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.convertToDateFormat
 import com.atech.research.utils.koinViewModel
@@ -125,6 +127,10 @@ fun ForumScreen(
                 },
                 detailPane = {
                     AnimatedPane {
+                        if (currentForumModel == null) {
+                            EmptyChatView()
+                            return@AnimatedPane
+                        }
                         val messageDataState by viewModel.allMessage
                         if (messageDataState is DataState.Loading) {
                             ProgressBar(paddingValues)
@@ -173,6 +179,7 @@ private fun ForumScreenComposable(
     chats: List<ForumModel> = emptyList(),
     onChatClick: (ForumModel) -> Unit,
 ) {
+    val uid = LocalDataStore.current.getString(Prefs.USER_ID.name)
     Scaffold(
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
@@ -186,7 +193,11 @@ private fun ForumScreenComposable(
                 verticalArrangement = Arrangement.spacedBy(1.dp)
             ) {
                 items(chats) { chat ->
-                    AllForumItem(chat = chat, onClick = { onChatClick(chat) })
+                    AllForumItem(
+                        chat = chat,
+                        onClick = { onChatClick(chat) },
+                        uid = uid,
+                    )
                 }
             }
         }
@@ -304,6 +315,27 @@ private fun EmptyForumView(
             text = if (isAdmin) "Select student to initiate a conversation." else "Awaiting a faculty member to start the conversation.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+private fun EmptyChatView(
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector = Icons.Rounded.Forum,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(.3f).padding(bottom = 16.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = "Select a conversation", style = MaterialTheme.typography.titleLarge
         )
     }
 }
