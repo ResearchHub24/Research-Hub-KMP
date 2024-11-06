@@ -23,6 +23,17 @@ import com.atech.research.ui.theme.ResearchHubTheme
 import com.atech.research.utils.Platform
 import com.atech.research.utils.getPlatformName
 
+/**
+ * Toolbar component
+ *
+ * @param modifier Modifier
+ * @param title String title
+ * @param onNavigationClick (() -> Unit)? action to perform when the navigation icon is clicked
+ * @param actions @Composable RowScope.() -> Unit actions
+ * @param scrollBehavior TopAppBarScrollBehavior?
+ * @param color Color
+ * @see MainContainer
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Toolbar(
@@ -59,7 +70,29 @@ fun Toolbar(
     )
 }
 
-
+/**
+ * Main container component
+ * This is the main container for the app that contains the top bar, content, bottom bar, and snackbar
+ * It also contains the pull to refresh component
+ *
+ *
+ * @param modifier Modifier
+ * @param enableTopBar Boolean value to determine if the top bar should be enabled
+ * @param customTopBar (@Composable () -> Unit)? custom top bar
+ * @param title String title
+ * @param appBarColor Color
+ * @param scrollBehavior TopAppBarScrollBehavior?
+ * @param state PullToRefreshState
+ * @param isRefreshing Boolean value to determine if the content is refreshing
+ * @param onRefresh  () -> Unit action to perform when the content is refreshing
+ * @param onNavigationClick (() -> Unit)? action to perform when the navigation icon is clicked
+ * @param floatingActionButton @Composable () -> Unit floating action button
+ * @param actions @Composable RowScope.() -> Unit actions
+ * @param bottomBar @Composable () -> Unit bottom bar
+ * @param snackBarHost @Composable () -> Unit snackbar host
+ * @param content @Composable (PaddingValues) -> Unit content to display
+ * @see Toolbar
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainContainer(

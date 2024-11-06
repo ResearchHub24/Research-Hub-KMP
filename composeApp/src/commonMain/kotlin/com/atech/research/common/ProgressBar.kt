@@ -14,6 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 
+/**
+ * Progress bar component
+ * This is a progress bar component that is used to show a loading indicator
+ * @param paddingValues PaddingValues
+ * @param loadingText String loading text to display
+ */
 @Composable
 fun ProgressBar(
     paddingValues: PaddingValues,

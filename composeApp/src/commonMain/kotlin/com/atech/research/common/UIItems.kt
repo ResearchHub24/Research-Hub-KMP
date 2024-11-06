@@ -53,6 +53,13 @@ import com.atech.research.ui.theme.spacing
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.app_logo
 
+/**
+ * Title composable
+ * This is a title composable that is used to display a title
+ * @param modifier Modifier
+ * @param title String title to display
+ * @param padding Dp padding to apply to the title
+ */
 @Composable
 fun TitleComposable(
     modifier: Modifier = Modifier,
@@ -69,6 +76,15 @@ fun TitleComposable(
     )
 }
 
+/**
+ * Text item
+ * This is a text item that is used to display a text
+ * @param modifier Modifier
+ * @param text String text to display
+ * @param onClick () -> Unit action to perform when the text is clicked
+ * @param endIcon ImageVector? end icon
+ * @param onEndIconClick (() -> Unit)? action to perform when the end icon is clicked
+ */
 @Composable
 fun TextItem(
     modifier: Modifier = Modifier,
@@ -100,6 +116,14 @@ fun TextItem(
     }
 }
 
+/**
+ * Display card
+ * This is a display card that is used to display a card
+ * @param modifier Modifier
+ * @param onClick () -> Unit action to perform when the card is clicked
+ * @param border BorderStroke
+ * @param content ColumnScope.() -> Unit content to display
+ */
 @Composable
 fun DisplayCard(
     modifier: Modifier = Modifier,
@@ -124,7 +148,15 @@ fun DisplayCard(
     }
 }
 
-
+/**
+ * Custom icon button
+ * This is a custom icon button that is used to display an icon button
+ *
+ * @param modifier Modifier
+ * @param imageVector ImageVector
+ * @param action () -> Unit action to perform when the icon button is clicked
+ * @receiver
+ */
 @Composable
 fun CustomIconButton(
     modifier: Modifier = Modifier,
@@ -139,7 +171,10 @@ fun CustomIconButton(
     }
 }
 
-
+/**
+ * Bottom padding
+ * This is a bottom padding that is used to add padding to the bottom
+ */
 @Composable
 fun BottomPadding() {
     Spacer(
@@ -150,6 +185,11 @@ fun BottomPadding() {
 }
 
 
+/**
+ * Bottom padding lazy
+ * This is a bottom padding lazy that is used to add padding to the bottom
+ * @param key String key
+ */
 fun LazyListScope.bottomPaddingLazy(key: String = "bottom_padding") {
     item(
         key = key
@@ -158,6 +198,15 @@ fun LazyListScope.bottomPaddingLazy(key: String = "bottom_padding") {
     }
 }
 
+/**
+ * Expandable card
+ * This is an expandable card that is used to display an expandable card
+ * @param modifier Modifier
+ * @param title String
+ * @param expand Boolean
+ * @param content ColumnScope.() -> Unit content to display
+ * @receiver
+ */
 @Composable
 fun ExpandableCard(
     modifier: Modifier = Modifier,
@@ -206,6 +255,11 @@ fun ExpandableCard(
     }
 }
 
+/**
+ * Progress bar component
+ * This is a progress bar component that is used to show a loading indicator
+ * @param paddingValues PaddingValues
+ */
 @Composable
 fun ProgressBar(
     paddingValues: PaddingValues
@@ -225,6 +279,13 @@ fun ProgressBar(
     }
 }
 
+/**
+ * Card section
+ * This is a card section that is used to display a card section
+ * @param modifier Modifier
+ * @param title String
+ * @param content ColumnScope.() -> Unit content to display
+ */
 @Composable
 fun CardSection(
     modifier: Modifier = Modifier,
@@ -258,7 +319,14 @@ fun CardSection(
     }
 }
 
-
+/**
+ * Body composable
+ * This is a body composable that is used to display a body
+ *
+ * @param modifier Modifier
+ * @param body String
+ * @param padding Dp
+ */
 @Composable
 fun BodyComposable(
     modifier: Modifier = Modifier,
@@ -275,6 +343,12 @@ fun BodyComposable(
     )
 }
 
+/**
+ * Empty welcome screen
+ * This is an empty welcome screen that is used to display a welcome screen
+ *
+ * @param modifier Modifier
+ */
 @Composable
 fun EmptyWelcomeScreen(modifier: Modifier = Modifier) {
     Column(

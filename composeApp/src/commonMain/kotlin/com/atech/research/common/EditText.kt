@@ -37,7 +37,28 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 
-
+/**
+ * Edit text
+ * Custom edit text
+ *
+ * @param modifier Modifier
+ * @param value String default value
+ * @param placeholder String placeholder
+ * @param onValueChange (String) -> Unit action to perform when the value changes
+ * @param clearIconClick () -> Unit action to perform when the clear icon is clicked
+ * @param isError Boolean value to determine if the edit text has an error
+ * @param errorMessage String error message
+ * @param supportingMessage String supporting message
+ * @param keyboardOptions KeyboardOptions
+ * @param focusRequester FocusRequester
+ * @param enable Boolean value to determine if the edit text is enabled
+ * @param colors TextFieldColors
+ * @param leadingIcon (@Composable () -> Unit)? leading icon
+ * @param trailingIcon @Composable (() -> Unit)? trailing icon
+ * @param maxLines Int maximum lines
+ * @param readOnly Boolean value to determine if the edit text is read only
+ * @param interactionSource MutableInteractionSource
+ */
 @Composable
 fun EditText(
     modifier: Modifier = Modifier,
@@ -98,6 +119,28 @@ fun EditText(
     )
 }
 
+/**
+ * Edit text enhance
+ *
+ * @param modifier Modifier
+ * @param value String default value
+ * @param placeholder String placeholder
+ * @param onValueChange (String) -> Unit action to perform when the value changes
+ * @param clearIconClick () -> Unit action to perform when the clear icon is clicked
+ * @param isError Boolean value to determine if the edit text has an error
+ * @param supportingText @Composable (() -> Unit)? supporting text
+ * @param keyboardOptions KeyboardOptions
+ * @param focusRequester FocusRequester
+ * @param enable Boolean value to determine if the edit text is enabled
+ * @param colors TextFieldColors
+ * @param leadingIcon (@Composable () -> Unit)? leading icon
+ * @param trailingIcon @Composable (() -> Unit)? trailing icon
+ * @param maxLines Int maximum lines
+ * @param readOnly Boolean value to determine if the edit text is read only
+ * @param keyboardActions KeyboardActions
+ * @param interactionSource MutableInteractionSource
+ * @param singleLine Boolean value to determine if the edit text is single line
+ */
 @Composable
 fun EditTextEnhance(
     modifier: Modifier = Modifier,
@@ -171,7 +214,16 @@ fun EditTextEnhance(
 //
 //}
 
-
+/**
+ * Password edit text compose
+ * Custom password edit text
+ *
+ * @param modifier Modifier
+ * @param value String default value
+ * @param placeholder String placeholder
+ * @param imeAction ImeAction
+ * @param onValueChange (String) -> Unit action to perform when the value changes
+ */
 @Composable
 fun PasswordEditTextCompose(
     modifier: Modifier = Modifier,
@@ -207,6 +259,9 @@ fun PasswordEditTextCompose(
     )
 }
 
+/**
+ * Text field colors
+ */
 @Composable
 fun textFieldColors() = TextFieldDefaults.colors(
     cursorColor = MaterialTheme.colorScheme.primary,

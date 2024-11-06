@@ -11,6 +11,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.window.DialogProperties
 
+/**
+ * App custom alert dialog with custom content
+ *
+ * @param modifier Modifier
+ * @param onDismissRequest () -> Unit
+ * @param content @Composable () -> Unit
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppCustomAlertDialog(
@@ -27,6 +34,15 @@ fun AppCustomAlertDialog(
     )
 }
 
+/**
+ * App alert dialog with confirmation and dismiss button
+ *
+ * @param dialogTitle String
+ * @param dialogText String
+ * @param icon ImageVector
+ * @param onDismissRequest () -> Unit
+ * @param onConfirmation () -> Unit
+ */
 @Composable
 fun AppAlertDialog(
     dialogTitle: String,

@@ -17,17 +17,59 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import java.io.File
 
-
+/**
+ * Engine factory
+ * This is a factory to create a HttpClient engine
+ * This is needed because the HttpClient engine is platform specific
+ * and we need to create it in the platform specific code
+ * This is a common interface that will be implemented in the platform specific code
+ * and will be used in the common code
+ * @constructor Create empty Engine factory
+ */
 interface EngineFactory {
+    /**
+     * Create engine
+     * This function will create a HttpClient engine
+     *
+     * @return [HttpClient]
+     */
     fun createEngine(): HttpClient
 }
 
+/**
+ * Http client engine factory
+ * This function will return the engine factory
+ * This function is platform specific and will be implemented in the platform specific code
+ *
+ * @return [EngineFactory]
+ * @see EngineFactory
+ */
 expect fun httpClientEngineFactory(): EngineFactory
 
+/**
+ * Get cache dir
+ * This is a common interface that will be implemented in the platform specific code
+ * and will be used in the common code
+ * This is needed because the cache directory is platform specific
+ * and we need to get it in the platform specific code
+ * @constructor Create empty Get cache dir
+ */
 expect class GetCacheDir {
+    /**
+     * Get cache dir
+     * This function will return the cache directory
+     * @return [File]
+     */
     fun getCacheDir(): File
 }
 
+/**
+ * Create http client
+ * This function will create a HttpClient with the given engine and cache directory
+ * @param engine The HttpClient engine [HttpClientEngine]
+ * @param cacheDir The cache directory [GetCacheDir]
+ * @return [HttpClient]
+ */
 fun createHttpClient(
     engine: HttpClientEngine,
     cacheDir: GetCacheDir
