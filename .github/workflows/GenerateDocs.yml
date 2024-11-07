@@ -33,13 +33,13 @@ jobs:
       - name: Generate Dokka docs
         run: ./gradlew dokkaHtmlMultiModule
       - name: Upload Kt docs
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: kt-docs
           path: build/dokka
           retention-days: 1
       - name: Uploading mk-docs
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: mk-docs
           path: docs
@@ -69,7 +69,7 @@ jobs:
           cp -r htmlMultiModule/* copyDoc/generated/docs/app
           ls -la copyDoc/generated/docs/app
       - name: Upload docs
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: generated-docs
           path: copyDoc
