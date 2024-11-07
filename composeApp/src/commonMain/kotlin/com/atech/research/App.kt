@@ -20,6 +20,15 @@ import org.koin.compose.koinInject
 
 val LocalDataStore = staticCompositionLocalOf<PrefManager> { error("No DataStore provided") }
 
+/**
+ * App
+ * Main entry point for the app.
+ *
+ * @param pref PrefManager
+ * @param navHostController NavHostController
+ * @see PrefManager
+ * @see NavHostController
+ */
 @Composable
 @Preview
 fun App(

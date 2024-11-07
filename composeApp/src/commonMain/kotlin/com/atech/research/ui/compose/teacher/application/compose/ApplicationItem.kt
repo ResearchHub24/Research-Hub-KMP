@@ -50,6 +50,15 @@ import com.atech.research.core.ktor.model.ApplicationModel
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.convertToDateFormat
 
+/**
+ * Application Item
+ *
+ * @param modifier Modifier
+ * @param model Application model
+ * @param onClick Click action
+ * @param onViewProfileClick View profile click action
+ * @param onActionClick Action click action
+ */
 @Composable
 fun ApplicationItem(
     modifier: Modifier = Modifier,
@@ -223,6 +232,12 @@ fun ApplicationItem(
     }
 }
 
+/**
+ * Questions Item
+ *
+ * @param modifier Modifier
+ * @param model Answer model
+ */
 @Composable
 fun QuestionsItem(
     modifier: Modifier = Modifier,
@@ -257,6 +272,11 @@ fun QuestionsItem(
     }
 }
 
+/**
+ * Question Item Text Field Color
+ *
+ * @return TextFieldDefaults colors
+ */
 @Composable
 private fun questionItemTextFieldColor() = TextFieldDefaults.colors(
     disabledContainerColor = TextFieldDefaults.colors().focusedContainerColor,
@@ -266,6 +286,14 @@ private fun questionItemTextFieldColor() = TextFieldDefaults.colors(
 )
 
 
+/**
+ * Action Dialog
+ *
+ * @param modifier Modifier
+ * @param action Action
+ * @param onActionClick Action click action
+ * @param onDismissRequest Dismiss request action
+ */
 @Composable
 private fun ActionDialog(
     modifier: Modifier = Modifier,

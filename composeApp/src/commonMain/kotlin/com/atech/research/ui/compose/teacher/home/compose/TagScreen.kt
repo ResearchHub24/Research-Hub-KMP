@@ -39,6 +39,22 @@ import com.atech.research.common.TitleComposable
 import com.atech.research.core.ktor.model.TagModel
 import com.atech.research.ui.theme.spacing
 
+/**
+ * Tag Screen
+ *
+ * @param modifier Modifier
+ * @param uid String
+ * @param list List<TagModel>
+ * @param selectedList List<TagModel>
+ * @param error String
+ * @param onAddTag Function1<TagModel, Unit>
+ * @param onSelectOrRemoveTag Function1<List<TagModel>, Unit>
+ * @param onDeleteTag Function1<TagModel, Unit>
+ * @see TagModel
+ * @see TagItem
+ * @see EditTextEnhance
+ * @see DisplayCard
+ */
 @Composable
 fun TagScreen(
     modifier: Modifier = Modifier,

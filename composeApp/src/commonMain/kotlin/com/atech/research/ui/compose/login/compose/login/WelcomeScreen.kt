@@ -28,6 +28,12 @@ import org.jetbrains.compose.resources.painterResource
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.app_logo
 
+/**
+ * Welcome screen
+ * This is the screen that displays the welcome screen.
+ * @param modifier The modifier to be applied to the screen
+ * @param navController The navigation controller
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WelcomeScreen(
@@ -86,12 +92,23 @@ fun WelcomeScreen(
     }
 }
 
+/**
+ * Navigate to setup screen
+ * This is the function that navigates to the setup screen.
+ * @param navController The navigation controller
+ * @param uid The user id
+ */
 private fun navigateToSetupScreen(navController: NavController, uid: String) {
     navController.navigate(SetUpScreenArgs(uid)) {
         popUpTo(navController.graph.startDestinationId)
     }
 }
 
+/**
+ * Navigate to home
+ * This is the function that navigates to the home screen.
+ * @param navController The navigation controller
+ */
 fun navigateToHome(navController: NavController) {
     navController.navigate(MainScreenScreenRoutes.HomeScreen.route) {
         popUpTo(navController.graph.startDestinationId) {

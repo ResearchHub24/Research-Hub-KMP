@@ -7,6 +7,18 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
+/**
+ * Spacing
+ *
+ * @property default Dp
+ * @property extraSmall Dp
+ * @property small Dp
+ * @property medium Dp
+ * @property large Dp
+ * @property extraLarge Dp
+ * @property bottomPadding Dp
+ * @constructor Create empty Spacing
+ */
 data class Spacing(
     val default: Dp = 0.dp,
     val extraSmall: Dp = 2.dp,
@@ -17,8 +29,16 @@ data class Spacing(
     val bottomPadding: Dp = 56.dp
 )
 
+/**
+ * Local spacing
+ */
 val LocalSpacing = compositionLocalOf { Spacing() }
 
+/**
+ * Spacing
+ *
+ * @return Spacing
+ */
 val MaterialTheme.spacing: Spacing
     @Composable
     @ReadOnlyComposable

@@ -35,6 +35,14 @@ import com.atech.research.utils.DataState
 import com.atech.research.utils.koinViewModel
 import com.atech.research.utils.removeExtraSpacesPreserveLineBreaks
 
+/**
+ * Application Screen
+ *
+ * @param modifier Modifier
+ * @param canShowAppBar (Boolean) -> Unit
+ * @see ApplicationViewModel
+ * @see UserModel
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun ApplicationScreen(

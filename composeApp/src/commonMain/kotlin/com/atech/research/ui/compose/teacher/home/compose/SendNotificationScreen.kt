@@ -26,6 +26,21 @@ import com.atech.research.ui.compose.teacher.home.HomeScreenEvents
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.BackHandler
 
+/**
+ * Send notification screen
+ *
+ * @param modifier Modifier
+ * @param titleWithUrl Pair<String, String?>
+ * @param researchId String
+ * @param created Long
+ * @param onEvent Function1<HomeScreenEvents, Unit>
+ * @param onBackClick Function0<Unit>
+ * @see HomeScreenEvents
+ * @see BackHandler
+ * @see EditTextEnhance
+ * @see ApplyButton
+ * @see ShowNotificationDialog
+ */
 @Composable
 fun SendNotificationScreen(
     modifier: Modifier = Modifier,
@@ -105,6 +120,17 @@ fun SendNotificationScreen(
     }
 }
 
+/**
+ * Show notification dialog
+ *
+ * @param onDismissRequest Function0<Unit>
+ * @see Dialog
+ * @see Card
+ * @see Column
+ * @see Text
+ * @see LottieAnim
+ * @see LottieAnimationLinks
+ */
 @Composable
 private fun ShowNotificationDialog(
     onDismissRequest: () -> Unit = {}

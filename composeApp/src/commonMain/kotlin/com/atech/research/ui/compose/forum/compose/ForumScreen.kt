@@ -62,6 +62,13 @@ import com.atech.research.utils.koinViewModel
 import com.atech.research.utils.researchHubLog
 
 
+/**
+ * Forum screen
+ * This is the screen that displays the forum.
+ * @param modifier The modifier to be applied to the screen
+ * @param isAdmin The flag to check if the user is an admin
+ * @param canShowAppBar The callback to be called when the app bar is shown
+ */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun ForumScreen(
@@ -171,7 +178,14 @@ fun ForumScreen(
     }
 }
 
-
+/**
+ * Forum message screen
+ * This is the screen that displays the messages in the forum.
+ * @param url The url of the forum
+ * @param messages The list of messages to be displayed
+ * @param onSendMessage The callback to be called when a message is sent
+ * @param modifier The modifier to be applied to the screen
+ */
 @Composable
 private fun ForumScreenComposable(
     modifier: Modifier = Modifier,
@@ -204,6 +218,14 @@ private fun ForumScreenComposable(
     }
 }
 
+/**
+ * Forum message screen
+ * This is the screen that displays the messages in the forum.
+ * @param url The url of the forum
+ * @param messages The list of messages to be displayed
+ * @param onSendMessage The callback to be called when a message is sent
+ * @param modifier The modifier to be applied to the screen
+ */
 @Composable
 private fun AllForumItem(
     chat: ForumModel,
@@ -293,6 +315,12 @@ private fun AllForumItem(
     }
 }
 
+/**
+ * Empty forum view
+ * This is the view that is displayed when there are no messages in the forum.
+ * @param modifier The modifier to be applied to the view
+ * @param isAdmin The flag to check if the user is an admin
+ */
 @Composable
 private fun EmptyForumView(
     modifier: Modifier = Modifier, isAdmin: Boolean
@@ -319,6 +347,11 @@ private fun EmptyForumView(
     }
 }
 
+/**
+ * Empty chat view
+ * This is the view that is displayed when there are no messages in the chat.
+ * @param modifier The modifier to be applied to the view
+ */
 @Composable
 private fun EmptyChatView(
     modifier: Modifier = Modifier

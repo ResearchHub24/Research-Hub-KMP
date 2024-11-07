@@ -9,6 +9,17 @@ import com.atech.research.utils.ResearchHubViewModel
 import kotlinx.coroutines.launch
 
 
+/**
+ * Faculties view model
+ *
+ * @property useCases FacultiesUseCases
+ * @constructor Create empty Faculties view model
+ * @see FacultiesUseCases
+ * @see ResearchHubViewModel
+ * @see UserModel
+ * @see DataState
+ * @see FacultiesEvent
+ */
 class FacultiesViewModel(
     private val useCases: FacultiesUseCases
 ) : ResearchHubViewModel() {

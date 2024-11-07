@@ -17,6 +17,17 @@ import com.atech.research.utils.researchHubLog
 import kotlinx.coroutines.launch
 
 
+/**
+ * Research Applications View Model
+ *
+ * @property useCases Application use cases
+ * @property pref Pref manager
+ * @property createNewForum Create new forum
+ * @constructor Create empty Research Applications View Model
+ * @see ApplicationUseCases
+ * @see PrefManager
+ * @see CreateNewForum
+ */
 class ResearchApplicationsViewModel(
     private val useCases: ApplicationUseCases,
     private val pref: PrefManager,

@@ -69,14 +69,27 @@ import researchhub.composeapp.generated.resources.posted_research
 import researchhub.composeapp.generated.resources.research
 import researchhub.composeapp.generated.resources.view_all_applications
 
+/**
+ * Territory screen used in [HomeScreen]
+ */
 enum class TerritoryScreen {
     ViewMarkdown, EditTag, VIEW_PROFILE
 }
 
+/**
+ * Details screen type used in [HomeScreen]
+ */
 enum class DetailsScreenType {
     EDIT, VIEW_APPLICATION, SEND_NOTIFICATION
 }
 
+/**
+ * Home screen
+ *
+ * @param modifier 
+ * @param canShowAppBar
+ * @receiver
+ */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(

@@ -75,11 +75,32 @@ import researchhub.composeapp.generated.resources.personal_details
 import researchhub.composeapp.generated.resources.profile
 import researchhub.composeapp.generated.resources.skill
 
-
+/**
+ * Screen type
+ * This is the screen type.
+ * @constructor Create empty Screen type
+ */
 private enum class ScreenType {
     EDUCATION, LINK, SKILL, QUESTION
 }
 
+/**
+ * Profile screen
+ * This is the profile screen.
+ * @param modifier Modifier
+ * @param title String
+ * @param isTeacher Boolean
+ * @param navHostController NavController
+ * @param fromDetailScreen Boolean
+ * @param questionList List<String>
+ * @param researchPath String
+ * @param researchTitle String
+ * @param onNavigateBack Function0<Unit>
+ * @see ProfileViewModel
+ * @see DataLoader
+ * @see BackHandler
+ * @see ProfileEvents
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun ProfileScreen(
@@ -90,7 +111,7 @@ fun ProfileScreen(
     fromDetailScreen: Boolean = false,
     questionList: List<String> = emptyList(),
     researchPath: String = "",
-    researchTitle : String = "",
+    researchTitle: String = "",
     onNavigateBack: (() -> Unit) = {}
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
@@ -481,7 +502,14 @@ fun ProfileScreen(
     }
 }
 
-
+/**
+ * Top layout
+ * This is the top layout of [ProfileScreen].
+ * @param modifier Modifier
+ * @param name String
+ * @param email String
+ * @param profileImage String
+ */
 @Composable
 fun TopLayout(
     modifier: Modifier = Modifier, name: String, email: String, profileImage: String

@@ -35,6 +35,14 @@ import org.jetbrains.compose.resources.stringResource
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.faculties
 
+/**
+ * Faculties Screen
+ *
+ * @param modifier Modifier
+ * @param canShowAppBar (Boolean) -> Unit
+ * @see FacultiesViewModel
+ * @see UserModel
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun FacultiesScreen(

@@ -12,6 +12,14 @@ import com.atech.research.core.ktor.model.UserUpdateQueryHelper
 import com.atech.research.utils.DataState
 import kotlinx.coroutines.launch
 
+/**
+ * Set up view model
+ * This is the view model for the set up.
+ * @param client The research hub client
+ * @see ResearchHubClient
+ * @see ViewModel
+ * @see SetUpScreenEvents
+ */
 class SetUpViewModel(
     private val client: ResearchHubClient
 ) : ViewModel() {

@@ -34,7 +34,15 @@ import com.atech.research.ui.compose.student.home.compose.StudentHomeScreen
 import com.atech.research.ui.compose.teacher.home.compose.HomeScreen
 import com.atech.research.utils.Prefs
 
-enum class TeacherAppDestinations(
+/**
+ * Teacher app destinations
+ * This is the teacher app destinations.
+ * @property label Label of the destination
+ * @property icon  Icon of the destination
+ * @property forTeacher Whether the destination is for teacher or not
+ * @constructor Create empty Teacher app destinations
+ */
+enum class AppDestinations(
     val label: String, val icon: ImageVector, val forTeacher: Boolean = false
 ) {
     Home("Home", Icons.Rounded.Dashboard, true),
@@ -57,13 +65,20 @@ enum class TeacherAppDestinations(
 }
 
 
+/**
+ * Main screen
+ * This is the main screen.
+ * @param navHostController The nav host controller
+ * @param researchPath The research path
+ * @see AppDestinations
+ */
 @Composable
 fun MainScreen(
     navHostController: NavController,
     researchPath: String? = null
 ) {
     val isTeacher = IsUserTeacher()
-    var currentDestination by rememberSaveable { mutableStateOf(TeacherAppDestinations.Home) }
+    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.Home) }
     val adaptiveInfo = currentWindowAdaptiveInfo()
     var showNavigation by remember { mutableStateOf(true) }
 
@@ -89,9 +104,9 @@ fun MainScreen(
         layoutType = customNavSuiteType,
         navigationSuiteItems = {
             setAccordingToUser(isTeacher = isTeacher, teacherComposable = {
-                TeacherAppDestinations.entries.filter { it.forTeacher == isTeacher }
+                AppDestinations.entries.filter { it.forTeacher == isTeacher }
             }, studentComposable = {
-                TeacherAppDestinations.entries
+                AppDestinations.entries
             }).forEach { item ->
                 navItemEntry(item = item, selected = item == currentDestination, onClick = {
                     currentDestination = item
@@ -100,7 +115,7 @@ fun MainScreen(
         }
     ) {
         when (currentDestination) {
-            TeacherAppDestinations.Home -> SetComposableAccordingToUser(teacherComposable = {
+            AppDestinations.Home -> SetComposableAccordingToUser(teacherComposable = {
                 HomeScreen {
                     showNavigation = it
                 }
@@ -114,27 +129,34 @@ fun MainScreen(
                     }
                 })
 
-            TeacherAppDestinations.Profile -> ProfileScreen(
+            AppDestinations.Profile -> ProfileScreen(
                 navHostController = navHostController,
                 isTeacher = isTeacher
             )
 
-            TeacherAppDestinations.Faculty -> FacultiesScreen {
+            AppDestinations.Faculty -> FacultiesScreen {
                 showNavigation = it
             }
 
-            TeacherAppDestinations.FillResearch -> ApplicationScreen {
+            AppDestinations.FillResearch -> ApplicationScreen {
                 showNavigation = it
             }
 
-            TeacherAppDestinations.Forum -> ForumScreen {
+            AppDestinations.Forum -> ForumScreen {
                 showNavigation = it
             }
         }
     }
 }
 
-
+/**
+ * Set composable according to user
+ * This is the set composable according to user.
+ * @param isTeacher Whether the user is teacher or not
+ * @param teacherComposable The teacher composable
+ * @param studentComposable The student composable
+ * @see IsUserTeacher
+ */
 @Composable
 fun SetComposableAccordingToUser(
     isTeacher: Boolean = IsUserTeacher(),
@@ -143,19 +165,45 @@ fun SetComposableAccordingToUser(
 ) = if (isTeacher) teacherComposable()
 else studentComposable()
 
+/**
+ * Set according to user
+ * This is the set according to user.
+ * @param T The type of the set
+ * @param isTeacher Whether the user is teacher or not
+ * @param teacherComposable The teacher composable
+ * @param studentComposable The student composable
+ * @return The result of the set
+ * @see IsUserTeacher
+ */
 fun <T> setAccordingToUser(
     isTeacher: Boolean, teacherComposable: () -> T, studentComposable: () -> T
 ) = if (isTeacher) teacherComposable()
 else studentComposable()
 
 
+/**
+ * Is user teacher
+ * This is the is user teacher.
+ * @return The result of the is user teacher
+ */
 @Composable
-fun IsUserTeacher() = LocalDataStore.current.getString(Prefs.USER_TYPE.name) == UserType.TEACHER.name
+fun IsUserTeacher() =
+    LocalDataStore.current.getString(Prefs.USER_TYPE.name) == UserType.TEACHER.name
 
-
+/**
+ * Nav item entry
+ * This is the nav item entry.
+ * @param modifier The modifier
+ * @param item The item
+ * @param selected The selected
+ * @param onClick The on click
+ * @see AppDestinations
+ * @see NavigationSuiteScope
+ * @see MainScreen
+ */
 fun NavigationSuiteScope.navItemEntry(
     modifier: Modifier = Modifier,
-    item: TeacherAppDestinations,
+    item: AppDestinations,
     selected: Boolean,
     onClick: () -> Unit
 ) {

@@ -17,6 +17,17 @@ import com.atech.research.utils.ResearchHubViewModel
 import com.atech.research.utils.Topics
 import kotlinx.coroutines.launch
 
+/**
+ * Home screen view model
+ *
+ * @property researchUseCase ResearchUseCase
+ * @property getUseDetailUseCase GetUseDetailUseCase
+ * @property tagUseCase TagUseCase
+ * @constructor Create empty Home screen view model
+ * @see ResearchUseCase
+ * @see GetUseDetailUseCase
+ * @see TagUseCase
+ */
 class HomeScreenViewModel(
     private val researchUseCase: ResearchUseCase,
     private val getUseDetailUseCase: GetUseDetailUseCase,

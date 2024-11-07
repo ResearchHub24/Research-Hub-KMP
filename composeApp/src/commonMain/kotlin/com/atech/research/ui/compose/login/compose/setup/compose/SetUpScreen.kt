@@ -59,6 +59,17 @@ import org.jetbrains.compose.resources.painterResource
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.app_logo
 
+/**
+ * Set up screen
+ * This is the screen that displays the set up screen.
+ * @param modifier The modifier to be applied to the screen
+ * @param navController The navigation controller
+ * @param user The user
+ * @param passWord The password
+ * @param userType The user type
+ * @param isPasswordValid The flag to indicate if the password is valid
+ * @param onEvent The callback to be called when an event is triggered
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetUpScreen(
@@ -233,6 +244,11 @@ fun SetUpScreen(
     }
 }
 
+/**
+ * Navigate to home
+ * This is the function that navigates to the home screen.
+ * @param navController The navigation controller
+ */
 private fun navigateToHome(navController: NavController) {
     navController.navigate(MainScreenScreenRoutes.HomeScreen.route) {
         popUpTo(navController.graph.startDestinationId) {

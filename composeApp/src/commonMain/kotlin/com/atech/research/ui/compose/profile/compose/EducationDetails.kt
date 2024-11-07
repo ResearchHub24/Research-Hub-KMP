@@ -74,10 +74,25 @@ import researchhub.composeapp.generated.resources.update
 import researchhub.composeapp.generated.resources.year_details
 import java.util.Calendar
 
+/**
+ * Request
+ * This is the request enum.
+ */
 private enum class Request {
     START_YEAR, END_YEAR
 }
 
+/**
+ * Education details
+ * This is the education details composable.
+ * @param modifier Modifier
+ * @param state EducationDetails
+ * @param onEvent Function1<ProfileEvents>
+ * @param onSaveClick Function0<Unit>
+ * @see EducationDetails
+ * @see ProfileEvents
+ * @see Request
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EducationDetails(

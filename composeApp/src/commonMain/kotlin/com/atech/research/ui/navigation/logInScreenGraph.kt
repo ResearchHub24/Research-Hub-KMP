@@ -16,18 +16,39 @@ import com.atech.research.utils.fadeThroughComposableEnh
 import com.atech.research.utils.koinViewModel
 import kotlinx.serialization.Serializable
 
+/**
+ * Log in screen routes
+ *
+ * @property route String
+ * @constructor Create empty Log in screen routes
+ */
 sealed class LogInScreenRoutes(
     val route: String
 ) {
+    /**
+     * Log in screen
+     */
     data object LogInScreen : LogInScreenRoutes("log_in_screen")
 }
 
 
+/**
+ * Set up screen args
+ *
+ * @property uid String
+ * @constructor Create empty Set up screen args
+ */
 @Serializable
 data class SetUpScreenArgs(
     val uid: String
 )
 
+/**
+ * Log in screen graph
+ *
+ * @param navController NavController
+ * @see SetUpScreen
+ */
 fun NavGraphBuilder.logInScreenGraph(
     navController: NavController
 ) {

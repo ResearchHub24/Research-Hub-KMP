@@ -51,6 +51,22 @@ import researchhub.composeapp.generated.resources.save
 import researchhub.composeapp.generated.resources.tag
 import researchhub.composeapp.generated.resources.title
 
+/**
+ * Edit Screen
+ *
+ * @param modifier Modifier
+ * @param model Research model
+ * @param scrollState Scroll state
+ * @param isSaveButtonVisible Boolean
+ * @param onTitleChange Function1<String, Unit>
+ * @param onDescriptionChange Function1<String, Unit>
+ * @param hasError Pair<Boolean, Boolean>
+ * @param onQuestionChange Function1<List<String>, Unit>
+ * @param onViewMarkdownClick Function0<Unit>
+ * @param onAddTagClick Function0<Unit>
+ * @param onSaveClick Function0<Unit>
+ * @see ResearchModel
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EditScreen(
@@ -186,6 +202,12 @@ fun EditScreen(
     }
 }
 
+/**
+ * Question Composable
+ *
+ * @param question String
+ * @param onRemoveClick Function0<Unit>
+ */
 @Composable
 fun QuestionComposable(
     question: String,

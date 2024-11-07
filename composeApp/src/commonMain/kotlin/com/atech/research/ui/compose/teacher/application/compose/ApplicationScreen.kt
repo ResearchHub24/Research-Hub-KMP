@@ -18,6 +18,18 @@ import com.atech.research.utils.koinViewModel
 import org.koin.compose.koinInject
 
 
+/**
+ * Application Screen
+ *
+ * @param modifier Modifier
+ * @param researchId String
+ * @param onViewProfileClick Function1<String, Unit>
+ * @see ResearchApplicationsViewModel
+ * @see ApplicationEvents
+ * @see DataState
+ * @see Toast
+ * @see ToastDuration
+ */
 @Composable
 fun ApplicationScreen(
     modifier: Modifier = Modifier,

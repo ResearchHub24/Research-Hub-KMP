@@ -17,6 +17,21 @@ import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.researchHubLog
 import kotlinx.coroutines.launch
 
+/**
+ * Profile view model
+ * This is the profile view model.
+ * @property useCases User use cases
+ * @property pref Pref manager
+ * @property signOutHelper Sign out helper
+ * @property applyResearchUseCase Apply research use case
+ * @constructor Create empty Profile view model
+ * @see UserUseCases
+ * @see PrefManager
+ * @see SignOutHelper
+ * @see ApplyResearchUseCase
+ * @see ResearchHubViewModel
+ * @see ProfileEvents
+ */
 class ProfileViewModel(
     private val useCases: UserUseCases,
     private val pref: PrefManager,

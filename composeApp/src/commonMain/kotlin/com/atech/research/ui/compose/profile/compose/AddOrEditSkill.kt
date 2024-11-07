@@ -38,6 +38,14 @@ import researchhub.composeapp.generated.resources.all_skills
 import researchhub.composeapp.generated.resources.selected
 import researchhub.composeapp.generated.resources.skills
 
+/**
+ * Add or edit skill
+ * This is the add or edit skill composable.
+ * @param modifier Modifier
+ * @param skillList List<String>
+ * @param selectedList List<String>
+ * @param onDoneClick Function1<List<String>, Unit>
+ */
 @Composable
 fun AddOrEditSkill(
     modifier: Modifier = Modifier,

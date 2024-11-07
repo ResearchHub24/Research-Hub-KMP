@@ -40,6 +40,20 @@ import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.apply
 import researchhub.composeapp.generated.resources.require
 
+/**
+ * Question screen
+ * This is the question screen composable.
+ * @param modifier Modifier
+ * @param questionList List<String>
+ * @param onApplyClick Function1<List<AnswerModel>, Unit>
+ * @see QuestionItem
+ * @see AnswerModel
+ * @see ApplyButton
+ * @see DisplayCard
+ * @see AppAlertDialog
+ * @see EditText
+ * @see bottomPaddingLazy
+ */
 @Composable
 fun QuestionScreen(
     modifier: Modifier = Modifier,

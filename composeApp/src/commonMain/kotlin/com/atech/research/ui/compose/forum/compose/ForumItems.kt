@@ -21,6 +21,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.atech.research.common.AsyncImage
 
+/**
+ * Forum item user
+ * This is the user message item in the forum.
+ * @param message The message to be displayed
+ * @param time The time the message was sent
+ * @param modifier The modifier to be applied to the item
+ */
 @Composable
 fun ForumItemUser(
     message: String,
@@ -65,7 +72,14 @@ fun ForumItemUser(
     }
 }
 
-
+/**
+ * Forum item response
+ * This is the response message item in the forum.
+ * @param message The message to be displayed
+ * @param time The time the message was sent
+ * @param url The url of the user image
+ * @param modifier The modifier to be applied to the item
+ */
 @Composable
 fun ForumItemResponse(
     message: String,

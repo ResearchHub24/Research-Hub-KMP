@@ -26,6 +26,15 @@ import androidx.compose.ui.unit.dp
 import com.atech.research.common.AsyncImage
 import com.atech.research.core.ktor.model.UserModel
 
+/**
+ * Faculty Item
+ *
+ * @param modifier Modifier
+ * @param userModel UserModel
+ * @param onClick () -> Unit
+ * @see UserModel
+ * @see AsyncImage
+ */
 @Composable
 fun FacultyItem(
     modifier: Modifier = Modifier,

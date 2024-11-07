@@ -11,10 +11,26 @@ import com.atech.research.utils.DataState
 import com.atech.research.utils.PrefManager
 import com.atech.research.utils.Prefs
 import com.atech.research.utils.ResearchHubViewModel
-import com.atech.research.utils.ResearchLogLevel
-import com.atech.research.utils.researchHubLog
 import kotlinx.coroutines.launch
 
+/**
+ * Student home view model
+ * This view model is used to handle the student home screen
+ * @property useCases Student research use cases
+ * @property getUseDetailUseCase Get use detail use case
+ * @property getResearchById Get research by id
+ * @property pref PrefManager
+ * @constructor Create empty Student home view model
+ * @see StudentResearchUseCases
+ * @see GetUseDetailUseCase
+ * @see GetResearchById
+ * @see PrefManager
+ * @see ResearchHubViewModel
+ * @see ResearchModel
+ * @see UserModel
+ * @see DataState
+ * @see StudentHomeEvents
+ */
 class StudentHomeViewModel(
     private val useCases: StudentResearchUseCases,
     private val getUseDetailUseCase: GetUseDetailUseCase,

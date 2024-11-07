@@ -42,6 +42,14 @@ import com.atech.research.core.ktor.model.ChatMessage
 import com.atech.research.utils.convertToDateFormat
 import kotlinx.coroutines.launch
 
+/**
+ * Forum message screen
+ * This is the screen that displays the messages in the forum.
+ * @param url The url of the forum
+ * @param messages The list of messages to be displayed
+ * @param onSendMessage The callback to be called when a message is sent
+ * @param modifier The modifier to be applied to the screen
+ */
 @Composable
 fun ForumMessageScreen(
     modifier: Modifier = Modifier,

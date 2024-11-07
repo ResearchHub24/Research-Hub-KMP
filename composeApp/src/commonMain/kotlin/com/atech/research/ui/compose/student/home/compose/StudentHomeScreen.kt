@@ -78,14 +78,32 @@ import org.jetbrains.compose.resources.stringResource
 import researchhub.composeapp.generated.resources.Res
 import researchhub.composeapp.generated.resources.resume
 
+/**
+ * List screen type used in [StudentHomeScreen]
+ *
+ * @constructor Create empty List screen type
+ */
 private enum class ListScreenType {
     RESUME, LIST
 }
 
-
+/**
+ * Is bigger display
+ *
+ * @return [DeviceType]
+ */
 @Composable
 fun isBiggerDisplay(): Boolean = getDisplayType() != DeviceType.MOBILE
 
+/**
+ * Student Home Screen
+ *
+ * @param modifier Modifier
+ * @param researchPath String?
+ * @param navHostController NavController
+ * @param canShowAppBar (Boolean) -> Unit
+ * @see StudentHomeViewModel
+ */
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun StudentHomeScreen(
@@ -211,6 +229,15 @@ fun StudentHomeScreen(
         })
 }
 
+/**
+ * Profile section
+ *
+ * @param navHostController NavController
+ * @param onNavigateBack () -> Unit
+ * @param questionList List<String>
+ * @param researchPath String
+ * @param researchTitle String
+ */
 @Composable
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 private fun ThreePaneScaffoldScope.profileSection(
@@ -236,6 +263,14 @@ private fun ThreePaneScaffoldScope.profileSection(
     }
 }
 
+/**
+ * List screen
+ *
+ * @param modifier Modifier
+ * @param items DataState<List<ResearchModel>>
+ * @param onItemClicked (ResearchModel) -> Unit
+ * @param onRefresh () -> Unit
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ListScreen(
@@ -364,6 +399,10 @@ private fun ListScreen(
     }
 }
 
+/**
+ * Welcome section
+ *
+ */
 @Composable
 private fun WelcomeSection() {
     Column(
@@ -385,6 +424,11 @@ private fun WelcomeSection() {
     }
 }
 
+/**
+ * Not found
+ *
+ * @param modifier Modifier
+ */
 @Composable
 private fun NotFound(modifier: Modifier = Modifier) {
     Column(

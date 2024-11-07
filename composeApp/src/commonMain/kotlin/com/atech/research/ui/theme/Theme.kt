@@ -103,7 +103,13 @@ val ColorScheme.captionColor: Color
     @Composable
     get() = onSurface.copy(alpha = 0.6f)
 
-
+/**
+ * Research hub theme
+ * Theme for the research hub
+ * @param isAndroid Boolean
+ * @param isDark Boolean
+ * @param content Function0<Unit>
+ */
 @Composable
 fun ResearchHubTheme(
     isAndroid: Boolean = true,

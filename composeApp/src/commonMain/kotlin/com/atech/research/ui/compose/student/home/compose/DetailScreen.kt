@@ -42,6 +42,17 @@ import com.atech.research.utils.getScreenHeight
 import com.atech.research.utils.getScreenWidth
 import com.atech.research.utils.removeExtraSpacesPreserveLineBreaks
 
+/**
+ * Detail Screen
+ *
+ * @param modifier Modifier
+ * @param researchModel ResearchModel?
+ * @param isApplied Boolean
+ * @param onNavigationClick (() -> Unit)?
+ * @param onApplyClick (() -> Unit)
+ * @param onViewProfileClick (() -> Unit)
+ * @see ResearchModel
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 internal fun DetailScreen(
@@ -184,6 +195,13 @@ internal fun DetailScreen(
     }
 }
 
+/**
+ * Calculate image size
+ *
+ * @param screenWidth Float
+ * @param screenHeight Float
+ * @return Dp
+ */
 private fun calculateImageSize(screenWidth: Float, screenHeight: Float): Dp {
     val smallerDimension = minOf(screenWidth, screenHeight)
     return when {

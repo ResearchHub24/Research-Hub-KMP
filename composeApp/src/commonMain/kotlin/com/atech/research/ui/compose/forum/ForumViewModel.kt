@@ -17,6 +17,17 @@ import com.atech.research.utils.ResearchLogLevel
 import com.atech.research.utils.researchHubLog
 import kotlinx.coroutines.launch
 
+/**
+ * Forum view model
+ * This is the view model for the forum.
+ * @param forumUseCases The use cases for the forum
+ * @param prefManager The preference manager
+ * @see ResearchHubViewModel
+ * @see ForumUseCases
+ * @see PrefManager
+ * @see ForumEvents
+ * @constructor Create empty Forum view model
+ */
 class ForumViewModel(
     private val forumUseCases: ForumUseCases, private val prefManager: PrefManager
 ) : ResearchHubViewModel() {

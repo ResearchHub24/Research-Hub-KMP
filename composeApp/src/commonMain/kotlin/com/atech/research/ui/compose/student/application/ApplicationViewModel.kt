@@ -10,6 +10,20 @@ import com.atech.research.utils.Prefs
 import com.atech.research.utils.ResearchHubViewModel
 import kotlinx.coroutines.launch
 
+/**
+ * Application view model
+ *
+ * @property prefManager PrefManager
+ * @property getAllApplications AllApplicationsUseCases
+ * @constructor Create empty Application view model
+ * @see PrefManager
+ * @see AllApplicationsUseCases
+ * @see ResearchHubViewModel
+ * @see ApplicationModel
+ * @see DataState
+ * @see Prefs
+ * @see ApplicationEvents
+ */
 class ApplicationViewModel(
     private val prefManager: PrefManager,
     private val getAllApplications: AllApplicationsUseCases

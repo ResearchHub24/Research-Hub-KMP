@@ -37,6 +37,13 @@ import researchhub.composeapp.generated.resources.description
 import researchhub.composeapp.generated.resources.link
 import researchhub.composeapp.generated.resources.update
 
+/**
+ * Add or edit link
+ * This is the add or edit link composable.
+ * @param modifier Modifier
+ * @param state LinkModel
+ * @param onLinkSave Function1<LinkModel, Unit>
+ */
 @Composable
 fun AddOrEditLink(
     modifier: Modifier = Modifier,
