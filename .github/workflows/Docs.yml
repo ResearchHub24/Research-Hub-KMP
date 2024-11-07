@@ -47,7 +47,7 @@ jobs:
 
       - name: Navigate and Build
         run: |
-          cd generated
+          cd docs
           ls -la
           mkdocs gh-deploy --force --message "${{ github.event.inputs.deploy_message }}"
       
