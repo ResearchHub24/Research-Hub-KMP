@@ -32,7 +32,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +51,7 @@ import com.atech.research.core.ktor.model.UserModel
 import com.atech.research.core.ktor.model.UserType
 import com.atech.research.ui.compose.login.compose.setup.SetUpScreenEvents
 import com.atech.research.ui.navigation.MainScreenScreenRoutes
+import com.atech.research.ui.navigation.ResearchHubNavigation
 import com.atech.research.ui.theme.spacing
 import com.atech.research.utils.DataState
 import com.atech.research.utils.Prefs
@@ -82,7 +82,6 @@ fun SetUpScreen(
     onEvent: (SetUpScreenEvents) -> Unit = {}
 ) {
     val pref = LocalDataStore.current
-    val scope = rememberCoroutineScope()
     MainContainer(
         modifier = modifier,
         appBarColor = MaterialTheme.colorScheme.primary
@@ -244,6 +243,17 @@ fun SetUpScreen(
     }
 }
 
+
+private fun setNavigationBasedOnUserType(
+    userType: UserType,
+    navController: NavController
+) {
+    when (userType) {
+        UserType.STUDENT -> navigateToHome(navController)
+        UserType.TEACHER -> navigateToVerify(navController)
+    }
+}
+
 /**
  * Navigate to home
  * This is the function that navigates to the home screen.
@@ -251,6 +261,19 @@ fun SetUpScreen(
  */
 private fun navigateToHome(navController: NavController) {
     navController.navigate(MainScreenScreenRoutes.HomeScreen.route) {
+        popUpTo(navController.graph.startDestinationId) {
+            inclusive = true
+        }
+    }
+}
+
+/**
+ * Navigate to verify
+ * This is the function that navigates to the verify screen.
+ * @param navController The navigation controller
+ */
+private fun navigateToVerify(navController: NavController) {
+    navController.navigate(ResearchHubNavigation.VerifyScreen.route) {
         popUpTo(navController.graph.startDestinationId) {
             inclusive = true
         }

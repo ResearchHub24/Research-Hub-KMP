@@ -15,7 +15,7 @@ import com.atech.research.utils.DataState
 
 /**
  * Research hub client
- * This is an interface is Ktor client to interact with the Research Hub API.
+ * This is an interface for Ktor client to interact with the Research Hub API.
  * @constructor Create empty Research hub client
  */
 interface ResearchHubClient {
@@ -58,6 +58,18 @@ interface ResearchHubClient {
     suspend fun logInUser(
         email: String, password: String
     ): DataState<LoginResponse>
+
+
+    /**
+     * Is user verified
+     * This function will check if the user is verified
+     * @param uid User id
+     * @return DataState<Boolean>
+     * @see DataState
+     */
+    suspend fun isUserVerified(
+        uid: String
+    ): DataState<Boolean>
 
 
     /**
@@ -291,8 +303,8 @@ interface ResearchHubClient {
     ): DataState<SuccessResponse>
 
     companion object {
-        //        private const val BASE_URL = "http://192.168.29.205:9090/api/v1"
-        private const val BASE_URL = "http://192.168.153.65:9090/api/v1"
+        private const val BASE_URL = "http://192.168.29.205:9090/api/v1"
+//        private const val BASE_URL = "http://192.168.153.65:9090/api/v1"
 
         const val USER = "$BASE_URL/users"
         const val LOGIN = "$BASE_URL/login"

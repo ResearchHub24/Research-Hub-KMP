@@ -7,6 +7,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.atech.research.core.ktor.model.UserType
 import com.atech.research.ui.navigation.ResearchHubNavigation
 import com.atech.research.ui.navigation.ResearchNavigationGraph
 import com.atech.research.ui.theme.ResearchHubTheme
@@ -47,7 +48,12 @@ fun App(
             LocalImageLoader provides remember { imageLoad }) {
             val startDestination = if (pref.getString(Prefs.USER_ID.name)
                     .isNotBlank() && pref.getBoolean(Prefs.SET_PASSWORD_DONE.name)
-            ) ResearchHubNavigation.MainScreen
+            ) {
+                if (pref.getString(Prefs.USER_TYPE.name).isNotBlank() &&
+                    pref.getString(Prefs.USER_TYPE.name) == UserType.STUDENT.name
+                ) ResearchHubNavigation.MainScreen
+                else ResearchHubNavigation.VerifyScreen
+            }
             else ResearchHubNavigation.LogInScreen
 
             ResearchNavigationGraph(

@@ -9,6 +9,7 @@ import com.atech.research.ui.compose.forum.ForumViewModel
 import com.atech.research.ui.compose.login.compose.login.LogInViewModel
 import com.atech.research.ui.compose.login.compose.login.LogInViewModelImp
 import com.atech.research.ui.compose.login.compose.setup.SetUpViewModel
+import com.atech.research.ui.compose.login.compose.verify.VerifyScreenViewModel
 import com.atech.research.ui.compose.profile.ProfileViewModel
 import com.atech.research.ui.compose.profile.SignOutHelper
 import com.atech.research.ui.compose.student.application.ApplicationViewModel
@@ -50,5 +51,6 @@ val viewModelModule = module {
     single { ResearchApplicationsViewModel(get(), get(), get()) }
     single { Toast() }
     single { ForumViewModel(get(), get()) }
+    single { VerifyScreenViewModel(get(),get()) }
 
 }

@@ -5,6 +5,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.atech.research.ui.compose.login.compose.verify.compose.VerifyScreen
+import com.atech.research.utils.fadeThroughComposable
 
 /**
  * Research hub routes
@@ -16,7 +18,8 @@ enum class ResearchHubRoutes(
     val route: String
 ) {
     LOGIN("login"),
-    HOME("home")
+    HOME("home"),
+    VERIFY("verify")
 }
 
 /**
@@ -32,10 +35,16 @@ sealed class ResearchHubNavigation(
      * Log in screen
      */
     data object LogInScreen : ResearchHubNavigation(ResearchHubRoutes.LOGIN.route)
+
     /**
      * Main screen
      */
     data object MainScreen : ResearchHubNavigation(ResearchHubRoutes.HOME.route)
+
+    /**
+     * Verify screen
+     */
+    data object VerifyScreen : ResearchHubNavigation(ResearchHubRoutes.VERIFY.route)
 }
 
 
@@ -61,6 +70,13 @@ fun ResearchNavigationGraph(
     ) {
         logInScreenGraph(navHostController)
         mainScreenGraph(navHostController)
+        fadeThroughComposable(
+            route = ResearchHubRoutes.VERIFY.route,
+        ) {
+            VerifyScreen(
+                navController = navHostController
+            )
+        }
     }
 }
 

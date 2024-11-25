@@ -9,15 +9,18 @@ import com.atech.research.core.ktor.model.UserUpdateQueryHelper
  * @property getUserDetail Get user detail use case
  * @property updateUserDetail Update user detail use case
  * @property getAllSkills Get all skills use case
+ * @property isUserVerified Is user verified use case
  * @constructor Create empty User use cases
  * @see GetUseDetailUseCase
  * @see UpdateUserDetailUseCase
  * @see GetAllSkillsUseCase
+ * @see IsUserVerifiedUseCase
  */
 data class UserUseCases(
     val getUserDetail: GetUseDetailUseCase,
     val updateUserDetail: UpdateUserDetailUseCase,
-    val getAllSkills: GetAllSkillsUseCase
+    val getAllSkills: GetAllSkillsUseCase,
+    val isUserVerified: IsUserVerifiedUseCase
 )
 
 /**
@@ -62,4 +65,17 @@ data class GetAllSkillsUseCase(
     private val client: ResearchHubClient
 ) {
     suspend operator fun invoke() = client.getAllSkills()
+}
+
+/**
+ * Is user verified use case
+ * This class is a use case to check if the user is verified
+ * @property client Research hub client
+ * @constructor Create empty Is user verified use case
+ * @see ResearchHubClient
+ */
+data class IsUserVerifiedUseCase(
+    private val client: ResearchHubClient
+) {
+    suspend operator fun invoke(uid: String) = client.isUserVerified(uid)
 }

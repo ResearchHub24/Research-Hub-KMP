@@ -93,6 +93,16 @@ class ResearchHubClientImp(
             DataState.Error(e)
         }
 
+    override suspend fun isUserVerified(uid: String): DataState<Boolean> = try {
+        checkError<Boolean, ErrorResponse>(client.getWithFallback {
+            url("${ResearchHubClient.USER}/$uid/isVerified")
+            contentType(ContentType.Application.Json)
+        })
+    } catch (e: Exception) {
+        researchHubLog(ResearchLogLevel.ERROR, "Error: $e")
+        DataState.Error(e)
+    }
+
     override suspend fun getPostedResearch(userId: String?): DataState<List<ResearchModel>> = try {
         checkError<List<ResearchModel>, ErrorResponse>(
             client.getWithFallback {

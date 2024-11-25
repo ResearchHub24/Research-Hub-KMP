@@ -23,6 +23,7 @@ import com.atech.research.core.usecase.GetPostedResearchUseCase
 import com.atech.research.core.usecase.GetResearchById
 import com.atech.research.core.usecase.GetUseDetailUseCase
 import com.atech.research.core.usecase.IsAppliedToResearchUseCase
+import com.atech.research.core.usecase.IsUserVerifiedUseCase
 import com.atech.research.core.usecase.ResearchUseCase
 import com.atech.research.core.usecase.SendMessage
 import com.atech.research.core.usecase.SendNotificationUseCase
@@ -59,7 +60,8 @@ val commonModule = module {
     single { GetUseDetailUseCase(get()) }
     single { UpdateUserDetailUseCase(get()) }
     single { GetAllSkillsUseCase(get()) }
-    single { UserUseCases(get(), get(), get()) }
+    single { IsUserVerifiedUseCase(get()) }
+    single { UserUseCases(get(), get(), get(), get()) }
 
     single { GetAllResearch(get()) }
     single { ApplyResearchUseCase(get()) }
